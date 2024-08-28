@@ -31,6 +31,7 @@ model Influencer {
   updated_at DateTime @updatedAt()
 
   InfluencerAddress InfluencerAddress[]
+  InfluencerBrand   InfluencerBrand[]
 
   @@map("influencers")
 }
@@ -61,5 +62,21 @@ model Brand {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt()
 
+  InfluencerBrand InfluencerBrand[]
+
   @@map("brands")
+}
+
+model InfluencerBrand {
+  id            Int @id @default(autoincrement())
+  influencer_id Int
+  brand_id      Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  influencer Influencer @relation(fields: [influencer_id], references: [id], onDelete: Cascade)
+  brand      Brand      @relation(fields: [brand_id], references: [id], onDelete: Cascade)
+
+  @@unique([influencer_id, brand_id])
 }
