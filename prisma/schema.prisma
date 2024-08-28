@@ -18,3 +18,36 @@ model Admin {
 
   @@map("admin_users")
 }
+
+model Influencer {
+  id       Int     @id @default(autoincrement())
+  name     String
+  username String  @unique
+  niche    String
+  reach    Int
+  photo    String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  InfluencerAddress InfluencerAddress[]
+
+  @@map("influencers")
+}
+
+model InfluencerAddress {
+  id            Int    @id @default(autoincrement())
+  influencer_id Int
+  street        String
+  number        String
+  city          String
+  state         String
+  zipCode       String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  influencer Influencer @relation(fields: [influencer_id], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
