@@ -31,4 +31,14 @@ jobs:
 
     - name: Run ESLint
       run: npx eslint .
+
+  check-status:
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ always() }}
+
+    steps:
+    - name: Check if all tests passed
+      run: exit ${{ steps.build.outputs.tests_failed == 'true' }}
+
     - id: check_status
