@@ -5,6 +5,7 @@ import { IAdminRepository } from '../interfaces/repository.interface';
 import { Admin } from '@prisma/client';
 import { CreateAdminDto } from '../dto/create-admin.dto';
 import { SecurityService } from '../../../common/services/security.service';
+import { IAdmin } from '../interfaces/admin.interface';
 
 @Injectable()
 export class CreateAdminService {
@@ -28,7 +29,7 @@ export class CreateAdminService {
     };
   }
 
-  async execute(data: CreateAdminDto) {
+  async execute(data: CreateAdminDto): Promise<IAdmin> {
     try {
       if (data.password !== data.passwordConfirmation) {
         throw new AppError(

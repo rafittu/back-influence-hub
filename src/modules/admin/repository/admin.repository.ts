@@ -9,7 +9,7 @@ import { AppError } from '../../../common/errors/Error';
 export class AdminRepository implements IAdminRepository<Admin> {
   constructor(private prisma: PrismaService) {}
 
-  async createAdmin(data: ICreateAdmin) {
+  async createAdmin(data: ICreateAdmin): Promise<Admin> {
     try {
       const user = await this.prisma.admin.create({
         data,

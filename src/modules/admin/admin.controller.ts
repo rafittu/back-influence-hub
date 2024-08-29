@@ -11,6 +11,7 @@ import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
 import { AppError } from '../../common/errors/Error';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { CreateAdminService } from './services/create-admin.service';
+import { IAdmin } from './interfaces/admin.interface';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('admin')
@@ -18,7 +19,7 @@ export class AdminController {
   constructor(private readonly createAdmin: CreateAdminService) {}
 
   @Post('/signup')
-  async create(@Body() body: CreateAdminDto) {
+  async create(@Body() body: CreateAdminDto): Promise<IAdmin> {
     return await this.createAdmin.execute(body);
   }
 
