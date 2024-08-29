@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from '../admin.controller';
 import { CreateAdminService } from '../services/create-admin.service';
-import { MockCreateAdmin } from './mocks/admin.mock';
+import { MockCreateAdmin, MockIAdmin } from './mocks/admin.mock';
 
 describe('AdminController', () => {
   let controller: AdminController;
@@ -14,7 +14,7 @@ describe('AdminController', () => {
         {
           provide: CreateAdminService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(MockCreateAdmin),
+            execute: jest.fn().mockResolvedValue(MockIAdmin),
           },
         },
       ],
@@ -26,5 +26,14 @@ describe('AdminController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('create admin user', () => {
+    it('should create a new admin user successfully', async () => {
+      const result = await controller.create(MockCreateAdmin);
+
+      expect(createAdmin.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIAdmin);
+    });
   });
 });
