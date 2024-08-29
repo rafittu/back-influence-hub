@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CreateAdminService } from '../services/create-admin.service';
 import { SecurityService } from '../../../common/services/security.service';
 import { AdminRepository } from '../repository/admin.repository';
+import { MockAdmin, MockCreateAdmin, MockIAdmin } from './mocks/admin.mock';
 
 describe('AdminServices', () => {
   let createAdmin: CreateAdminService;
@@ -17,7 +18,10 @@ describe('AdminServices', () => {
         {
           provide: AdminRepository,
           useValue: {
-            createAdmin: jest.fn().mockResolvedValue(''),
+            createAdmin: jest.fn().mockResolvedValue({
+              ...MockAdmin,
+              password: undefined,
+            }),
           },
         },
       ],
@@ -31,5 +35,21 @@ describe('AdminServices', () => {
 
   it('should be defined', () => {
     expect(createAdmin).toBeDefined();
+  });
+
+  describe('create user', () => {
+    it('should create a new user successfully', async () => {
+      jest
+        .spyOn(securityService, 'hashPassword')
+        .mockResolvedValueOnce({ hashedPassword: 'hashedPassword' });
+      jest.spyOn(createAdmin as unknown as never, 'transformTimestamps');
+
+      const result = await createAdmin.execute(MockCreateAdmin);
+
+      expect(securityService.hashPassword).toHaveBeenCalledTimes(1);
+      expect(adminRepository.createAdmin).toHaveBeenCalledTimes(1);
+      expect(createAdmin['transformTimestamps']).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIAdmin);
+    });
   });
 });
