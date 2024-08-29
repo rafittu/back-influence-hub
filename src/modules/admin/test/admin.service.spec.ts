@@ -1,18 +1,35 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AdminService } from './admin.service';
+import { CreateAdminService } from '../services/create-admin.service';
+import { SecurityService } from '../../../common/services/security.service';
+import { AdminRepository } from '../repository/admin.repository';
 
-describe('AdminService', () => {
-  let service: AdminService;
+describe('AdminServices', () => {
+  let createAdmin: CreateAdminService;
+
+  let securityService: SecurityService;
+  let adminRepository: AdminRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AdminService],
+      providers: [
+        CreateAdminService,
+        SecurityService,
+        {
+          provide: AdminRepository,
+          useValue: {
+            createAdmin: jest.fn().mockResolvedValue(''),
+          },
+        },
+      ],
     }).compile();
 
-    service = module.get<AdminService>(AdminService);
+    createAdmin = module.get<CreateAdminService>(CreateAdminService);
+
+    securityService = module.get<SecurityService>(SecurityService);
+    adminRepository = module.get<AdminRepository>(AdminRepository);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(createAdmin).toBeDefined();
   });
 });
