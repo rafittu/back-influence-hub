@@ -14,6 +14,20 @@ export class CreateAdminService {
     private readonly securityService: SecurityService,
   ) {}
 
+  private transformTimestamps<T extends { created_at: Date; updated_at: Date }>(
+    entity: T,
+  ): Omit<T, 'created_at' | 'updated_at'> & {
+    createdAt: Date;
+    updatedAt: Date;
+  } {
+    const { created_at, updated_at, ...rest } = entity;
+    return {
+      ...rest,
+      createdAt: created_at,
+      updatedAt: updated_at,
+    };
+  }
+
   async execute(data: CreateAdminDto) {
     try {
       if (data.password !== data.passwordConfirmation) {
@@ -34,7 +48,10 @@ export class CreateAdminService {
         password: hashedPassword,
       };
 
-      return await this.adminRepository.createAdmin(user);
+      const createdUser = await this.adminRepository.createAdmin(user);
+      const adminData = this.transformTimestamps(createdUser);
+
+      return adminData;
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
