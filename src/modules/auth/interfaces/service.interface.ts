@@ -17,3 +17,7 @@ export interface IJtwPayload {
   iat?: number;
   exp?: number;
 }
+
+export interface IUserToken {
+  accessToken: string;
+}

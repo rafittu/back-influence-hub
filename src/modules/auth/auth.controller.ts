@@ -8,7 +8,7 @@ import {
 import { AppError } from '../../common/errors/Error';
 import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
 import { LocalAuthGuard } from './infra/guards/local-auth.guard';
-import { IAuthRequest } from './interfaces/service.interface';
+import { IAuthRequest, IUserToken } from './interfaces/service.interface';
 import { SignInService } from './services/signin.service';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
@@ -18,7 +18,7 @@ export class AuthController {
 
   @Post('/signin')
   @UseGuards(LocalAuthGuard)
-  async signin(@Request() req: IAuthRequest) {
+  async signin(@Request() req: IAuthRequest): Promise<IUserToken> {
     const { user } = req;
 
     return await this.signInService.execute(user);

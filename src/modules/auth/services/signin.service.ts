@@ -3,7 +3,11 @@ import { PrismaService } from '../../../prisma.service';
 import { SecurityService } from '../../../common/services/security.service';
 import { CredentialsDto } from '../dto/credentials.dto';
 import { AppError } from '../../../common/errors/Error';
-import { IJtwPayload, IUserPayload } from '../interfaces/service.interface';
+import {
+  IJtwPayload,
+  IUserPayload,
+  IUserToken,
+} from '../interfaces/service.interface';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -14,7 +18,7 @@ export class SignInService {
     private prisma: PrismaService,
   ) {}
 
-  async validateUser(credentials: CredentialsDto) {
+  async validateUser(credentials: CredentialsDto): Promise<IUserPayload> {
     const { email, password } = credentials;
 
     try {
@@ -47,7 +51,7 @@ export class SignInService {
     }
   }
 
-  async execute(user: IUserPayload) {
+  async execute(user: IUserPayload): Promise<IUserToken> {
     try {
       const payload: IJtwPayload = {
         sub: user.id,
