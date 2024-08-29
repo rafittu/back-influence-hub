@@ -9,3 +9,11 @@ export interface IUserPayload {
 export interface IAuthRequest extends Request {
   user: IUserPayload;
 }
+
+export interface IJtwPayload {
+  sub: number;
+  name: string;
+  email: string;
+  iat?: number;
+  exp?: number;
+}
