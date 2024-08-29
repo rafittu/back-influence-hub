@@ -65,7 +65,7 @@ export class SignInService {
         accessToken,
       };
     } catch (error) {
-      throw error;
+      throw new AppError('signin-service.execute', 500, `${error}`);
     }
   }
 }
