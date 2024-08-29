@@ -15,6 +15,8 @@ export class AdminRepository implements IAdminRepository<Admin> {
         data,
       });
 
+      delete user.password;
+
       return user;
     } catch (error) {
       if (error.code === 'P2002') {
