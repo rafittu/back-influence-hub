@@ -48,5 +48,21 @@ describe('AdminRepository', () => {
         expect(error.message).toBe('email already in use');
       }
     });
+
+    it('should throw an error if user is not created', async () => {
+      jest
+        .spyOn(prismaService.admin, 'create')
+        .mockRejectedValueOnce(
+          new AppError('admin-repository.createAdmin', 500, 'user not created'),
+        );
+
+      try {
+        await adminRepository.createAdmin(MockCreateAdmin);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('user not created');
+      }
+    });
   });
 });
