@@ -3,6 +3,7 @@ import { CreateAdminService } from '../services/create-admin.service';
 import { SecurityService } from '../../../common/services/security.service';
 import { AdminRepository } from '../repository/admin.repository';
 import { MockAdmin, MockCreateAdmin, MockIAdmin } from './mocks/admin.mock';
+import { AppError } from '../../../common/errors/Error';
 
 describe('AdminServices', () => {
   let createAdmin: CreateAdminService;
@@ -50,6 +51,22 @@ describe('AdminServices', () => {
       expect(adminRepository.createAdmin).toHaveBeenCalledTimes(1);
       expect(createAdmin['transformTimestamps']).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIAdmin);
+    });
+
+    it(`should throw an error if 'passwordConfirmation' doesnt match`, async () => {
+      const invalidPasswordConfirmation = 'invalid_password_confirmation';
+      const newBodyRequest = {
+        ...MockCreateAdmin,
+        passwordConfirmation: invalidPasswordConfirmation,
+      };
+
+      try {
+        await createAdmin.execute(newBodyRequest);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(422);
+        expect(error.message).toBe('passwords do not match');
+      }
     });
   });
 });
