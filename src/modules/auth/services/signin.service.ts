@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma.service';
 import { SecurityService } from '../../../common/services/security.service';
-
 import { CredentialsDto } from '../dto/credentials.dto';
 import { AppError } from '../../../common/errors/Error';
+import { IJtwPayload, IUserPayload } from '../interfaces/service.interface';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class SignInService {
   constructor(
     private securityService: SecurityService,
+    private jwtService: JwtService,
     private prisma: PrismaService,
   ) {}
 
@@ -40,6 +42,24 @@ export class SignInService {
         401,
         'email or password is invalid',
       );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async execute(user: IUserPayload) {
+    try {
+      const payload: IJtwPayload = {
+        sub: user.id,
+        name: user.name,
+        email: user.email,
+      };
+
+      const accessToken = this.jwtService.sign(payload);
+
+      return {
+        accessToken,
+      };
     } catch (error) {
       throw error;
     }
