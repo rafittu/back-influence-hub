@@ -34,6 +34,13 @@ describe('AdminServices', () => {
     adminRepository = module.get<AdminRepository>(AdminRepository);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
+
+    MockCreateAdmin.passwordConfirmation = MockCreateAdmin.password;
+  });
+
   it('should be defined', () => {
     expect(createAdmin).toBeDefined();
   });
@@ -66,6 +73,20 @@ describe('AdminServices', () => {
         expect(error).toBeInstanceOf(AppError);
         expect(error.code).toBe(422);
         expect(error.message).toBe('passwords do not match');
+      }
+    });
+
+    it('should throw an error if user not created', async () => {
+      jest
+        .spyOn(adminRepository, 'createAdmin')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await createAdmin.execute(MockCreateAdmin);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to create admin user');
       }
     });
   });
