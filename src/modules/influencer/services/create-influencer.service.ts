@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { AppError } from '../../../common/errors/Error';
-// import { InfluencerRepository } from '../repository/influencer.repository';
-// import { IInfluencerRepository } from '../interfaces/repository.interface';
-// import { Influencer } from '@prisma/client';
+import { InfluencerRepository } from '../repository/influencer.repository';
+import { IInfluencerRepository } from '../interfaces/repository.interface';
+import { Influencer } from '@prisma/client';
 import { CreateInfluencerDto } from '../dto/create-influencer.dto';
 
 @Injectable()
 export class CreateInfluencerService {
-  constructor() {} // private readonly influencerRepository: IInfluencerRepository<Influencer>, // @Inject(InfluencerRepository)
+  constructor(
+    @Inject(InfluencerRepository)
+    private readonly influencerRepository: IInfluencerRepository<Influencer>,
+  ) {}
 
   private transformTimestamps<T extends { created_at: Date; updated_at: Date }>(
     entity: T,
@@ -62,7 +65,7 @@ export class CreateInfluencerService {
       const address = await this.getAddress(formatedZipCode);
       const { logradouro, localidade, uf } = address;
 
-      const influencerData = {
+      const influencer = {
         ...data,
         zipCode: formatedZipCode,
         street: logradouro,
@@ -70,9 +73,11 @@ export class CreateInfluencerService {
         state: uf,
       };
 
-      console.log(influencerData);
+      const createdInfluencer =
+        await this.influencerRepository.createInfluencer(influencer);
+      const influencerData = this.transformTimestamps(createdInfluencer);
 
-      return data;
+      return influencerData;
     } catch (error) {
       if (error instanceof AppError) {
         throw error;

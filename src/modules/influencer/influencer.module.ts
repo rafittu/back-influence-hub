@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { InfluencerController } from './influencer.controller';
+import { CreateInfluencerService } from './services/create-influencer.service';
 
 @Module({
   controllers: [InfluencerController],
-  providers: [],
+  providers: [CreateInfluencerService],
 })
 export class InfluencerModule {}
