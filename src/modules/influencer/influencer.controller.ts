@@ -5,18 +5,21 @@ import {
   Patch,
   Delete,
   UseFilters,
+  Body,
 } from '@nestjs/common';
 import { AppError } from '../../common/errors/Error';
 import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
+import { CreateInfluencerService } from './services/create-influencer.service';
+import { CreateInfluencerDto } from './dto/create-influencer.dto';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('influencer')
 export class InfluencerController {
-  constructor() {}
+  constructor(private readonly createInfluencer: CreateInfluencerService) {}
 
-  @Post()
-  create() {
-    return 'this.influencerService.create(createInfluencerDto)';
+  @Post('/create')
+  async create(@Body() body: CreateInfluencerDto) {
+    return await this.createInfluencer.execute(body);
   }
 
   @Get()
