@@ -12,7 +12,7 @@ import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
 import { CreateInfluencerService } from './services/create-influencer.service';
 import { FindAllInfluencersServices } from './services/find-all-influencers.service';
 import { CreateInfluencerDto } from './dto/create-influencer.dto';
-import { IInfluencer } from './interfaces/influencer.interface';
+import { IInfluencerDetails } from './interfaces/influencer.interface';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('influencer')
@@ -23,7 +23,7 @@ export class InfluencerController {
   ) {}
 
   @Post('/create')
-  async create(@Body() body: CreateInfluencerDto): Promise<IInfluencer> {
+  async create(@Body() body: CreateInfluencerDto): Promise<IInfluencerDetails> {
     return await this.createInfluencer.execute(body);
   }
 

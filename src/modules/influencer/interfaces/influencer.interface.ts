@@ -11,7 +11,7 @@ export interface ICreateInfluencer {
   number: string;
 }
 
-export interface IInfluencer {
+export interface IInfluencerDetails {
   id: number;
   name: string;
   username: string;

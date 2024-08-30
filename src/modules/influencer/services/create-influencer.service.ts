@@ -5,7 +5,7 @@ import { InfluencerRepository } from '../repository/influencer.repository';
 import { IInfluencerRepository } from '../interfaces/repository.interface';
 import { Influencer } from '@prisma/client';
 import { CreateInfluencerDto } from '../dto/create-influencer.dto';
-import { IInfluencer } from '../interfaces/influencer.interface';
+import { IInfluencerDetails } from '../interfaces/influencer.interface';
 
 @Injectable()
 export class CreateInfluencerService {
@@ -48,7 +48,7 @@ export class CreateInfluencerService {
     }
   }
 
-  async execute(data: CreateInfluencerDto): Promise<IInfluencer> {
+  async execute(data: CreateInfluencerDto): Promise<IInfluencerDetails> {
     const zipCodeRegex = /^[0-9]{8}$/;
 
     try {
