@@ -11,6 +11,7 @@ import { AppError } from '../../common/errors/Error';
 import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
 import { CreateInfluencerService } from './services/create-influencer.service';
 import { CreateInfluencerDto } from './dto/create-influencer.dto';
+import { IInfluencer } from './interfaces/influencer.interface';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('influencer')
@@ -18,7 +19,7 @@ export class InfluencerController {
   constructor(private readonly createInfluencer: CreateInfluencerService) {}
 
   @Post('/create')
-  async create(@Body() body: CreateInfluencerDto) {
+  async create(@Body() body: CreateInfluencerDto): Promise<IInfluencer> {
     return await this.createInfluencer.execute(body);
   }
 

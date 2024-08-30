@@ -5,6 +5,7 @@ import { InfluencerRepository } from '../repository/influencer.repository';
 import { IInfluencerRepository } from '../interfaces/repository.interface';
 import { Influencer } from '@prisma/client';
 import { CreateInfluencerDto } from '../dto/create-influencer.dto';
+import { IInfluencer } from '../interfaces/influencer.interface';
 
 @Injectable()
 export class CreateInfluencerService {
@@ -47,7 +48,7 @@ export class CreateInfluencerService {
     }
   }
 
-  async execute(data: CreateInfluencerDto) {
+  async execute(data: CreateInfluencerDto): Promise<IInfluencer> {
     const zipCodeRegex = /^[0-9]{8}$/;
 
     try {
@@ -62,8 +63,8 @@ export class CreateInfluencerService {
         );
       }
 
-      const address = await this.getAddress(formatedZipCode);
-      const { logradouro, localidade, uf } = address;
+      const { logradouro, localidade, uf } =
+        await this.getAddress(formatedZipCode);
 
       const influencer = {
         ...data,
@@ -77,7 +78,17 @@ export class CreateInfluencerService {
         await this.influencerRepository.createInfluencer(influencer);
       const influencerData = this.transformTimestamps(createdInfluencer);
 
-      return influencerData;
+      return {
+        ...influencerData,
+        niches: data.niches,
+        address: {
+          zipCode: formatedZipCode,
+          street: logradouro,
+          city: localidade,
+          state: uf,
+          number: data.number,
+        },
+      };
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
