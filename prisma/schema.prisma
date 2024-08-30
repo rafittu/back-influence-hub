@@ -23,7 +23,6 @@ model Influencer {
   id       Int     @id @default(autoincrement())
   name     String
   username String  @unique
-  niche    String
   reach    Int
   photo    String?
 
@@ -31,6 +30,7 @@ model Influencer {
   updated_at DateTime @updatedAt()
 
   InfluencerAddress InfluencerAddress[]
+  Niche             InfluencerNiche[]
   InfluencerBrand   InfluencerBrand[]
 
   @@map("influencers")
@@ -53,6 +53,20 @@ model InfluencerAddress {
   @@map("addresses")
 }
 
+model InfluencerNiche {
+  influencerId Int
+  nicheId      Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  influencer Influencer @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+  niche      Niche      @relation(fields: [nicheId], references: [id], onDelete: Cascade)
+
+  @@unique([influencerId, nicheId])
+  @@map("influencer_niches")
+}
+
 model Brand {
   id          Int    @id @default(autoincrement())
   name        String
@@ -63,8 +77,23 @@ model Brand {
   updated_at DateTime @updatedAt()
 
   InfluencerBrand InfluencerBrand[]
+  BrandNiche      BrandNiche[]
 
   @@map("brands")
+}
+
+model BrandNiche {
+  brandId Int
+  nicheId Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  niche Niche @relation(fields: [nicheId], references: [id], onDelete: Cascade)
+
+  @@unique([brandId, nicheId])
+  @@map("brand_niches")
 }
 
 model InfluencerBrand {
@@ -79,4 +108,14 @@ model InfluencerBrand {
   brand      Brand      @relation(fields: [brand_id], references: [id], onDelete: Cascade)
 
   @@unique([influencer_id, brand_id])
+}
+
+model Niche {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Influencers InfluencerNiche[]
+  Brands      BrandNiche[]
+
+  @@map("niches")
 }
