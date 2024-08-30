@@ -72,4 +72,16 @@ export class InfluencerRepository implements IInfluencerRepository<Influencer> {
       );
     }
   }
+
+  async findAllInfluencers(): Promise<Influencer[]> {
+    try {
+      return await this.prisma.influencer.findMany();
+    } catch (error) {
+      throw new AppError(
+        'influencer-repository.findAllInfluencers',
+        500,
+        'influencer not created',
+      );
+    }
+  }
 }

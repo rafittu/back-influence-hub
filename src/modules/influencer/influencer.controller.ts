@@ -10,22 +10,29 @@ import {
 import { AppError } from '../../common/errors/Error';
 import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
 import { CreateInfluencerService } from './services/create-influencer.service';
+import { FindAllInfluencersServices } from './services/find-all-influencers.service';
 import { CreateInfluencerDto } from './dto/create-influencer.dto';
-import { IInfluencer } from './interfaces/influencer.interface';
+import {
+  IInfluencer,
+  IInfluencerDetails,
+} from './interfaces/influencer.interface';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('influencer')
 export class InfluencerController {
-  constructor(private readonly createInfluencer: CreateInfluencerService) {}
+  constructor(
+    private readonly createInfluencer: CreateInfluencerService,
+    private readonly findAllInfluencers: FindAllInfluencersServices,
+  ) {}
 
   @Post('/create')
-  async create(@Body() body: CreateInfluencerDto): Promise<IInfluencer> {
+  async create(@Body() body: CreateInfluencerDto): Promise<IInfluencerDetails> {
     return await this.createInfluencer.execute(body);
   }
 
-  @Get()
-  findAll() {
-    return 'this.influencerService.findAll()';
+  @Get('/all')
+  async findAll(): Promise<IInfluencer[]> {
+    return await this.findAllInfluencers.execute();
   }
 
   @Get(':id')

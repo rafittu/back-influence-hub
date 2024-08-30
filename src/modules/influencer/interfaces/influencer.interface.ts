@@ -17,6 +17,16 @@ export interface IInfluencer {
   username: string;
   reach: number;
   photo?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IInfluencerDetails {
+  id: number;
+  name: string;
+  username: string;
+  reach: number;
+  photo?: string;
   niches: string[];
   address: {
     zipCode: string;
