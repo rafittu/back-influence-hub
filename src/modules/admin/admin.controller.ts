@@ -12,12 +12,14 @@ import { AppError } from '../../common/errors/Error';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { CreateAdminService } from './services/create-admin.service';
 import { IAdmin } from './interfaces/admin.interface';
+import { isPublic } from '../auth/infra/decorators/is-public.decorator';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('admin')
 export class AdminController {
   constructor(private readonly createAdmin: CreateAdminService) {}
 
+  @isPublic()
   @Post('/signup')
   async create(@Body() body: CreateAdminDto): Promise<IAdmin> {
     return await this.createAdmin.execute(body);
