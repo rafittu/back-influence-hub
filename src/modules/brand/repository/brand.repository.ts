@@ -180,9 +180,9 @@ export class BrandRepository implements IBrandRepository<Brand> {
       return influencerBrand;
     } catch (error) {
       throw new AppError(
-        'brand-repository.createBrand',
+        'brand-repository.associateInfluencer',
         500,
-        'brand not created',
+        'could not link brand with influencer',
       );
     }
   }
