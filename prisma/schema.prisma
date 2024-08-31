@@ -69,8 +69,7 @@ model InfluencerNiche {
 
 model Brand {
   id          Int    @id @default(autoincrement())
-  name        String
-  niche       String
+  name        String @unique
   description String
 
   created_at DateTime @default(now())
