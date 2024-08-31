@@ -105,7 +105,6 @@ export class InfluencerRepository implements IInfluencerRepository<Influencer> {
 
       return influencer;
     } catch (error) {
-      console.log(error);
       throw new AppError(
         'influencer-repository.findOneInfluencer',
         500,
