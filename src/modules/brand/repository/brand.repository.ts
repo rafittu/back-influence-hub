@@ -4,6 +4,7 @@ import { AppError } from '../../../common/errors/Error';
 import { IBrandRepository } from '../interfaces/repository.interface';
 import { Brand } from '@prisma/client';
 import { CreateBrandDto } from '../dto/create-brand.dto';
+import { IUpdateBrand } from '../interfaces/brand.interface';
 
 @Injectable()
 export class BrandRepository implements IBrandRepository<Brand> {
@@ -93,6 +94,48 @@ export class BrandRepository implements IBrandRepository<Brand> {
         'brand-repository.findOneBrand',
         500,
         'could not get brand details',
+      );
+    }
+  }
+
+  async updateBrand(id: string, data: IUpdateBrand): Promise<Brand> {
+    const brandId = Number(Object.values(id));
+
+    try {
+      const updatedBrand = await this.prisma.brand.update({
+        where: { id: brandId },
+        data: {
+          ...(data.name && { name: data.name }),
+          ...(data.description && { username: data.description }),
+          ...(data.niches && {
+            BrandNiche: {
+              deleteMany: {},
+              create: data.niches.map((niche) => ({
+                niche: {
+                  connectOrCreate: {
+                    where: { name: niche },
+                    create: { name: niche },
+                  },
+                },
+              })),
+            },
+          }),
+        },
+        include: {
+          BrandNiche: {
+            include: {
+              niche: { select: { name: true } },
+            },
+          },
+        },
+      });
+
+      return updatedBrand;
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.updateBrand',
+        500,
+        'could not update brand details',
       );
     }
   }

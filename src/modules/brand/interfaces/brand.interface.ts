@@ -14,3 +14,9 @@ export interface IBrandDetails {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IUpdateBrand {
+  name?: string;
+  description?: string;
+  niches?: string[];
+}
