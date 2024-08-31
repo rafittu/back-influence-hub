@@ -3,6 +3,7 @@ import { AppError } from '../../../common/errors/Error';
 import { IBrandRepository } from '../interfaces/repository.interface';
 import { Brand } from '@prisma/client';
 import { BrandRepository } from '../repository/brand.repository';
+import { IBrand } from '../interfaces/brand.interface';
 
 @Injectable()
 export class FindAllBrandsService {
@@ -35,7 +36,7 @@ export class FindAllBrandsService {
     return entities.map(this.transformTimestamps);
   }
 
-  async execute() {
+  async execute(): Promise<IBrand[]> {
     try {
       const brands = await this.brandRepository.findAllBrands();
       return this.transformArrayTimestamps(brands);

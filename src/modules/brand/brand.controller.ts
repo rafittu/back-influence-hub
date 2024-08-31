@@ -28,7 +28,7 @@ export class BrandController {
   }
 
   @Get('/')
-  async findAll() {
+  async findAll(): Promise<IBrand[]> {
     return await this.findAllBrands.execute();
   }
 
