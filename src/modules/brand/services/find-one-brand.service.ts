@@ -30,9 +30,9 @@ export class FindOneBrandService {
       return this.transformInfluencerData(brand);
     } catch (error) {
       throw new AppError(
-        'brand-service.findAllBrands',
+        'brand-service.findOneBrand',
         500,
-        'failed to get brands',
+        'failed to get brand',
       );
     }
   }
