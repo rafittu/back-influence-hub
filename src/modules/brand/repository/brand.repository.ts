@@ -57,4 +57,16 @@ export class BrandRepository implements IBrandRepository<Brand> {
       );
     }
   }
+
+  async findAllBrands(): Promise<Brand[]> {
+    try {
+      return await this.prisma.brand.findMany();
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.findAllBrands',
+        500,
+        'could not get brands',
+      );
+    }
+  }
 }
