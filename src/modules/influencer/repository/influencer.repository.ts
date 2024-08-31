@@ -80,7 +80,36 @@ export class InfluencerRepository implements IInfluencerRepository<Influencer> {
       throw new AppError(
         'influencer-repository.findAllInfluencers',
         500,
-        'influencer not created',
+        'could not get influencers',
+      );
+    }
+  }
+
+  async findOneInfluencer(id: string): Promise<Influencer> {
+    const influencerId = Number(Object.values(id));
+
+    try {
+      const influencer = await this.prisma.influencer.findFirst({
+        where: { id: influencerId },
+        include: {
+          InfluencerAddress: true,
+          Niche: {
+            select: {
+              niche: {
+                select: { name: true },
+              },
+            },
+          },
+        },
+      });
+
+      return influencer;
+    } catch (error) {
+      console.log(error);
+      throw new AppError(
+        'influencer-repository.findOneInfluencer',
+        500,
+        'could not get influencer details',
       );
     }
   }
