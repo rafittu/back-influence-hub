@@ -139,4 +139,48 @@ export class BrandRepository implements IBrandRepository<Brand> {
       );
     }
   }
+
+  async associateInfluencer(brandId: string, influencerId: string) {
+    const brandIdInt = Number(Object.values(brandId));
+    const influencerIdInt = Number(Object.values(influencerId));
+
+    try {
+      const influencerBrand = await this.prisma.influencerBrand.create({
+        data: {
+          influencer: {
+            connect: { id: influencerIdInt },
+          },
+          brand: {
+            connect: { id: brandIdInt },
+          },
+        },
+        include: {
+          influencer: {
+            include: {
+              Niche: {
+                include: { niche: true },
+              },
+            },
+          },
+          brand: {
+            include: {
+              BrandNiche: {
+                include: {
+                  niche: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return influencerBrand;
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.createBrand',
+        500,
+        'brand not created',
+      );
+    }
+  }
 }

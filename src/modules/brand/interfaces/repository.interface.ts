@@ -6,4 +6,5 @@ export interface IBrandRepository<Brand> {
   findAllBrands(): Promise<Brand[]>;
   findOneBrand(id: string): Promise<Brand>;
   updateBrand(id: string, data: IUpdateBrand): Promise<Brand>;
+  associateInfluencer(brandId: string, influencerId: string);
 }
