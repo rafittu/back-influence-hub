@@ -14,7 +14,7 @@ import { CreateBrandDto } from './dto/create-brand.dto';
 import { CreateBrandService } from './services/create-brand.service';
 import { FindAllBrandsService } from './services/find-all-brands.service';
 import { FindOneBrandService } from './services/find-one-brand.service';
-import { IBrand } from './interfaces/brand.interface';
+import { IBrand, IBrandDetails } from './interfaces/brand.interface';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('brand')
@@ -36,7 +36,7 @@ export class BrandController {
   }
 
   @Get('/:id')
-  async findOne(@Param() id: string) {
+  async findOne(@Param() id: string): Promise<IBrandDetails> {
     return await this.findOneBrand.execute(id);
   }
 

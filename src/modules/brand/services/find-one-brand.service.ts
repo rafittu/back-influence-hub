@@ -3,6 +3,7 @@ import { AppError } from '../../../common/errors/Error';
 import { IBrandRepository } from '../interfaces/repository.interface';
 import { Brand } from '@prisma/client';
 import { BrandRepository } from '../repository/brand.repository';
+import { IBrandDetails } from '../interfaces/brand.interface';
 
 @Injectable()
 export class FindOneBrandService {
@@ -22,7 +23,7 @@ export class FindOneBrandService {
     };
   }
 
-  async execute(id: string) {
+  async execute(id: string): Promise<IBrandDetails> {
     try {
       const brand = await this.brandRepository.findOneBrand(id);
 
