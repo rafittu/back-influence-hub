@@ -12,11 +12,25 @@ export class CreateBrandService {
     private readonly brandRepository: IBrandRepository<Brand>,
   ) {}
 
+  private transformTimestamps<T extends { created_at: Date; updated_at: Date }>(
+    entity: T,
+  ): Omit<T, 'created_at' | 'updated_at'> & {
+    createdAt: Date;
+    updatedAt: Date;
+  } {
+    const { created_at, updated_at, ...rest } = entity;
+    return {
+      ...rest,
+      createdAt: created_at,
+      updatedAt: updated_at,
+    };
+  }
+
   async execute(data: CreateBrandDto) {
     try {
       const createdBrand = await this.brandRepository.createBrand(data);
 
-      return createdBrand;
+      return this.transformTimestamps(createdBrand);
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
