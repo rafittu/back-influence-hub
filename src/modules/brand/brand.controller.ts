@@ -6,12 +6,14 @@ import {
   Delete,
   UseFilters,
   Body,
+  Param,
 } from '@nestjs/common';
 import { AppError } from 'src/common/errors/Error';
 import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { CreateBrandService } from './services/create-brand.service';
 import { FindAllBrandsService } from './services/find-all-brands.service';
+import { FindOneBrandService } from './services/find-one-brands.service';
 import { IBrand } from './interfaces/brand.interface';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
@@ -20,6 +22,7 @@ export class BrandController {
   constructor(
     private readonly createBrand: CreateBrandService,
     private readonly findAllBrands: FindAllBrandsService,
+    private readonly findOneBrand: FindOneBrandService,
   ) {}
 
   @Post('/create')
@@ -32,9 +35,9 @@ export class BrandController {
     return await this.findAllBrands.execute();
   }
 
-  @Get(':id')
-  findOne() {
-    return 'this.brandService.findOne(+id)';
+  @Get('/:id')
+  async findOne(@Param() id: string) {
+    return await this.findOneBrand.execute(id);
   }
 
   @Patch(':id')
