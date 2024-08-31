@@ -78,13 +78,17 @@ export class UpdateInfluencerService {
           await this.getAddress(formatedZipCode);
 
         influencerData = {
-          ...data,
           zipCode: formatedZipCode,
           street: logradouro,
           city: localidade,
           state: uf,
         };
       }
+
+      influencerData = {
+        ...data,
+        ...influencerData,
+      };
 
       const updatedInfluencer =
         await this.influencerRepository.updateInfluencer(id, influencerData);
