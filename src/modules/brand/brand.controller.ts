@@ -13,7 +13,7 @@ import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { CreateBrandService } from './services/create-brand.service';
 import { FindAllBrandsService } from './services/find-all-brands.service';
-import { FindOneBrandService } from './services/find-one-brands.service';
+import { FindOneBrandService } from './services/find-one-brand.service';
 import { IBrand } from './interfaces/brand.interface';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
