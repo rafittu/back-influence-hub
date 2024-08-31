@@ -44,7 +44,10 @@ export class BrandController {
   }
 
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() body: UpdateBrandDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() body: UpdateBrandDto,
+  ): Promise<IBrandDetails> {
     return await this.updateBrand.execute(id, body);
   }
 
