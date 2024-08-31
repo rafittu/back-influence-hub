@@ -6,11 +6,13 @@ import {
   Delete,
   UseFilters,
   Body,
+  Param,
 } from '@nestjs/common';
 import { AppError } from '../../common/errors/Error';
 import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
 import { CreateInfluencerService } from './services/create-influencer.service';
-import { FindAllInfluencersServices } from './services/find-all-influencers.service';
+import { FindAllInfluencersService } from './services/find-all-influencers.service';
+import { FindOneInfluencerService } from './services/find-one-influencer.service';
 import { CreateInfluencerDto } from './dto/create-influencer.dto';
 import {
   IInfluencer,
@@ -22,7 +24,8 @@ import {
 export class InfluencerController {
   constructor(
     private readonly createInfluencer: CreateInfluencerService,
-    private readonly findAllInfluencers: FindAllInfluencersServices,
+    private readonly findAllInfluencers: FindAllInfluencersService,
+    private readonly findOneInfluencer: FindOneInfluencerService,
   ) {}
 
   @Post('/create')
@@ -35,9 +38,9 @@ export class InfluencerController {
     return await this.findAllInfluencers.execute();
   }
 
-  @Get(':id')
-  findOne() {
-    return 'this.influencerService.findOne(+id)';
+  @Get('/:id')
+  async findOne(@Param() id: string): Promise<IInfluencerDetails> {
+    return await this.findOneInfluencer.execute(id);
   }
 
   @Patch(':id')

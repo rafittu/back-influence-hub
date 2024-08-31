@@ -3,7 +3,8 @@ import { InfluencerController } from './influencer.controller';
 import { CreateInfluencerService } from './services/create-influencer.service';
 import { InfluencerRepository } from './repository/influencer.repository';
 import { PrismaService } from 'src/prisma.service';
-import { FindAllInfluencersServices } from './services/find-all-influencers.service';
+import { FindAllInfluencersService } from './services/find-all-influencers.service';
+import { FindOneInfluencerService } from './services/find-one-influencer.service';
 
 @Module({
   controllers: [InfluencerController],
@@ -11,7 +12,8 @@ import { FindAllInfluencersServices } from './services/find-all-influencers.serv
     PrismaService,
     InfluencerRepository,
     CreateInfluencerService,
-    FindAllInfluencersServices,
+    FindAllInfluencersService,
+    FindOneInfluencerService,
   ],
 })
 export class InfluencerModule {}
