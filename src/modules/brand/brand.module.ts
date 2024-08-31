@@ -5,6 +5,7 @@ import { CreateBrandService } from './services/create-brand.service';
 import { BrandRepository } from './repository/brand.repository';
 import { FindAllBrandsService } from './services/find-all-brands.service';
 import { FindOneBrandService } from './services/find-one-brand.service';
+import { UpdateBrandService } from './services/update-brand.service';
 
 @Module({
   controllers: [BrandController],
@@ -14,6 +15,7 @@ import { FindOneBrandService } from './services/find-one-brand.service';
     CreateBrandService,
     FindAllBrandsService,
     FindOneBrandService,
+    UpdateBrandService,
   ],
 })
 export class BrandModule {}
