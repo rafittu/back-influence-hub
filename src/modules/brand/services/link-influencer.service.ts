@@ -3,6 +3,7 @@ import { AppError } from '../../../common/errors/Error';
 import { IBrandRepository } from '../interfaces/repository.interface';
 import { Brand } from '@prisma/client';
 import { BrandRepository } from '../repository/brand.repository';
+import { IBrandInfluencer } from '../interfaces/brand.interface';
 
 @Injectable()
 export class LinkInfluencerService {
@@ -44,7 +45,10 @@ export class LinkInfluencerService {
     };
   }
 
-  async execute(brandId: string, influencerId: string) {
+  async execute(
+    brandId: string,
+    influencerId: string,
+  ): Promise<IBrandInfluencer> {
     try {
       const influencerBrand = await this.brandRepository.associateInfluencer(
         brandId,

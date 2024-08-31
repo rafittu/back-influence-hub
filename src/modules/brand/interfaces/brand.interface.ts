@@ -20,3 +20,23 @@ export interface IUpdateBrand {
   description?: string;
   niches?: string[];
 }
+
+export interface IBrandInfluencer {
+  id: number;
+  influencerId: number;
+  brandId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  influencer: {
+    id: number;
+    name: string;
+    username: string;
+    reach: number;
+  };
+  brand: {
+    id: number;
+    name: string;
+    description: string;
+  };
+  commonNiches: string[];
+}

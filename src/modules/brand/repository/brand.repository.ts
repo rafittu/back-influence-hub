@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma.service';
 import { AppError } from '../../../common/errors/Error';
 import { IBrandRepository } from '../interfaces/repository.interface';
-import { Brand } from '@prisma/client';
+import { Brand, InfluencerBrand } from '@prisma/client';
 import { CreateBrandDto } from '../dto/create-brand.dto';
 import { IUpdateBrand } from '../interfaces/brand.interface';
 
@@ -140,7 +140,10 @@ export class BrandRepository implements IBrandRepository<Brand> {
     }
   }
 
-  async associateInfluencer(brandId: string, influencerId: string) {
+  async associateInfluencer(
+    brandId: string,
+    influencerId: string,
+  ): Promise<InfluencerBrand> {
     const brandIdInt = Number(Object.values(brandId));
     const influencerIdInt = Number(Object.values(influencerId));
 

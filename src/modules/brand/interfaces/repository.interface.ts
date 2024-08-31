@@ -1,3 +1,4 @@
+import { InfluencerBrand } from '@prisma/client';
 import { CreateBrandDto } from '../dto/create-brand.dto';
 import { IUpdateBrand } from './brand.interface';
 
@@ -6,5 +7,8 @@ export interface IBrandRepository<Brand> {
   findAllBrands(): Promise<Brand[]>;
   findOneBrand(id: string): Promise<Brand>;
   updateBrand(id: string, data: IUpdateBrand): Promise<Brand>;
-  associateInfluencer(brandId: string, influencerId: string);
+  associateInfluencer(
+    brandId: string,
+    influencerId: string,
+  ): Promise<InfluencerBrand>;
 }

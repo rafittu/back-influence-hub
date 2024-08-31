@@ -17,7 +17,11 @@ import { FindAllBrandsService } from './services/find-all-brands.service';
 import { FindOneBrandService } from './services/find-one-brand.service';
 import { UpdateBrandService } from './services/update-brand.service';
 import { LinkInfluencerService } from './services/link-influencer.service';
-import { IBrand, IBrandDetails } from './interfaces/brand.interface';
+import {
+  IBrand,
+  IBrandDetails,
+  IBrandInfluencer,
+} from './interfaces/brand.interface';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
@@ -40,7 +44,7 @@ export class BrandController {
   async associateInfluencer(
     @Query('influencerId') influencerId: string,
     @Query('brandId') brandId: string,
-  ) {
+  ): Promise<IBrandInfluencer> {
     return await this.linkInfluencer.execute(brandId, influencerId);
   }
 
