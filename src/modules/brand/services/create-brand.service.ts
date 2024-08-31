@@ -4,6 +4,7 @@ import { BrandRepository } from '../repository/brand.repository';
 import { IBrandRepository } from '../interfaces/repository.interface';
 import { Brand } from '@prisma/client';
 import { CreateBrandDto } from '../dto/create-brand.dto';
+import { IBrand } from '../interfaces/brand.interface';
 
 @Injectable()
 export class CreateBrandService {
@@ -26,7 +27,7 @@ export class CreateBrandService {
     };
   }
 
-  async execute(data: CreateBrandDto) {
+  async execute(data: CreateBrandDto): Promise<IBrand> {
     try {
       const createdBrand = await this.brandRepository.createBrand(data);
 
