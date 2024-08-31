@@ -3,7 +3,10 @@ import { PrismaService } from '../../../prisma.service';
 import { AppError } from '../../../common/errors/Error';
 import { IInfluencerRepository } from '../interfaces/repository.interface';
 import { Influencer } from '@prisma/client';
-import { ICreateInfluencer } from '../interfaces/influencer.interface';
+import {
+  ICreateInfluencer,
+  IUpdateInfluencer,
+} from '../interfaces/influencer.interface';
 
 @Injectable()
 export class InfluencerRepository implements IInfluencerRepository<Influencer> {
@@ -109,6 +112,73 @@ export class InfluencerRepository implements IInfluencerRepository<Influencer> {
         'influencer-repository.findOneInfluencer',
         500,
         'could not get influencer details',
+      );
+    }
+  }
+
+  async updateInfluencer(
+    id: string,
+    data: IUpdateInfluencer,
+  ): Promise<Influencer> {
+    const influencerId = Number(Object.values(id));
+
+    try {
+      const influencerAddressId = await this.prisma.influencerAddress.findFirst(
+        { where: { influencer_id: influencerId }, select: { id: true } },
+      );
+
+      const updatedInfluencer = await this.prisma.influencer.update({
+        where: { id: influencerId },
+        data: {
+          ...(data.name && { name: data.name }),
+          ...(data.username && { username: data.username }),
+          ...(data.reach && { reach: data.reach }),
+          ...(data.photo && { photo: data.photo }),
+          ...(data.zipCode && {
+            InfluencerAddress: {
+              update: {
+                where: { id: influencerAddressId.id },
+                data: {
+                  street: data.street,
+                  number: data.number,
+                  city: data.city,
+                  state: data.state,
+                  zipCode: data.zipCode,
+                },
+              },
+            },
+          }),
+          ...(data.niches && {
+            Niche: {
+              deleteMany: {},
+              create: data.niches.map((niche) => ({
+                niche: {
+                  connectOrCreate: {
+                    where: { name: niche },
+                    create: { name: niche },
+                  },
+                },
+              })),
+            },
+          }),
+        },
+        include: {
+          InfluencerAddress: true,
+          Niche: {
+            include: {
+              niche: { select: { name: true } },
+            },
+          },
+        },
+      });
+
+      return updatedInfluencer;
+    } catch (error) {
+      console.log(error);
+      throw new AppError(
+        'influencer-repository.updateInfluencer',
+        500,
+        'could not update influencer details',
       );
     }
   }
