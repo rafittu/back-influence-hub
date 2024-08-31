@@ -11,21 +11,25 @@ import { AppError } from 'src/common/errors/Error';
 import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { CreateBrandService } from './services/create-brand.service';
+import { FindAllBrandsService } from './services/find-all-brands.service';
 import { IBrand } from './interfaces/brand.interface';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('brand')
 export class BrandController {
-  constructor(private readonly createBrand: CreateBrandService) {}
+  constructor(
+    private readonly createBrand: CreateBrandService,
+    private readonly findAllBrands: FindAllBrandsService,
+  ) {}
 
   @Post('/create')
   async create(@Body() body: CreateBrandDto): Promise<IBrand> {
     return await this.createBrand.execute(body);
   }
 
-  @Get()
-  findAll() {
-    return 'this.brandService.findAll()';
+  @Get('/')
+  async findAll() {
+    return await this.findAllBrands.execute();
   }
 
   @Get(':id')
