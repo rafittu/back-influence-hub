@@ -6,7 +6,7 @@ import { Influencer } from '@prisma/client';
 import { IInfluencer } from '../interfaces/influencer.interface';
 
 @Injectable()
-export class FindAllInfluencersServices {
+export class FindAllInfluencersService {
   constructor(
     @Inject(InfluencerRepository)
     private readonly influencerRepository: IInfluencerRepository<Influencer>,
