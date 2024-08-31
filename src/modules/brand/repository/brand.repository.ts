@@ -106,7 +106,7 @@ export class BrandRepository implements IBrandRepository<Brand> {
         where: { id: brandId },
         data: {
           ...(data.name && { name: data.name }),
-          ...(data.description && { username: data.description }),
+          ...(data.description && { description: data.description }),
           ...(data.niches && {
             BrandNiche: {
               deleteMany: {},
