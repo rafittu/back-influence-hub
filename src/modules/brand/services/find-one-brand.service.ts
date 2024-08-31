@@ -17,7 +17,7 @@ export class FindOneBrandService {
       id: data.id,
       name: data.name,
       description: data.description,
-      niches: data.Niche.map((nicheObj) => nicheObj.niche.name),
+      niches: data.BrandNiche.map((nicheObj) => nicheObj.niche.name),
       createdAt: data.created_at,
       updatedAt: data.updated_at,
     };
