@@ -7,6 +7,7 @@ import {
   UseFilters,
   Body,
   Param,
+  Query,
 } from '@nestjs/common';
 import { AppError } from 'src/common/errors/Error';
 import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
@@ -15,6 +16,7 @@ import { CreateBrandService } from './services/create-brand.service';
 import { FindAllBrandsService } from './services/find-all-brands.service';
 import { FindOneBrandService } from './services/find-one-brand.service';
 import { UpdateBrandService } from './services/update-brand.service';
+import { LinkInfluencerService } from './services/link-influencer.service';
 import { IBrand, IBrandDetails } from './interfaces/brand.interface';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 
@@ -26,11 +28,20 @@ export class BrandController {
     private readonly findAllBrands: FindAllBrandsService,
     private readonly findOneBrand: FindOneBrandService,
     private readonly updateBrand: UpdateBrandService,
+    private readonly linkInfluencer: LinkInfluencerService,
   ) {}
 
   @Post('/create')
   async create(@Body() body: CreateBrandDto): Promise<IBrand> {
     return await this.createBrand.execute(body);
+  }
+
+  @Post('/associate-influencer')
+  async associateInfluencer(
+    @Query('influencerId') influencerId: string,
+    @Query('brandId') brandId: string,
+  ) {
+    return await this.linkInfluencer.execute(brandId, influencerId);
   }
 
   @Get('/')
