@@ -14,7 +14,9 @@ import { CreateBrandDto } from './dto/create-brand.dto';
 import { CreateBrandService } from './services/create-brand.service';
 import { FindAllBrandsService } from './services/find-all-brands.service';
 import { FindOneBrandService } from './services/find-one-brand.service';
+import { UpdateBrandService } from './services/update-brand.service';
 import { IBrand, IBrandDetails } from './interfaces/brand.interface';
+import { UpdateBrandDto } from './dto/update-brand.dto';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('brand')
@@ -23,6 +25,7 @@ export class BrandController {
     private readonly createBrand: CreateBrandService,
     private readonly findAllBrands: FindAllBrandsService,
     private readonly findOneBrand: FindOneBrandService,
+    private readonly updateBrand: UpdateBrandService,
   ) {}
 
   @Post('/create')
@@ -40,9 +43,9 @@ export class BrandController {
     return await this.findOneBrand.execute(id);
   }
 
-  @Patch(':id')
-  update() {
-    return 'this.brandService.update(+id, updateBrandDto)';
+  @Patch('/:id')
+  async update(@Param('id') id: string, @Body() body: UpdateBrandDto) {
+    return await this.updateBrand.execute(id, body);
   }
 
   @Delete(':id')
