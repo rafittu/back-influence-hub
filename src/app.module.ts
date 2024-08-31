@@ -5,6 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import * as Joi from 'joi';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/infra/guards/jwt-auth.guard';
+import { InfluencerModule } from './modules/influencer/influencer.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtAuthGuard } from './modules/auth/infra/guards/jwt-auth.guard';
     }),
     AdminModule,
     AuthModule,
+    InfluencerModule,
   ],
 
   controllers: [],
