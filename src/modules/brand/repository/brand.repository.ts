@@ -69,4 +69,31 @@ export class BrandRepository implements IBrandRepository<Brand> {
       );
     }
   }
+
+  async findOneBrand(id: string): Promise<Brand> {
+    const brandId = Number(Object.values(id));
+
+    try {
+      const brand = await this.prisma.brand.findFirst({
+        where: { id: brandId },
+        include: {
+          BrandNiche: {
+            select: {
+              niche: {
+                select: { name: true },
+              },
+            },
+          },
+        },
+      });
+
+      return brand;
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.findOneBrand',
+        500,
+        'could not get brand details',
+      );
+    }
+  }
 }

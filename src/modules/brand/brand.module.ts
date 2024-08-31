@@ -4,6 +4,7 @@ import { PrismaService } from '../../prisma.service';
 import { CreateBrandService } from './services/create-brand.service';
 import { BrandRepository } from './repository/brand.repository';
 import { FindAllBrandsService } from './services/find-all-brands.service';
+import { FindOneBrandService } from './services/find-one-brand.service';
 
 @Module({
   controllers: [BrandController],
@@ -12,6 +13,7 @@ import { FindAllBrandsService } from './services/find-all-brands.service';
     BrandRepository,
     CreateBrandService,
     FindAllBrandsService,
+    FindOneBrandService,
   ],
 })
 export class BrandModule {}
