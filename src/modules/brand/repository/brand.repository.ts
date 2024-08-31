@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma.service';
 import { AppError } from '../../../common/errors/Error';
 import { IBrandRepository } from '../interfaces/repository.interface';
-import { Brand } from '@prisma/client';
+import { Brand, InfluencerBrand } from '@prisma/client';
 import { CreateBrandDto } from '../dto/create-brand.dto';
 import { IUpdateBrand } from '../interfaces/brand.interface';
 
@@ -136,6 +136,53 @@ export class BrandRepository implements IBrandRepository<Brand> {
         'brand-repository.updateBrand',
         500,
         'could not update brand details',
+      );
+    }
+  }
+
+  async associateInfluencer(
+    brandId: string,
+    influencerId: string,
+  ): Promise<InfluencerBrand> {
+    const brandIdInt = Number(Object.values(brandId));
+    const influencerIdInt = Number(Object.values(influencerId));
+
+    try {
+      const influencerBrand = await this.prisma.influencerBrand.create({
+        data: {
+          influencer: {
+            connect: { id: influencerIdInt },
+          },
+          brand: {
+            connect: { id: brandIdInt },
+          },
+        },
+        include: {
+          influencer: {
+            include: {
+              Niche: {
+                include: { niche: true },
+              },
+            },
+          },
+          brand: {
+            include: {
+              BrandNiche: {
+                include: {
+                  niche: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return influencerBrand;
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.associateInfluencer',
+        500,
+        'could not link brand with influencer',
       );
     }
   }
