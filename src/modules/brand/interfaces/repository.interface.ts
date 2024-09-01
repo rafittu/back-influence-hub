@@ -11,4 +11,5 @@ export interface IBrandRepository<Brand> {
     brandId: string,
     influencerId: string,
   ): Promise<InfluencerBrand>;
+  findInfluencersByBrand(brandname: string): Promise<InfluencerBrand[]>;
 }
