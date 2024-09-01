@@ -5,6 +5,7 @@ import { IInfluencerRepository } from '../interfaces/repository.interface';
 import { Influencer } from '@prisma/client';
 import {
   ICreateInfluencer,
+  IInfluencerFilters,
   IUpdateInfluencer,
 } from '../interfaces/influencer.interface';
 
@@ -82,6 +83,55 @@ export class InfluencerRepository implements IInfluencerRepository<Influencer> {
     } catch (error) {
       throw new AppError(
         'influencer-repository.findAllInfluencers',
+        500,
+        'could not get influencers',
+      );
+    }
+  }
+
+  async findInfluencerByFilter(
+    filter: IInfluencerFilters,
+  ): Promise<Influencer[]> {
+    const { reachMin, reachMax, niche, city } = filter;
+
+    try {
+      const influencers = await this.prisma.influencer.findMany({
+        where: {
+          AND: [
+            reachMin !== undefined ? { reach: { gte: Number(reachMin) } } : {},
+            reachMax !== undefined ? { reach: { lte: Number(reachMax) } } : {},
+            niche
+              ? {
+                  Niche: {
+                    some: {
+                      niche: { name: niche },
+                    },
+                  },
+                }
+              : {},
+            city
+              ? {
+                  InfluencerAddress: {
+                    some: { city },
+                  },
+                }
+              : {},
+          ],
+        },
+        include: {
+          InfluencerAddress: true,
+          Niche: {
+            include: {
+              niche: { select: { name: true } },
+            },
+          },
+        },
+      });
+
+      return influencers;
+    } catch (error) {
+      throw new AppError(
+        'influencer-repository.findInfluencersByFilter',
         500,
         'could not get influencers',
       );
