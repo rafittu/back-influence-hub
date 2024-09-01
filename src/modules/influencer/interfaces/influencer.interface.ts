@@ -51,3 +51,10 @@ export interface IUpdateInfluencer {
   street?: string;
   number?: string;
 }
+
+export interface IInfluencerFilters {
+  reachMin?: string;
+  reachMax?: string;
+  niche?: string;
+  city?: string;
+}

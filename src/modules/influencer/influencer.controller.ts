@@ -7,6 +7,7 @@ import {
   UseFilters,
   Body,
   Param,
+  Query,
 } from '@nestjs/common';
 import { AppError } from '../../common/errors/Error';
 import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
@@ -14,10 +15,12 @@ import { CreateInfluencerService } from './services/create-influencer.service';
 import { FindAllInfluencersService } from './services/find-all-influencers.service';
 import { FindOneInfluencerService } from './services/find-one-influencer.service';
 import { UpdateInfluencerService } from './services/update-influencer.service';
+import { InfluencersByFilterService } from './services/find-influencers-by-filter.service';
 import { CreateInfluencerDto } from './dto/create-influencer.dto';
 import {
   IInfluencer,
   IInfluencerDetails,
+  IInfluencerFilters,
 } from './interfaces/influencer.interface';
 import { UpdateInfluencerDto } from './dto/update-influencer.dto';
 
@@ -29,6 +32,7 @@ export class InfluencerController {
     private readonly findAllInfluencers: FindAllInfluencersService,
     private readonly findOneInfluencer: FindOneInfluencerService,
     private readonly updateInfluencer: UpdateInfluencerService,
+    private readonly influencersByFilter: InfluencersByFilterService,
   ) {}
 
   @Post('/create')
@@ -39,6 +43,13 @@ export class InfluencerController {
   @Get('/all')
   async findAll(): Promise<IInfluencer[]> {
     return await this.findAllInfluencers.execute();
+  }
+
+  @Get('/filter')
+  async findInfluencerByFilter(
+    @Query() filter: IInfluencerFilters,
+  ): Promise<IInfluencerDetails[]> {
+    return await this.influencersByFilter.execute(filter);
   }
 
   @Get('/:id')
