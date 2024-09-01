@@ -21,8 +21,10 @@ Este projeto utiliza as seguintes tecnologias:
 - **JWT** para autenticação e autorização de acesso;
 - **Bcrypt** e **Crypto** como ferramenta de criptografia;
 
+- **Helmet** para configuração segura dos cabeçalhos HTTP;
+- **CORS** para controle de acesso à API;
 - **Docker** como uma ferramenta de containerização;
-- **Jest** para execução dos testes unitários;
+- **Jest** para execução e automação dos testes unitários;
 
 <br>
 
@@ -46,6 +48,10 @@ Este projeto utiliza as seguintes tecnologias:
 <br>
 
 ### 🚧 Futuras implementações:
+- Ampliação de endpoints para gerenciar administradores, influenciadores e marcas;
+    - listar, atualizar e excluir administradores;
+    - desassociar influenciadores e marcas da plataforma;
+  
 - Endpoint para autenticação dos representantes de marcas;
     - representantes devem ser capazes de acessar o portfólio de influenciadores, além de atualizar informações cadastrais.
 - Refatoração do código;
