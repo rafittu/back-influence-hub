@@ -1,14 +1,120 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  @@map("admin_users")
+}
+
+model Influencer {
+  id       Int     @id @default(autoincrement())
+  name     String
+  username String  @unique
+  reach    Int
+  photo    String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  InfluencerAddress InfluencerAddress[]
+  Niche             InfluencerNiche[]
+  InfluencerBrand   InfluencerBrand[]
+
+  @@map("influencers")
+}
+
+model InfluencerAddress {
+  id            Int    @id @default(autoincrement())
+  influencer_id Int
+  street        String
+  number        String
+  city          String
+  state         String
+  zipCode       String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  influencer Influencer @relation(fields: [influencer_id], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+model InfluencerNiche {
+  influencerId Int
+  nicheId      Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  influencer Influencer @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+  niche      Niche      @relation(fields: [nicheId], references: [id], onDelete: Cascade)
+
+  @@unique([influencerId, nicheId])
+  @@map("influencer_niches")
+}
+
+model Brand {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  InfluencerBrand InfluencerBrand[]
+  BrandNiche      BrandNiche[]
+
+  @@map("brands")
+}
+
+model BrandNiche {
+  brandId Int
+  nicheId Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  niche Niche @relation(fields: [nicheId], references: [id], onDelete: Cascade)
+
+  @@unique([brandId, nicheId])
+  @@map("brand_niches")
+}
+
+model InfluencerBrand {
+  id            Int @id @default(autoincrement())
+  influencer_id Int
+  brand_id      Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  influencer Influencer @relation(fields: [influencer_id], references: [id], onDelete: Cascade)
+  brand      Brand      @relation(fields: [brand_id], references: [id], onDelete: Cascade)
+
+  @@unique([influencer_id, brand_id])
+}
+
+model Niche {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Influencers InfluencerNiche[]
+  Brands      BrandNiche[]
+
+  @@map("niches")
 }
