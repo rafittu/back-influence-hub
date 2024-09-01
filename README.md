@@ -124,6 +124,15 @@ $ npm run test
   }
   ```
   **O accessToken retornado na requisição de login deve ser utilizado no campo `Authorization` no formato `Bearer accessToken` dentro do cabeçalho Header para futuras operações na plataforma.**
+
+- **`GET /me`:** Extrair usuário do accessToken enviado no `Header` da requisição;
+  ```
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@doe.com"
+    }
+  ```
   
 <br>
 
