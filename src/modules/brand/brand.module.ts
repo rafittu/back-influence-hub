@@ -7,6 +7,7 @@ import { FindAllBrandsService } from './services/find-all-brands.service';
 import { FindOneBrandService } from './services/find-one-brand.service';
 import { UpdateBrandService } from './services/update-brand.service';
 import { LinkInfluencerService } from './services/link-influencer.service';
+import { FindInfluencersByBrandService } from './services/influencers-by-brand.service';
 
 @Module({
   controllers: [BrandController],
@@ -18,6 +19,7 @@ import { LinkInfluencerService } from './services/link-influencer.service';
     FindOneBrandService,
     UpdateBrandService,
     LinkInfluencerService,
+    FindInfluencersByBrandService,
   ],
 })
 export class BrandModule {}

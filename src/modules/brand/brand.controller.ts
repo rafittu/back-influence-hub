@@ -14,6 +14,7 @@ import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { CreateBrandService } from './services/create-brand.service';
 import { FindAllBrandsService } from './services/find-all-brands.service';
+import { FindInfluencersByBrandService } from './services/influencers-by-brand.service';
 import { FindOneBrandService } from './services/find-one-brand.service';
 import { UpdateBrandService } from './services/update-brand.service';
 import { LinkInfluencerService } from './services/link-influencer.service';
@@ -33,6 +34,7 @@ export class BrandController {
     private readonly findOneBrand: FindOneBrandService,
     private readonly updateBrand: UpdateBrandService,
     private readonly linkInfluencer: LinkInfluencerService,
+    private readonly influencersByBrand: FindInfluencersByBrandService,
   ) {}
 
   @Post('/create')
@@ -53,8 +55,15 @@ export class BrandController {
     return await this.findAllBrands.execute();
   }
 
+  @Get('/influencers/by-brand')
+  async findInfluencersByBrand(
+    @Query('brand') brandName: string,
+  ): Promise<IBrandInfluencer[]> {
+    return await this.influencersByBrand.execute(brandName);
+  }
+
   @Get('/:id')
-  async findOne(@Param() id: string): Promise<IBrandDetails> {
+  async findOne(@Param('id') id: string): Promise<IBrandDetails> {
     return await this.findOneBrand.execute(id);
   }
 

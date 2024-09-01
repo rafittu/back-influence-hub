@@ -71,6 +71,42 @@ export class BrandRepository implements IBrandRepository<Brand> {
     }
   }
 
+  async findInfluencersByBrand(brandName: string): Promise<InfluencerBrand[]> {
+    try {
+      const brandInfluencers = await this.prisma.influencerBrand.findMany({
+        where: {
+          brand: {
+            name: brandName,
+          },
+        },
+        include: {
+          influencer: {
+            include: {
+              Niche: {
+                include: { niche: true },
+              },
+            },
+          },
+          brand: {
+            include: {
+              BrandNiche: {
+                include: { niche: true },
+              },
+            },
+          },
+        },
+      });
+
+      return brandInfluencers;
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.findInfluencersByBrand',
+        500,
+        'could not get influencers',
+      );
+    }
+  }
+
   async findOneBrand(id: string): Promise<Brand> {
     const brandId = Number(Object.values(id));
 
