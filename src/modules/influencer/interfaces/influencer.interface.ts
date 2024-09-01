@@ -53,8 +53,8 @@ export interface IUpdateInfluencer {
 }
 
 export interface IInfluencerFilters {
-  reachMin?: number;
-  reachMax?: number;
+  reachMin?: string;
+  reachMax?: string;
   niche?: string;
   city?: string;
 }
