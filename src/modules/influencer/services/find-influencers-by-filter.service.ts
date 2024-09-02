@@ -20,6 +20,7 @@ export class InfluencersByFilterService {
       id: influencer.id,
       name: influencer.name,
       username: influencer.username,
+      email: influencer.email,
       reach: influencer.reach,
       photo: influencer.photo,
       niches: influencer.Niche.map((nicheObj) => nicheObj.niche.name),

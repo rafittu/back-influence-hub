@@ -17,6 +17,7 @@ export class FindOneInfluencerService {
       id: data.id,
       name: data.name,
       username: data.username,
+      email: data.email,
       reach: data.reach,
       photo: data.photo,
       niches: data.Niche.map((nicheObj) => nicheObj.niche.name),
