@@ -23,6 +23,7 @@ model Influencer {
   id       Int     @id @default(autoincrement())
   name     String
   username String  @unique
+  email    String  @unique
   reach    Int
   photo    String?
 
