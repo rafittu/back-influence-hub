@@ -17,6 +17,7 @@ export class InfluencerRepository implements IInfluencerRepository<Influencer> {
     const influencerData = {
       name: data.name,
       username: data.username,
+      email: data.email,
       reach: data.reach,
       photo: data.photo,
     };
@@ -182,6 +183,7 @@ export class InfluencerRepository implements IInfluencerRepository<Influencer> {
         data: {
           ...(data.name && { name: data.name }),
           ...(data.username && { username: data.username }),
+          ...(data.email && { email: data.email }),
           ...(data.reach && { reach: data.reach }),
           ...(data.photo && { photo: data.photo }),
           ...(data.zipCode && {
