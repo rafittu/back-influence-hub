@@ -1,6 +1,7 @@
 export interface ICreateInfluencer {
   name: string;
   username: string;
+  email: string;
   reach: number;
   photo?: string;
   niches: string[];
@@ -15,6 +16,7 @@ export interface IInfluencer {
   id: number;
   name: string;
   username: string;
+  email: string;
   reach: number;
   photo?: string;
   createdAt: Date;
@@ -25,6 +27,7 @@ export interface IInfluencerDetails {
   id: number;
   name: string;
   username: string;
+  email: string;
   reach: number;
   photo?: string;
   niches: string[];
@@ -42,6 +45,7 @@ export interface IInfluencerDetails {
 export interface IUpdateInfluencer {
   name?: string;
   username?: string;
+  email?: string;
   reach?: number;
   photo?: string;
   niches?: string[];

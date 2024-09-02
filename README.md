@@ -143,6 +143,7 @@ $ npm run test
   {
     "name": "Juju do Pix",
     "username": "jupix",
+    "email": "judopix@bc.com",
     "niches": ["Artes", "Beleza & Maquiagem"],
     "reach": 150900,
     "photo": "http://example.com/photo.bucket.aws.com",

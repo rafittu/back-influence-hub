@@ -1,6 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateInfluencerDto } from './create-influencer.dto';
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 import { Niche } from '../enums/niche.enum';
 
 export class UpdateInfluencerDto extends PartialType(CreateInfluencerDto) {
@@ -11,6 +17,16 @@ export class UpdateInfluencerDto extends PartialType(CreateInfluencerDto) {
   @IsOptional()
   @IsString()
   username: string;
+
+  @IsOptional()
+  @IsString()
+  @Matches(
+    /[a-z0-9!#$%&’*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&’*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+    {
+      message: 'must be a valid email',
+    },
+  )
+  email: string;
 
   @IsOptional()
   reach: number;

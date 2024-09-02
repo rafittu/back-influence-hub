@@ -4,6 +4,8 @@ import {
   ArrayNotEmpty,
   IsNotEmpty,
   IsString,
+  IsEmail,
+  Matches,
 } from 'class-validator';
 import { Niche } from '../enums/niche.enum';
 
@@ -15,6 +17,17 @@ export class CreateInfluencerDto {
   @IsNotEmpty()
   @IsString()
   username: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  @Matches(
+    /[a-z0-9!#$%&’*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&’*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+    {
+      message: 'must be a valid email',
+    },
+  )
+  email: string;
 
   @IsNotEmpty()
   reach: number;
