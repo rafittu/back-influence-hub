@@ -34,6 +34,7 @@ export class LinkInfluencerService {
         id: influencerBrand.influencer.id,
         name: influencerBrand.influencer.name,
         username: influencerBrand.influencer.username,
+        photo: influencerBrand.influencer.photo,
         reach: influencerBrand.influencer.reach,
       },
       brand: {
