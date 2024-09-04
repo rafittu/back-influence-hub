@@ -258,6 +258,185 @@
                     }
                 }
             }
+        },
+
+        "/influencer/create": {
+            "post": {
+                "summary": "Create influencer user",
+                "description": "Route to register new influencer.",
+                "tags": ["Influencer"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {                    
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateInfluencer"
+                            },
+                            "example": {
+                                "name": "Ygona Moura",
+                                "username": "ygona.moura",
+                                "email": "ygona@email.com",
+                                "niches": ["Artes", "Beleza & Maquiagem"],
+                                "reach": 125000,
+                                "photo": "https://example.photo.aws.com",
+                                "zipCode": "12345678",
+                                "street": "Ipê",
+                                "number": "45"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Influencer created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/InfluencerInterface"
+                                },
+                                "example": {
+                                "id": "1",
+                                "name": "Ygona Moura",
+                                "username": "ygona.moura",
+                                "email": "ygona@email.com",
+                                "niches": ["Artes", "Beleza & Maquiagem"],
+                                "reach": "125000",
+                                "photo": "https://example.photo.aws.com",
+                                "address": {
+                                    "street": "Ipê",
+                                    "number": "45",
+                                    "zipCode": "12345678",
+                                    "city": "Belo Horizonte",
+                                    "state": "MG"
+                                },
+                                "createdAt": "2024-09-05T03:29:37.743Z",
+                                "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "invalid field",
+                                        "value": {
+                                            "error": {
+                                                "message": "One or more fields are missing or invalid",
+                                                "code": "bad.request",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "invalid zipCode format",
+                                        "value": {
+                                            "error": {
+                                                "message": "invalid zipcode format",
+                                                "code": "influencer-service.createInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example3": {
+                                        "summary": "error fetching address",
+                                        "value": {
+                                            "error": {
+                                                "message": "error fetching address from ViaCEP",
+                                                "code": "create-influencer.getAddress",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "field already in use by another user",
+                                        "value": {
+                                            "error": {
+                                                "message": "['email', 'username'] already taken",
+                                                "code": "influencer-repository.createInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to create influencer",
+                                            "code": "influencer-service.createInfluencer",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "influencer not created",
+                                                "code": "influencer-repository.createInfluencer",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
         }
     },
 
@@ -300,7 +479,7 @@
                     "id": {
                         "type": "string",
                         "description": "User ID"
-                      },
+                    },
                     "name": {
                         "type": "string",
                         "description": "Admin full name"
@@ -356,6 +535,128 @@
                     "email": {
                         "type": "string",
                         "description": "Email address of the user"
+                    }
+                }
+            },
+
+            "CreateInfluencer": {
+                "type": "object",
+                "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 370,
+                    "description": "Influencer full name"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "Influencer instagram username"
+                },
+                "email": {
+                    "type": "string",
+                    "maxLength": 250,
+                    "description": "Admin e-mail address"
+                },
+                "niches": {
+                    "type": "array",
+                    "description": "Influencer categories"                
+                },
+                "reach": {
+                    "type": "number",
+                    "description": "Influencer instagram followers"
+                },
+                "photo": {
+                    "type": "string",
+                    "description": "Influencer url photo from aws"
+                },
+                "zipCode": {
+                    "type": "string",
+                    "maxLength": 8,
+                    "description": "Influencer zipcode address"
+                },
+                "street": {
+                    "type": "string",
+                    "description": "Influencer street address"
+                },
+                "number": {
+                    "type": "string",
+                    "description": "Influencer home address number"
+                }
+                },
+                "required": [
+                    "name",
+                    "username",
+                    "email",
+                    "niches",
+                    "reach",
+                    "zipCode",
+                    "street",
+                    "number"
+                ]
+            },
+            "InfluencerInterface": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "User ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Influencer full name"
+                    },
+                    "username": {
+                        "type": "string",
+                        "description": "Influencer instagram username"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Admin e-mail address"
+                    },
+                    "niches": {
+                        "type": "array",
+                        "description": "Influencer categories"                
+                    },
+                    "reach": {
+                        "type": "number",
+                        "description": "Influencer instagram followers"
+                    },
+                    "photo": {
+                        "type": "string",
+                        "description": "Influencer url photo from aws"
+                    },
+                    "address": {
+                        "type": "array",
+                        "properties": {
+                            "street": {
+                                "type": "string",
+                                "description": "Influencer street address"
+                            },
+                            "number": {
+                                "type": "string",
+                                "description": "Influencer home address number"
+                            },
+                            "zipCode": {
+                                "type": "string",
+                                "maxLength": 8,
+                                "description": "Influencer zipCode address"
+                            },
+                            "city": {
+                                "type": "string",
+                                "description": "Influencer city address"
+                            },
+                            "state": {
+                                "type": "string",
+                                "description": "Influencer state address"
+                            }
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "description": "Date and time of influencer creation"
+                    },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "Date and time of last influencer update"
                     }
                 }
             },
