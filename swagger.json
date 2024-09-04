@@ -437,6 +437,106 @@
                     }
                 }
             }
+        },
+        "/influencer/all": {
+            "get": {
+                "summary": "Get all influencers",
+                "description": "Route to find all influencers",
+                "tags": ["Influencer"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "Bearer {accesToken}",
+                    "schema": {
+                        "type": "string"
+                    }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Influencers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InfluencersArray"
+                                },
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "name": "Ygona Moura",
+                                        "username": "ygona.moura",
+                                        "email": "ygona@email.com",
+                                        "reach": 125000,
+                                        "photo": "https://example.photo.aws.com",
+                                        "createdAt": "2024-09-05T03:29:37.743Z",
+                                        "updatedAt": "2024-09-05T03:29:37.743Z"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to get influencers",
+                                                "code": "influencer-service.findAllInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not get influencers",
+                                                "code": "influencer-repository.findAllInfluencers",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    } 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
 
@@ -658,6 +758,49 @@
                         "type": "string",
                         "description": "Date and time of last influencer update"
                     }
+                }
+            },
+            "Influencer": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "User ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Influencer full name"
+                    },
+                    "username": {
+                        "type": "string",
+                        "description": "Influencer instagram username"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Admin e-mail address"
+                    },
+                    "reach": {
+                        "type": "number",
+                        "description": "Influencer instagram followers"
+                    },
+                    "photo": {
+                        "type": "string",
+                        "description": "Influencer url photo from aws"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "description": "Date and time of influencer creation"
+                    },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "Date and time of last influencer update"
+                    }
+                }
+            },
+            "InfluencersArray": {
+                "type": "array",
+                "properties": {
+                    "$ref": "#/components/schemas/Influencer"
                 }
             },
 
