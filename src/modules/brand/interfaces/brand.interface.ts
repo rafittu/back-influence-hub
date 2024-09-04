@@ -31,6 +31,7 @@ export interface IBrandInfluencer {
     id: number;
     name: string;
     username: string;
+    photo: string;
     reach: number;
   };
   brand: {
