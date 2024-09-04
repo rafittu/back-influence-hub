@@ -127,6 +127,79 @@
                     }
                 }
             }
+        },
+
+        "/signin": {
+            "post": {
+                "summary": "User login",
+                "description": "Authenticate a user with the provided credentials",
+                "tags": ["Authentication"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                            "$ref": "#/components/schemas/UserCredentials"
+                            },
+                            "example": {
+                            "email": "johndoe@email.com",
+                            "password": "StrongP@assw0rd2024"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User authenticated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserToken"
+                                },
+                                "example": {
+                                    "accessToken": "eyJhbGciOiJ.eyJzdW5MDIyfQ.SflKxwk6yJV_adQssw5c"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                    "message": "email or password is invalid",
+                                    "code": "local-auth.guards",
+                                    "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Internal Server Error",
+                                        "code": "internal.server.error",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
 
@@ -163,7 +236,6 @@
                     "passwordConfirmation"
                 ]
             },
-
             "AdminInterface": {
                 "type": "object",
                 "properties": {
@@ -189,6 +261,29 @@
                     }
                 }
             },
+
+            "UserCredentials": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "Email address of the user"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Password of the user"
+                    }
+                }
+            },
+            "UserToken": {
+                "type": "object",
+                "properties": {
+                  "accessToken": {
+                    "type": "string",
+                    "description": "Access token used for authentication in subsequent API calls. This token should be included in the 'Authorization' header as a 'Bearer accessToken'"
+                  }
+                }
+              },
 
             "Error": {
                 "type": "object",
