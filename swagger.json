@@ -200,6 +200,64 @@
                     }
                 }
             }
+        },
+        "/me": {
+            "get": {
+                "summary": "Get me",
+                "description": "Route to get user by access token",
+                "tags": ["Authentication"],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accessToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User payload",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserPayload"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "John Doe",
+                                    "email": "johndoe@email.com"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
 
@@ -283,7 +341,24 @@
                     "description": "Access token used for authentication in subsequent API calls. This token should be included in the 'Authorization' header as a 'Bearer accessToken'"
                   }
                 }
-              },
+            },
+            "UserPayload": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "User ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "User full name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email address of the user"
+                    }
+                }
+            },
 
             "Error": {
                 "type": "object",
@@ -310,6 +385,14 @@
                         "properties": {}
                     }
                 }
+            }
+        },
+
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     }
