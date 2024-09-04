@@ -1,0 +1,221 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Influence Hub Backend API Documentation",
+      "description": "Back-end API instrunctions to Influence Hub application",
+      "contact": {
+        "name": "Rafael Ribeiro",
+        "email": "rafittu@outlook.com"
+      },
+      "version": "1.0.0"
+    },
+
+    "paths": {
+        "/admin/signup": {
+            "post": {
+                "summary": "Create admin user",
+                "description": "Route to register new admin users.",
+                "tags": ["Admin"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {                    
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAdmin"
+                            },
+                            "example": {
+                                "name": "John Doe",
+                                "email": "johndoe@email.com",
+                                "password": "StrongP@assw0rd2024",
+                                "passwordConfirmation": "StrongP@assw0rd2024"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Admin user created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/AdminInterface"
+                                },
+                                "example": {
+                                "id": "1",
+                                "name": "John Doe",
+                                "email": "johndoe@email.com",
+                                "createdAt": "2024-09-04T03:29:37.743Z",
+                                "updatedAt": "2024-09-04T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                            "$ref": "#/components/schemas/Error"
+                            },
+                            "example": {
+                            "error": {
+                                "message": ["One or more fields are missing or invalid"],
+                                "code": "bad.request",
+                                "status": true
+                            },
+                            "data": {}
+                            }
+                        }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "field already in use by another user",
+                                        "value": {
+                                            "error": {
+                                                "message": "['email'] already in use",
+                                                "code": "admin-repository.createAdmin",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to create admin user",
+                                            "code": "admin-service.createAdmin",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "user not created",
+                                                "code": "admin-repository.createAdmin",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        }
+    },
+
+    "components": {
+        "schemas": {
+            "CreateAdmin": {
+                "type": "object",
+                "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 370,
+                    "description": "Admin full name"
+                },
+                "email": {
+                    "type": "string",
+                    "maxLength": 250,
+                    "description": "Admin e-mail address"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": "7",
+                    "pattern": "at least one uppercase letter, one lowercase letter and one number or symbol",
+                    "description": "Admin password"
+                },
+                "passwordConfirmation": {
+                    "type": "string",
+                    "description": "Password confirmation"
+                }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "passwordConfirmation"
+                ]
+            },
+
+            "AdminInterface": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "User ID"
+                      },
+                    "name": {
+                        "type": "string",
+                        "description": "Admin full name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Admin e-mail address"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "description": "Date and time of user creation"
+                    },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "Date and time of last user update"
+                    }
+                }
+            },
+
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "message": {
+                                "type": "string",
+                                "description": "Error message"
+                            },
+                            "code": {
+                                "type": "string",
+                                "description": "Error code"
+                            },
+                            "status": {
+                                "type": "boolean",
+                                "description": "Error status"
+                            }
+                        }
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {}
+                    }
+                }
+            }
+        }
+    }
+}
