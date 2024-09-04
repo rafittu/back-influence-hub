@@ -265,6 +265,22 @@
                 "summary": "Create influencer user",
                 "description": "Route to register new influencer.",
                 "tags": ["Influencer"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "Bearer {accesToken}",
+                    "schema": {
+                        "type": "string"
+                    }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {                    
