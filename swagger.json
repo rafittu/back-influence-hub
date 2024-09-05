@@ -1,0 +1,1005 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Influence Hub Backend API Documentation",
+      "description": "Back-end API instrunctions to Influence Hub application",
+      "contact": {
+        "name": "Rafael Ribeiro",
+        "email": "rafittu@outlook.com"
+      },
+      "version": "1.0.0"
+    },
+
+    "paths": {
+        "/admin/signup": {
+            "post": {
+                "summary": "Create admin user",
+                "description": "Route to register new admin users.",
+                "tags": ["Admin"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {                    
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAdmin"
+                            },
+                            "example": {
+                                "name": "John Doe",
+                                "email": "johndoe@email.com",
+                                "password": "StrongP@assw0rd2024",
+                                "passwordConfirmation": "StrongP@assw0rd2024"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Admin user created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/AdminInterface"
+                                },
+                                "example": {
+                                "id": "1",
+                                "name": "John Doe",
+                                "email": "johndoe@email.com",
+                                "createdAt": "2024-09-04T03:29:37.743Z",
+                                "updatedAt": "2024-09-04T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                            "$ref": "#/components/schemas/Error"
+                            },
+                            "example": {
+                            "error": {
+                                "message": ["One or more fields are missing or invalid"],
+                                "code": "bad.request",
+                                "status": true
+                            },
+                            "data": {}
+                            }
+                        }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "field already in use by another user",
+                                        "value": {
+                                            "error": {
+                                                "message": "['email'] already in use",
+                                                "code": "admin-repository.createAdmin",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to create admin user",
+                                            "code": "admin-service.createAdmin",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "user not created",
+                                                "code": "admin-repository.createAdmin",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
+
+        "/signin": {
+            "post": {
+                "summary": "User login",
+                "description": "Authenticate a user with the provided credentials",
+                "tags": ["Authentication"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                            "$ref": "#/components/schemas/UserCredentials"
+                            },
+                            "example": {
+                            "email": "johndoe@email.com",
+                            "password": "StrongP@assw0rd2024"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User authenticated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserToken"
+                                },
+                                "example": {
+                                    "accessToken": "eyJhbGciOiJ.eyJzdW5MDIyfQ.SflKxwk6yJV_adQssw5c"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                    "message": "email or password is invalid",
+                                    "code": "local-auth.guards",
+                                    "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Internal Server Error",
+                                        "code": "internal.server.error",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/me": {
+            "get": {
+                "summary": "Get me",
+                "description": "Route to get user by access token",
+                "tags": ["Authentication"],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accessToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User payload",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserPayload"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "John Doe",
+                                    "email": "johndoe@email.com"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/influencer/create": {
+            "post": {
+                "summary": "Create influencer user",
+                "description": "Route to register new influencer.",
+                "tags": ["Influencer"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "Bearer {accesToken}",
+                    "schema": {
+                        "type": "string"
+                    }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {                    
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateInfluencer"
+                            },
+                            "example": {
+                                "name": "Ygona Moura",
+                                "username": "ygona.moura",
+                                "email": "ygona@email.com",
+                                "niches": ["Artes", "Beleza & Maquiagem"],
+                                "reach": 125000,
+                                "photo": "https://example.photo.aws.com",
+                                "zipCode": "12345678",
+                                "street": "Ipê",
+                                "number": "45"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Influencer created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/InfluencerInterface"
+                                },
+                                "example": {
+                                "id": "1",
+                                "name": "Ygona Moura",
+                                "username": "ygona.moura",
+                                "email": "ygona@email.com",
+                                "niches": ["Artes", "Beleza & Maquiagem"],
+                                "reach": "125000",
+                                "photo": "https://example.photo.aws.com",
+                                "address": {
+                                    "street": "Ipê",
+                                    "number": "45",
+                                    "zipCode": "12345678",
+                                    "city": "Belo Horizonte",
+                                    "state": "MG"
+                                },
+                                "createdAt": "2024-09-05T03:29:37.743Z",
+                                "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "invalid field",
+                                        "value": {
+                                            "error": {
+                                                "message": "One or more fields are missing or invalid",
+                                                "code": "bad.request",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "invalid zipCode format",
+                                        "value": {
+                                            "error": {
+                                                "message": "invalid zipcode format",
+                                                "code": "influencer-service.createInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example3": {
+                                        "summary": "error fetching address",
+                                        "value": {
+                                            "error": {
+                                                "message": "error fetching address from ViaCEP",
+                                                "code": "create-influencer.getAddress",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "field already in use by another user",
+                                        "value": {
+                                            "error": {
+                                                "message": "['email', 'username'] already taken",
+                                                "code": "influencer-repository.createInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to create influencer",
+                                            "code": "influencer-service.createInfluencer",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "influencer not created",
+                                                "code": "influencer-repository.createInfluencer",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
+        "/influencer/all": {
+            "get": {
+                "summary": "Get all influencers",
+                "description": "Route to find all influencers",
+                "tags": ["Influencer"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "Bearer {accesToken}",
+                    "schema": {
+                        "type": "string"
+                    }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Influencers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InfluencersArray"
+                                },
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "name": "Ygona Moura",
+                                        "username": "ygona.moura",
+                                        "email": "ygona@email.com",
+                                        "reach": 125000,
+                                        "photo": "https://example.photo.aws.com",
+                                        "createdAt": "2024-09-05T03:29:37.743Z",
+                                        "updatedAt": "2024-09-05T03:29:37.743Z"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to get influencers",
+                                                "code": "influencer-service.findAllInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not get influencers",
+                                                "code": "influencer-repository.findAllInfluencers",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    } 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/influencer/filter": {
+            "get": {
+                "summary": "Get influencers by filter",
+                "description": "Route to find influencers by filter",
+                "tags": ["Influencer"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "reachMin",
+                        "in": "query",
+                        "description": "minimum reach",
+                        "schema": {
+                          "type": "string"
+                        }
+                    },
+                    {
+                        "name": "reachMax",
+                        "in": "query",
+                        "description": "maximun reach",
+                        "schema": {
+                          "type": "string"
+                        }
+                    },
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "description": "influencer city",
+                        "schema": {
+                          "type": "string"
+                        }
+                    },
+                      {
+                        "name": "niche",
+                        "in": "query",
+                        "description": "influencer category",
+                        "schema": {
+                          "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Influencers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InfluencerInterfaceArray"
+                                },
+                                "example": [
+                                    {
+                                        "id": "1",
+                                        "name": "Ygona Moura",
+                                        "username": "ygona.moura",
+                                        "email": "ygona@email.com",
+                                        "niches": ["Artes", "Beleza & Maquiagem"],
+                                        "reach": "125000",
+                                        "photo": "https://example.photo.aws.com",
+                                        "address": {
+                                            "street": "Ipê",
+                                            "number": "45",
+                                            "zipCode": "12345678",
+                                            "city": "Belo Horizonte",
+                                            "state": "MG"
+                                        },
+                                        "createdAt": "2024-09-05T03:29:37.743Z",
+                                        "updatedAt": "2024-09-05T03:29:37.743Z"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to get influencers",
+                                                "code": "influencer-service.findInfluencersByFilter",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not get influencers",
+                                                "code": "influencer-repository.findInfluencersByFilter",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    } 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    "components": {
+        "schemas": {
+            "CreateAdmin": {
+                "type": "object",
+                "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 370,
+                    "description": "Admin full name"
+                },
+                "email": {
+                    "type": "string",
+                    "maxLength": 250,
+                    "description": "Admin e-mail address"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": "7",
+                    "pattern": "at least one uppercase letter, one lowercase letter and one number or symbol",
+                    "description": "Admin password"
+                },
+                "passwordConfirmation": {
+                    "type": "string",
+                    "description": "Password confirmation"
+                }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "passwordConfirmation"
+                ]
+            },
+            "AdminInterface": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "User ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Admin full name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Admin e-mail address"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "description": "Date and time of user creation"
+                    },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "Date and time of last user update"
+                    }
+                }
+            },
+
+            "UserCredentials": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "Email address of the user"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Password of the user"
+                    }
+                }
+            },
+            "UserToken": {
+                "type": "object",
+                "properties": {
+                  "accessToken": {
+                    "type": "string",
+                    "description": "Access token used for authentication in subsequent API calls. This token should be included in the 'Authorization' header as a 'Bearer accessToken'"
+                  }
+                }
+            },
+            "UserPayload": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "User ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "User full name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email address of the user"
+                    }
+                }
+            },
+
+            "CreateInfluencer": {
+                "type": "object",
+                "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 370,
+                    "description": "Influencer full name"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "Influencer instagram username"
+                },
+                "email": {
+                    "type": "string",
+                    "maxLength": 250,
+                    "description": "Admin e-mail address"
+                },
+                "niches": {
+                    "type": "array",
+                    "description": "Influencer categories"                
+                },
+                "reach": {
+                    "type": "number",
+                    "description": "Influencer instagram followers"
+                },
+                "photo": {
+                    "type": "string",
+                    "description": "Influencer url photo from aws"
+                },
+                "zipCode": {
+                    "type": "string",
+                    "maxLength": 8,
+                    "description": "Influencer zipcode address"
+                },
+                "street": {
+                    "type": "string",
+                    "description": "Influencer street address"
+                },
+                "number": {
+                    "type": "string",
+                    "description": "Influencer home address number"
+                }
+                },
+                "required": [
+                    "name",
+                    "username",
+                    "email",
+                    "niches",
+                    "reach",
+                    "zipCode",
+                    "street",
+                    "number"
+                ]
+            },
+            "InfluencerInterface": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "User ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Influencer full name"
+                    },
+                    "username": {
+                        "type": "string",
+                        "description": "Influencer instagram username"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Admin e-mail address"
+                    },
+                    "niches": {
+                        "type": "array",
+                        "description": "Influencer categories"                
+                    },
+                    "reach": {
+                        "type": "number",
+                        "description": "Influencer instagram followers"
+                    },
+                    "photo": {
+                        "type": "string",
+                        "description": "Influencer url photo from aws"
+                    },
+                    "address": {
+                        "type": "array",
+                        "properties": {
+                            "street": {
+                                "type": "string",
+                                "description": "Influencer street address"
+                            },
+                            "number": {
+                                "type": "string",
+                                "description": "Influencer home address number"
+                            },
+                            "zipCode": {
+                                "type": "string",
+                                "maxLength": 8,
+                                "description": "Influencer zipCode address"
+                            },
+                            "city": {
+                                "type": "string",
+                                "description": "Influencer city address"
+                            },
+                            "state": {
+                                "type": "string",
+                                "description": "Influencer state address"
+                            }
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "description": "Date and time of influencer creation"
+                    },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "Date and time of last influencer update"
+                    }
+                }
+            },
+            "InfluencerInterfaceArray": {
+                "type": "array",
+                "Properties": {
+                    "$ref": "#/components/schemas/InfluencerInterface"
+                }
+            },
+            "Influencer": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "User ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Influencer full name"
+                    },
+                    "username": {
+                        "type": "string",
+                        "description": "Influencer instagram username"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Admin e-mail address"
+                    },
+                    "reach": {
+                        "type": "number",
+                        "description": "Influencer instagram followers"
+                    },
+                    "photo": {
+                        "type": "string",
+                        "description": "Influencer url photo from aws"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "description": "Date and time of influencer creation"
+                    },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "Date and time of last influencer update"
+                    }
+                }
+            },
+            "InfluencersArray": {
+                "type": "array",
+                "properties": {
+                    "$ref": "#/components/schemas/Influencer"
+                }
+            },
+
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "message": {
+                                "type": "string",
+                                "description": "Error message"
+                            },
+                            "code": {
+                                "type": "string",
+                                "description": "Error code"
+                            },
+                            "status": {
+                                "type": "boolean",
+                                "description": "Error status"
+                            }
+                        }
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {}
+                    }
+                }
+            }
+        },
+
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
