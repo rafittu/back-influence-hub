@@ -553,6 +553,146 @@
                     }
                 }
             }
+        },
+        "/influencer/filter": {
+            "get": {
+                "summary": "Get influencers by filter",
+                "description": "Route to find influencers by filter",
+                "tags": ["Influencer"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "reachMin",
+                        "in": "query",
+                        "description": "minimum reach",
+                        "schema": {
+                          "type": "string"
+                        }
+                    },
+                    {
+                        "name": "reachMax",
+                        "in": "query",
+                        "description": "maximun reach",
+                        "schema": {
+                          "type": "string"
+                        }
+                    },
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "description": "influencer city",
+                        "schema": {
+                          "type": "string"
+                        }
+                    },
+                      {
+                        "name": "niche",
+                        "in": "query",
+                        "description": "influencer category",
+                        "schema": {
+                          "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Influencers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InfluencerInterfaceArray"
+                                },
+                                "example": [
+                                    {
+                                        "id": "1",
+                                        "name": "Ygona Moura",
+                                        "username": "ygona.moura",
+                                        "email": "ygona@email.com",
+                                        "niches": ["Artes", "Beleza & Maquiagem"],
+                                        "reach": "125000",
+                                        "photo": "https://example.photo.aws.com",
+                                        "address": {
+                                            "street": "Ipê",
+                                            "number": "45",
+                                            "zipCode": "12345678",
+                                            "city": "Belo Horizonte",
+                                            "state": "MG"
+                                        },
+                                        "createdAt": "2024-09-05T03:29:37.743Z",
+                                        "updatedAt": "2024-09-05T03:29:37.743Z"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to get influencers",
+                                                "code": "influencer-service.findInfluencersByFilter",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not get influencers",
+                                                "code": "influencer-repository.findInfluencersByFilter",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    } 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
 
@@ -774,6 +914,12 @@
                         "type": "string",
                         "description": "Date and time of last influencer update"
                     }
+                }
+            },
+            "InfluencerInterfaceArray": {
+                "type": "array",
+                "Properties": {
+                    "$ref": "#/components/schemas/InfluencerInterface"
                 }
             },
             "Influencer": {
