@@ -32,10 +32,6 @@ export class UpdateInfluencerDto extends PartialType(CreateInfluencerDto) {
   reach: number;
 
   @IsOptional()
-  @IsString()
-  photo?: string;
-
-  @IsOptional()
   @IsArray()
   @IsEnum(Niche, {
     each: true,
