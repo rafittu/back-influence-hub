@@ -34,4 +34,18 @@ export class S3BucketService {
       throw new AppError('aws-s3-bucket.uploadImage', 500, error.message);
     }
   }
+
+  async deleteImage(fileUrl: string): Promise<null> {
+    const params = {
+      Bucket: this.bucketName,
+      Key: fileUrl,
+    };
+
+    try {
+      await this.s3.deleteObject(params).promise();
+      return null;
+    } catch (error) {
+      throw new AppError('aws-s3-bucket.deleteImage', 500, error.message);
+    }
+  }
 }
