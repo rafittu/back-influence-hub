@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
+import { AppError } from '../errors/Error';
 
 @Injectable()
 export class S3BucketService {
@@ -15,7 +16,7 @@ export class S3BucketService {
     this.s3 = new AWS.S3();
   }
 
-  async uploadImage(file: Express.Multer.File): Promise<string | null> {
+  async uploadImage(file: Express.Multer.File): Promise<string> {
     const fileKey = `${Date.now()}_${file.originalname}`;
 
     const uploadParams = {
@@ -30,7 +31,7 @@ export class S3BucketService {
 
       return Location;
     } catch (error) {
-      throw new Error('Erro ao fazer upload da imagem no S3: ' + error.message);
+      throw new AppError('aws-s3-bucket.uploadImage', 500, error.message);
     }
   }
 }
