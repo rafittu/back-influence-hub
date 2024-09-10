@@ -8,6 +8,8 @@ import {
   Body,
   Param,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { AppError } from '../../common/errors/Error';
 import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
@@ -23,6 +25,8 @@ import {
   IInfluencerFilters,
 } from './interfaces/influencer.interface';
 import { UpdateInfluencerDto } from './dto/update-influencer.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('influencer')
@@ -36,8 +40,12 @@ export class InfluencerController {
   ) {}
 
   @Post('/create')
-  async create(@Body() body: CreateInfluencerDto): Promise<IInfluencerDetails> {
-    return await this.createInfluencer.execute(body);
+  @UseInterceptors(FileInterceptor('photo'))
+  async create(
+    @Body() body: CreateInfluencerDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<IInfluencerDetails> {
+    return await this.createInfluencer.execute(body, file);
   }
 
   @Get('/all')
@@ -58,11 +66,13 @@ export class InfluencerController {
   }
 
   @Patch('/:id')
+  @UseInterceptors(FileInterceptor('photo'))
   async update(
     @Param('id') id: string,
     @Body() body: UpdateInfluencerDto,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<IInfluencerDetails> {
-    return await this.updateInfluencer.execute(id, body);
+    return await this.updateInfluencer.execute(id, body, file);
   }
 
   @Delete(':id')

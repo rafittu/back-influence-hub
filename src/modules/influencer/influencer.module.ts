@@ -7,11 +7,13 @@ import { FindAllInfluencersService } from './services/find-all-influencers.servi
 import { FindOneInfluencerService } from './services/find-one-influencer.service';
 import { UpdateInfluencerService } from './services/update-influencer.service';
 import { InfluencersByFilterService } from './services/find-influencers-by-filter.service';
+import { S3BucketService } from 'src/common/aws/s3Bucket';
 
 @Module({
   controllers: [InfluencerController],
   providers: [
     PrismaService,
+    S3BucketService,
     InfluencerRepository,
     CreateInfluencerService,
     FindAllInfluencersService,

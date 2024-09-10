@@ -6,12 +6,14 @@ import { IInfluencerRepository } from '../interfaces/repository.interface';
 import { Influencer } from '@prisma/client';
 import { IInfluencerDetails } from '../interfaces/influencer.interface';
 import { UpdateInfluencerDto } from '../dto/update-influencer.dto';
+import { S3BucketService } from 'src/common/aws/s3Bucket';
 
 @Injectable()
 export class UpdateInfluencerService {
   constructor(
     @Inject(InfluencerRepository)
     private readonly influencerRepository: IInfluencerRepository<Influencer>,
+    private readonly s3Bucket: S3BucketService,
   ) {}
 
   private transformInfluencerData(data: any): IInfluencerDetails {
@@ -58,6 +60,7 @@ export class UpdateInfluencerService {
   async execute(
     id: string,
     data: UpdateInfluencerDto,
+    file: Express.Multer.File,
   ): Promise<IInfluencerDetails> {
     let influencerData;
 
@@ -83,6 +86,16 @@ export class UpdateInfluencerService {
           street: logradouro,
           city: localidade,
           state: uf,
+        };
+      }
+
+      if (data.oldPhoto && file) {
+        await this.s3Bucket.deleteImage(data.oldPhoto);
+        const s3ImageUrl = await this.s3Bucket.uploadImage(file);
+
+        influencerData = {
+          ...influencerData,
+          photo: s3ImageUrl,
         };
       }
 
