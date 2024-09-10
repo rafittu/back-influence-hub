@@ -6,12 +6,14 @@ import { IInfluencerRepository } from '../interfaces/repository.interface';
 import { Influencer } from '@prisma/client';
 import { CreateInfluencerDto } from '../dto/create-influencer.dto';
 import { IInfluencerDetails } from '../interfaces/influencer.interface';
+import { S3BucketService } from 'src/common/aws/s3Bucket';
 
 @Injectable()
 export class CreateInfluencerService {
   constructor(
     @Inject(InfluencerRepository)
     private readonly influencerRepository: IInfluencerRepository<Influencer>,
+    private readonly s3Bucket: S3BucketService,
   ) {}
 
   private transformTimestamps<T extends { created_at: Date; updated_at: Date }>(
@@ -48,7 +50,12 @@ export class CreateInfluencerService {
     }
   }
 
-  async execute(data: CreateInfluencerDto): Promise<IInfluencerDetails> {
+  async execute(
+    data: CreateInfluencerDto,
+    file: Express.Multer.File,
+  ): Promise<IInfluencerDetails> {
+    let s3ImageUrl: string | undefined;
+
     const zipCodeRegex = /^[0-9]{8}$/;
 
     try {
@@ -66,8 +73,11 @@ export class CreateInfluencerService {
       const { logradouro, localidade, uf } =
         await this.getAddress(formatedZipCode);
 
+      s3ImageUrl = await this.s3Bucket.uploadImage(file);
+
       const influencer = {
         ...data,
+        photo: s3ImageUrl,
         zipCode: formatedZipCode,
         street: logradouro,
         city: localidade,
@@ -90,6 +100,10 @@ export class CreateInfluencerService {
         },
       };
     } catch (error) {
+      if (s3ImageUrl) {
+        await this.s3Bucket.deleteImage(s3ImageUrl);
+      }
+
       if (error instanceof AppError) {
         throw error;
       }

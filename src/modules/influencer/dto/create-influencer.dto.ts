@@ -32,9 +32,6 @@ export class CreateInfluencerDto {
   @IsNotEmpty()
   reach: number;
 
-  @IsString()
-  photo?: string;
-
   @IsArray()
   @ArrayNotEmpty()
   @IsEnum(Niche, {

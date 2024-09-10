@@ -20,6 +20,10 @@ export class UpdateInfluencerDto extends PartialType(CreateInfluencerDto) {
 
   @IsOptional()
   @IsString()
+  oldPhoto: string;
+
+  @IsOptional()
+  @IsString()
   @Matches(
     /[a-z0-9!#$%&’*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&’*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
     {
@@ -30,10 +34,6 @@ export class UpdateInfluencerDto extends PartialType(CreateInfluencerDto) {
 
   @IsOptional()
   reach: number;
-
-  @IsOptional()
-  @IsString()
-  photo?: string;
 
   @IsOptional()
   @IsArray()
