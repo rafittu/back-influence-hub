@@ -25,6 +25,7 @@ Este projeto utiliza as seguintes tecnologias:
 - **CORS** para controle de acesso à API;
 - **Docker** como uma ferramenta de containerização;
 - **Jest** para execução e automação dos testes unitários;
+- **Swagger** para documentação da API;
 
 <br>
 
@@ -56,7 +57,7 @@ Este projeto utiliza as seguintes tecnologias:
     - representantes devem ser capazes de acessar o portfólio de influenciadores, além de atualizar informações cadastrais.
 - Refatoração do código;
 - Ampliação dos testes unitários;
-- Documentação Swagger;
+- Ampliação da documentação Swagger;
 
 <br>
 
@@ -224,6 +225,18 @@ $ npm run test
   ```
 
 - **`GET /brand/influencers/by-brand`:** Lista todas os influenciadores de determinada marca. O nome da marca deve ser passado na `@Query()` da requisição como `brand`;
+
+<br>
+
+## Documentação
+
+<br>
+
+A documentação completa da API está disponível através do Swagger. Para acessá-la, siga as etapas abaixo:
+
+- Certifique-se de ter a API em execução localmente ou em um ambiente acessível;
+- Abra um navegador da web e acesse a seguinte URL: `http://localhost:3000/v1/api-doc` (substitua `3000` pelo número da porta inserida no arquivo `.env`);
+- A documentação interativa da API será exibida no Swagger UI, onde você poderá explorar todos os endpoints, seus parâmetros e exemplos de solicitação/resposta.
 
 <br>
 
