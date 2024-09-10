@@ -89,8 +89,8 @@ export class UpdateInfluencerService {
         };
       }
 
-      if (data.photo && file) {
-        await this.s3Bucket.deleteImage(data.photo);
+      if (data.oldPhoto && file) {
+        await this.s3Bucket.deleteImage(data.oldPhoto);
         const s3ImageUrl = await this.s3Bucket.uploadImage(file);
 
         influencerData = {

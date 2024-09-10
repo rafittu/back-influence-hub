@@ -20,7 +20,7 @@ export class UpdateInfluencerDto extends PartialType(CreateInfluencerDto) {
 
   @IsOptional()
   @IsString()
-  photo: string;
+  oldPhoto: string;
 
   @IsOptional()
   @IsString()
