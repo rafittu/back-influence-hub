@@ -54,6 +54,8 @@ export class CreateInfluencerService {
     data: CreateInfluencerDto,
     file: Express.Multer.File,
   ): Promise<IInfluencerDetails> {
+    let s3ImageUrl: string | undefined;
+
     const zipCodeRegex = /^[0-9]{8}$/;
 
     try {
@@ -71,7 +73,7 @@ export class CreateInfluencerService {
       const { logradouro, localidade, uf } =
         await this.getAddress(formatedZipCode);
 
-      const s3ImageUrl = await this.s3Bucket.uploadImage(file);
+      s3ImageUrl = await this.s3Bucket.uploadImage(file);
 
       const influencer = {
         ...data,
@@ -98,6 +100,10 @@ export class CreateInfluencerService {
         },
       };
     } catch (error) {
+      if (s3ImageUrl) {
+        await this.s3Bucket.deleteImage(s3ImageUrl);
+      }
+
       if (error instanceof AppError) {
         throw error;
       }
