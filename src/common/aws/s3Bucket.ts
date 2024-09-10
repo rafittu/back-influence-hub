@@ -36,9 +36,12 @@ export class S3BucketService {
   }
 
   async deleteImage(fileUrl: string): Promise<null> {
+    const url = new URL(fileUrl);
+    const fileKey = url.pathname.substring(1);
+
     const params = {
       Bucket: this.bucketName,
-      Key: fileUrl,
+      Key: fileKey,
     };
 
     try {
