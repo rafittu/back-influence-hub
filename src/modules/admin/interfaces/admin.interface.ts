@@ -11,3 +11,9 @@ export interface IAdmin {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IUpdateAdmin {
+  name?: string;
+  email?: string;
+  password?: string;
+}
