@@ -89,6 +89,13 @@ export class AdminRepository implements IAdminRepository<Admin> {
     try {
       const admin = await this.prisma.admin.findFirst({
         where: { id: Number(id) },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          created_at: true,
+          updated_at: true,
+        },
       });
 
       return this.transformTimestamps(admin);
