@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../../prisma.service';
 import { AdminRepository } from '../repository/admin.repository';
-import { MockAdmin, MockCreateAdmin } from './mocks/admin.mock';
+import { MockAdmin, MockCreateAdmin, MockIAdmin } from './mocks/admin.mock';
 import { AppError } from '../../../common/errors/Error';
 
 describe('AdminRepository', () => {
@@ -62,6 +62,49 @@ describe('AdminRepository', () => {
         expect(error).toBeInstanceOf(AppError);
         expect(error.code).toBe(500);
         expect(error.message).toBe('user not created');
+      }
+    });
+  });
+
+  describe('find all admins', () => {
+    it('should find and list all admins successfully', async () => {
+      jest
+        .spyOn(prismaService.admin, 'findMany')
+        .mockResolvedValueOnce([MockAdmin]);
+
+      jest.spyOn(adminRepository as unknown as never, 'transformTimestamps');
+      jest.spyOn(
+        adminRepository as unknown as never,
+        'transformArrayTimestamps',
+      );
+
+      const result = await adminRepository.findAllAdmins();
+
+      expect(prismaService.admin.findMany).toHaveBeenCalledTimes(1);
+      expect(adminRepository['transformTimestamps']).toHaveBeenCalledTimes(1);
+      expect(adminRepository['transformArrayTimestamps']).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(result).toEqual([MockIAdmin]);
+    });
+
+    it('should throw an error if could not get admins', async () => {
+      jest
+        .spyOn(prismaService.admin, 'findMany')
+        .mockRejectedValueOnce(
+          new AppError(
+            'admin-repository.findAllIAdmins',
+            500,
+            'could not get admins',
+          ),
+        );
+
+      try {
+        await adminRepository.findAllAdmins();
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not get admins');
       }
     });
   });
