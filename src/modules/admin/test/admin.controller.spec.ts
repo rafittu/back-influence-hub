@@ -2,10 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdminController } from '../admin.controller';
 import { CreateAdminService } from '../services/create-admin.service';
 import { MockCreateAdmin, MockIAdmin } from './mocks/admin.mock';
+import { FindAllAdminsService } from '../services/all-admins.service';
 
 describe('AdminController', () => {
   let controller: AdminController;
   let createAdmin: CreateAdminService;
+  let listAllAdmins: FindAllAdminsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,11 +19,18 @@ describe('AdminController', () => {
             execute: jest.fn().mockResolvedValue(MockIAdmin),
           },
         },
+        {
+          provide: FindAllAdminsService,
+          useValue: {
+            execute: jest.fn().mockResolvedValue([MockIAdmin]),
+          },
+        },
       ],
     }).compile();
 
     controller = module.get<AdminController>(AdminController);
     createAdmin = module.get<CreateAdminService>(CreateAdminService);
+    listAllAdmins = module.get<FindAllAdminsService>(FindAllAdminsService);
   });
 
   it('should be defined', () => {
@@ -34,6 +43,15 @@ describe('AdminController', () => {
 
       expect(createAdmin.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIAdmin);
+    });
+  });
+
+  describe('list all admins', () => {
+    it('should find and list all admins successfully', async () => {
+      const result = await controller.findAll();
+
+      expect(listAllAdmins.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockIAdmin]);
     });
   });
 });
