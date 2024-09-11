@@ -80,4 +80,20 @@ export class AdminRepository implements IAdminRepository<Admin> {
       );
     }
   }
+
+  async findOneAdmin(id: string): Promise<IAdmin> {
+    try {
+      const admin = await this.prisma.admin.findFirst({
+        where: { id: Number(id) },
+      });
+
+      return this.transformTimestamps(admin);
+    } catch (error) {
+      throw new AppError(
+        'admin-repository.findOneAdmin',
+        500,
+        'could not get admin',
+      );
+    }
+  }
 }
