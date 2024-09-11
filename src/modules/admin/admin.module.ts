@@ -6,6 +6,7 @@ import { SecurityService } from '../../common/services/security.service';
 import { CreateAdminService } from './services/create-admin.service';
 import { FindAllAdminsService } from './services/all-admins.service';
 import { FindOneAdminService } from './services/find-one-admin.service';
+import { UpdateAdminService } from './services/update-admin.service';
 
 @Module({
   controllers: [AdminController],
@@ -16,6 +17,7 @@ import { FindOneAdminService } from './services/find-one-admin.service';
     CreateAdminService,
     FindAllAdminsService,
     FindOneAdminService,
+    UpdateAdminService,
   ],
 })
 export class AdminModule {}
