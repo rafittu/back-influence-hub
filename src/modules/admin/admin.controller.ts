@@ -6,6 +6,7 @@ import {
   Delete,
   UseFilters,
   Body,
+  Param,
 } from '@nestjs/common';
 import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
 import { AppError } from '../../common/errors/Error';
@@ -14,6 +15,7 @@ import { CreateAdminService } from './services/create-admin.service';
 import { IAdmin } from './interfaces/admin.interface';
 import { isPublic } from '../auth/infra/decorators/is-public.decorator';
 import { FindAllAdminsService } from './services/all-admins.service';
+import { FindOneAdminService } from './services/find-one-admin.service';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('admin')
@@ -21,6 +23,7 @@ export class AdminController {
   constructor(
     private readonly createAdmin: CreateAdminService,
     private readonly findAllAdmins: FindAllAdminsService,
+    private readonly findOneAdmin: FindOneAdminService,
   ) {}
 
   @isPublic()
@@ -34,9 +37,9 @@ export class AdminController {
     return await this.findAllAdmins.execute();
   }
 
-  @Get()
-  findOne() {
-    return 'this.adminService.findOne(+id)';
+  @Get('/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.findOneAdmin.execute(id);
   }
 
   @Patch()

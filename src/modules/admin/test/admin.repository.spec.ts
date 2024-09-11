@@ -108,4 +108,39 @@ describe('AdminRepository', () => {
       }
     });
   });
+
+  describe('find admin by id', () => {
+    it('should find and list an admin successfully', async () => {
+      jest
+        .spyOn(prismaService.admin, 'findFirst')
+        .mockResolvedValueOnce(MockAdmin);
+      jest.spyOn(adminRepository as unknown as never, 'transformTimestamps');
+
+      const result = await adminRepository.findOneAdmin(String(MockAdmin.id));
+
+      expect(prismaService.admin.findFirst).toHaveBeenCalledTimes(1);
+      expect(adminRepository['transformTimestamps']).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIAdmin);
+    });
+
+    it('should throw an error if could not get admin', async () => {
+      jest
+        .spyOn(prismaService.admin, 'findFirst')
+        .mockRejectedValueOnce(
+          new AppError(
+            'admin-repository.findOneAdmin',
+            500,
+            'could not get admin',
+          ),
+        );
+
+      try {
+        await adminRepository.findOneAdmin(String(MockAdmin.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not get admin');
+      }
+    });
+  });
 });

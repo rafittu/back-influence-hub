@@ -5,10 +5,12 @@ import { AdminRepository } from '../repository/admin.repository';
 import { MockAdmin, MockCreateAdmin, MockIAdmin } from './mocks/admin.mock';
 import { AppError } from '../../../common/errors/Error';
 import { FindAllAdminsService } from '../services/all-admins.service';
+import { FindOneAdminService } from '../services/find-one-admin.service';
 
 describe('AdminServices', () => {
   let createAdmin: CreateAdminService;
   let findAllAdmins: FindAllAdminsService;
+  let findOneAdmin: FindOneAdminService;
 
   let securityService: SecurityService;
   let adminRepository: AdminRepository;
@@ -18,6 +20,7 @@ describe('AdminServices', () => {
       providers: [
         CreateAdminService,
         FindAllAdminsService,
+        FindOneAdminService,
         SecurityService,
         {
           provide: AdminRepository,
@@ -27,6 +30,7 @@ describe('AdminServices', () => {
               password: undefined,
             }),
             findAllAdmins: jest.fn().mockResolvedValue([MockIAdmin]),
+            findOneAdmin: jest.fn().mockResolvedValue(MockIAdmin),
           },
         },
       ],
@@ -34,6 +38,7 @@ describe('AdminServices', () => {
 
     createAdmin = module.get<CreateAdminService>(CreateAdminService);
     findAllAdmins = module.get<FindAllAdminsService>(FindAllAdminsService);
+    findOneAdmin = module.get<FindOneAdminService>(FindOneAdminService);
 
     securityService = module.get<SecurityService>(SecurityService);
     adminRepository = module.get<AdminRepository>(AdminRepository);
@@ -49,6 +54,7 @@ describe('AdminServices', () => {
   it('should be defined', () => {
     expect(createAdmin).toBeDefined();
     expect(findAllAdmins).toBeDefined();
+    expect(findOneAdmin).toBeDefined();
   });
 
   describe('create user', () => {
@@ -116,6 +122,29 @@ describe('AdminServices', () => {
         expect(error).toBeInstanceOf(AppError);
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to get admins');
+      }
+    });
+  });
+
+  describe('find admin by id', () => {
+    it('should find and list an admin successfully', async () => {
+      const result = await findOneAdmin.execute(String(MockAdmin.id));
+
+      expect(adminRepository.findOneAdmin).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIAdmin);
+    });
+
+    it(`should throw an error if couldn't get admin`, async () => {
+      jest
+        .spyOn(adminRepository, 'findOneAdmin')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await findOneAdmin.execute(String(MockAdmin.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to get admin');
       }
     });
   });
