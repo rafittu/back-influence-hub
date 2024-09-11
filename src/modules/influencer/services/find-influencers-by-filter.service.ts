@@ -38,6 +38,12 @@ export class InfluencersByFilterService {
 
   async execute(filters: IInfluencerFilters): Promise<IInfluencerDetails[]> {
     try {
+      if (filters.niche && typeof filters.niche === 'string') {
+        filters.niche = (filters.niche as string)
+          .split(',')
+          .map((niche) => niche.trim());
+      }
+
       const influencersData =
         await this.influencerRepository.findInfluencerByFilter(filters);
 
