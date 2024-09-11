@@ -18,6 +18,8 @@ export class UpdateAdminService {
   ) {}
 
   async execute(id: string, data: UpdateAdminDto): Promise<IAdmin> {
+    let admin;
+
     try {
       if (data.password && data.passwordConfirmation && data.oldPassword) {
         if (data.password !== data.passwordConfirmation) {
@@ -46,11 +48,20 @@ export class UpdateAdminService {
             );
           }
         }
+
+        const { hashedPassword } = await this.securityService.hashPassword(
+          data.password,
+        );
+
+        admin = {
+          ...data,
+          password: hashedPassword,
+        };
+
+        delete admin.passwordConfirmation, delete admin.oldPassword;
       }
 
-      delete data.passwordConfirmation, delete data.oldPassword;
-
-      return await this.adminRepository.updateAdmin(id, data);
+      return await this.adminRepository.updateAdmin(id, admin);
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
