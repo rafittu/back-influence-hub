@@ -598,12 +598,15 @@
                           "type": "string"
                         }
                     },
-                      {
+                    {
                         "name": "niche",
                         "in": "query",
                         "description": "influencer category",
                         "schema": {
-                          "type": "string"
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                            }
                         }
                     }
                 ],
