@@ -105,7 +105,11 @@ export class InfluencerRepository implements IInfluencerRepository<Influencer> {
               ? {
                   Niche: {
                     some: {
-                      niche: { name: niche },
+                      niche: {
+                        name: {
+                          in: niche,
+                        },
+                      },
                     },
                   },
                 }
