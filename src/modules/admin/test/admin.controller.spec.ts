@@ -9,6 +9,7 @@ import {
 import { FindAllAdminsService } from '../services/all-admins.service';
 import { FindOneAdminService } from '../services/find-one-admin.service';
 import { UpdateAdminService } from '../services/update-admin.service';
+import { DeleteAdminService } from '../services/delete-admin.service';
 
 describe('AdminController', () => {
   let controller: AdminController;
@@ -16,6 +17,7 @@ describe('AdminController', () => {
   let listAllAdmins: FindAllAdminsService;
   let findOneAdmin: FindOneAdminService;
   let updateAdmin: UpdateAdminService;
+  let deleteAdmin: DeleteAdminService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -45,6 +47,12 @@ describe('AdminController', () => {
             execute: jest.fn().mockResolvedValue(MockIAdmin),
           },
         },
+        {
+          provide: DeleteAdminService,
+          useValue: {
+            execute: jest.fn().mockResolvedValue(MockIAdmin),
+          },
+        },
       ],
     }).compile();
 
@@ -53,6 +61,7 @@ describe('AdminController', () => {
     listAllAdmins = module.get<FindAllAdminsService>(FindAllAdminsService);
     findOneAdmin = module.get<FindOneAdminService>(FindOneAdminService);
     updateAdmin = module.get<UpdateAdminService>(UpdateAdminService);
+    deleteAdmin = module.get<DeleteAdminService>(DeleteAdminService);
   });
 
   it('should be defined', () => {
@@ -96,6 +105,15 @@ describe('AdminController', () => {
       MockIAdmin.email = MockUpdateAdmin.email;
 
       expect(updateAdmin.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIAdmin);
+    });
+  });
+
+  describe('delete admin', () => {
+    it('should delete an admin successfully', async () => {
+      const result = await controller.remove(String(MockIAdmin.id));
+
+      expect(deleteAdmin.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIAdmin);
     });
   });
