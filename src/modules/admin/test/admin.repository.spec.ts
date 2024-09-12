@@ -27,7 +27,7 @@ describe('AdminRepository', () => {
     expect(prismaService).toBeDefined();
   });
 
-  describe('create user', () => {
+  describe('create admin', () => {
     it('should create a new user successfully', async () => {
       jest
         .spyOn(prismaService.admin, 'create')
@@ -186,6 +186,41 @@ describe('AdminRepository', () => {
         expect(error).toBeInstanceOf(AppError);
         expect(error.code).toBe(500);
         expect(error.message).toBe('could not update admin data');
+      }
+    });
+  });
+
+  describe('delete admin', () => {
+    it('should delete an admin successfully', async () => {
+      jest
+        .spyOn(prismaService.admin, 'delete')
+        .mockResolvedValueOnce(MockAdmin);
+      jest.spyOn(adminRepository as unknown as never, 'transformTimestamps');
+
+      const result = await adminRepository.deleteAdmin(String(MockAdmin.id));
+
+      expect(prismaService.admin.delete).toHaveBeenCalledTimes(1);
+      expect(adminRepository['transformTimestamps']).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIAdmin);
+    });
+
+    it('should throw an error if could not delete admin', async () => {
+      jest
+        .spyOn(prismaService.admin, 'delete')
+        .mockRejectedValueOnce(
+          new AppError(
+            'admin-repository.deleteAdmin',
+            500,
+            'could not delete admin',
+          ),
+        );
+
+      try {
+        await adminRepository.deleteAdmin(String(MockAdmin.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not delete admin');
       }
     });
   });

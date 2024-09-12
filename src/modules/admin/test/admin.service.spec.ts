@@ -13,12 +13,14 @@ import { FindAllAdminsService } from '../services/all-admins.service';
 import { FindOneAdminService } from '../services/find-one-admin.service';
 import { UpdateAdminService } from '../services/update-admin.service';
 import { PrismaService } from '../../../prisma.service';
+import { DeleteAdminService } from '../services/delete-admin.service';
 
 describe('AdminServices', () => {
   let createAdmin: CreateAdminService;
   let findAllAdmins: FindAllAdminsService;
   let findOneAdmin: FindOneAdminService;
   let updateAdmin: UpdateAdminService;
+  let deleteAdmin: DeleteAdminService;
 
   let prismaService: PrismaService;
   let securityService: SecurityService;
@@ -31,6 +33,7 @@ describe('AdminServices', () => {
         FindAllAdminsService,
         FindOneAdminService,
         UpdateAdminService,
+        DeleteAdminService,
         PrismaService,
         SecurityService,
         {
@@ -43,6 +46,7 @@ describe('AdminServices', () => {
             findAllAdmins: jest.fn().mockResolvedValue([MockIAdmin]),
             findOneAdmin: jest.fn().mockResolvedValue(MockIAdmin),
             updateAdmin: jest.fn().mockResolvedValue(MockIAdmin),
+            deleteAdmin: jest.fn().mockResolvedValue(MockIAdmin),
           },
         },
       ],
@@ -52,6 +56,7 @@ describe('AdminServices', () => {
     findAllAdmins = module.get<FindAllAdminsService>(FindAllAdminsService);
     findOneAdmin = module.get<FindOneAdminService>(FindOneAdminService);
     updateAdmin = module.get<UpdateAdminService>(UpdateAdminService);
+    deleteAdmin = module.get<DeleteAdminService>(DeleteAdminService);
 
     prismaService = module.get<PrismaService>(PrismaService);
     securityService = module.get<SecurityService>(SecurityService);
@@ -70,6 +75,7 @@ describe('AdminServices', () => {
     expect(findAllAdmins).toBeDefined();
     expect(findOneAdmin).toBeDefined();
     expect(updateAdmin).toBeDefined();
+    expect(deleteAdmin).toBeDefined();
   });
 
   describe('create admin', () => {
@@ -238,6 +244,29 @@ describe('AdminServices', () => {
         expect(error).toBeInstanceOf(AppError);
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to get admin');
+      }
+    });
+  });
+
+  describe('delete admin', () => {
+    it('should delete an admin successfully', async () => {
+      const result = await deleteAdmin.execute(String(MockAdmin.id));
+
+      expect(adminRepository.deleteAdmin).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIAdmin);
+    });
+
+    it(`should throw an error if couldn't delete admin`, async () => {
+      jest
+        .spyOn(adminRepository, 'deleteAdmin')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await deleteAdmin.execute(String(MockAdmin.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to delete admin');
       }
     });
   });
