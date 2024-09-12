@@ -202,7 +202,7 @@ describe('AdminServices', () => {
         await updateAdmin.execute(String(MockIAdmin.id), MockUpdateAdmin);
       } catch (error) {
         expect(error).toBeInstanceOf(AppError);
-        expect(error.code).toBe(422);
+        expect(error.code).toBe(400);
         expect(error.message).toBe('invalid old password');
       }
     });
@@ -218,7 +218,7 @@ describe('AdminServices', () => {
         await updateAdmin.execute(String(MockIAdmin.id), newBodyRequest);
       } catch (error) {
         expect(error).toBeInstanceOf(AppError);
-        expect(error.code).toBe(422);
+        expect(error.code).toBe(400);
         expect(error.message).toBe('new passwords do not match');
       }
     });

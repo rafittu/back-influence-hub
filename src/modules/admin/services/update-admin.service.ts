@@ -25,7 +25,7 @@ export class UpdateAdminService {
         if (data.password !== data.passwordConfirmation) {
           throw new AppError(
             'admin-service.updateAdmin',
-            422,
+            400,
             'new passwords do not match',
           );
         }
@@ -43,7 +43,7 @@ export class UpdateAdminService {
           if (!isPasswordValid) {
             throw new AppError(
               'admin-service.updateAdmin',
-              422,
+              400,
               'invalid old password',
             );
           }
@@ -68,7 +68,7 @@ export class UpdateAdminService {
       }
 
       throw new AppError(
-        'admin-service.findOneAdmin',
+        'admin-service.updateAdmin',
         500,
         'failed to get admin',
       );
