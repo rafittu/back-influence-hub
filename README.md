@@ -16,6 +16,7 @@ Este projeto utiliza as seguintes tecnologias:
 
 - **Node.js** com framework **NestJS** e **TypeScript**;
 - **Prisma ORM** para comunicação e manipulação do banco de dados **SQLite**;
+- **AWS S3 Bucket**: Armazenamento de dados em nuvem;
 
 - **Passport.js** para implementação de estratégias de autenticação;
 - **JWT** para autenticação e autorização de acesso;
@@ -32,6 +33,9 @@ Este projeto utiliza as seguintes tecnologias:
 ## Funcionalidades
 ### Autenticação:
 - Cadastro, login e logout de administradores.
+
+### Gerenciamento de Administradores:
+- Listagem, visualização, edição e exclusão de administradores.
 
 ### Gerenciamento de Influenciadores:
 - Cadastro, listagem, visualização e edição de influenciadores.
@@ -50,7 +54,6 @@ Este projeto utiliza as seguintes tecnologias:
 
 ### 🚧 Futuras implementações:
 - Ampliação de endpoints para gerenciar administradores, influenciadores e marcas;
-    - listar, atualizar e excluir administradores;
     - desassociar influenciadores e marcas da plataforma;
   
 - Endpoint para autenticação dos representantes de marcas;
