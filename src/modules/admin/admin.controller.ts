@@ -6,6 +6,7 @@ import {
   Delete,
   UseFilters,
   Body,
+  Param,
 } from '@nestjs/common';
 import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
 import { AppError } from '../../common/errors/Error';
@@ -13,11 +14,22 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { CreateAdminService } from './services/create-admin.service';
 import { IAdmin } from './interfaces/admin.interface';
 import { isPublic } from '../auth/infra/decorators/is-public.decorator';
+import { FindAllAdminsService } from './services/all-admins.service';
+import { FindOneAdminService } from './services/find-one-admin.service';
+import { UpdateAdminService } from './services/update-admin.service';
+import { DeleteAdminService } from './services/delete-admin.service';
+import { UpdateAdminDto } from './dto/update-admin.dto';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly createAdmin: CreateAdminService) {}
+  constructor(
+    private readonly createAdmin: CreateAdminService,
+    private readonly findAllAdmins: FindAllAdminsService,
+    private readonly findOneAdmin: FindOneAdminService,
+    private readonly updateAdmin: UpdateAdminService,
+    private readonly deleteAdmin: DeleteAdminService,
+  ) {}
 
   @isPublic()
   @Post('/signup')
@@ -25,23 +37,26 @@ export class AdminController {
     return await this.createAdmin.execute(body);
   }
 
-  @Get()
-  findAll() {
-    return 'this.adminService.findAll()';
+  @Get('/')
+  async findAll(): Promise<IAdmin[]> {
+    return await this.findAllAdmins.execute();
   }
 
-  @Get()
-  findOne() {
-    return 'this.adminService.findOne(+id)';
+  @Get('/:id')
+  async findOne(@Param('id') id: string): Promise<IAdmin> {
+    return await this.findOneAdmin.execute(id);
   }
 
-  @Patch()
-  update() {
-    return 'this.adminService.update(+id, updateAdminDto)';
+  @Patch('/:id')
+  async update(
+    @Param('id') id: string,
+    @Body() body: UpdateAdminDto,
+  ): Promise<IAdmin> {
+    return await this.updateAdmin.execute(id, body);
   }
 
-  @Delete()
-  remove() {
-    return 'this.adminService.remove(+id)';
+  @Delete('/remove/:id')
+  async remove(@Param('id') id: string): Promise<IAdmin> {
+    return await this.deleteAdmin.execute(id);
   }
 }

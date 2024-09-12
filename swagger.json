@@ -128,6 +128,475 @@
                 }
             }
         },
+        "/admin/": {
+            "get": {
+                "summary": "List all admin users",
+                "description": "Route to find and liast all admins.",
+                "tags": ["Admin"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Admins list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/AdminInterfaceArray"
+                                },
+                                "example": [
+                                    {
+                                        "id": "1",
+                                        "name": "John Doe",
+                                        "email": "johndoe@email.com",
+                                        "createdAt": "2024-09-04T03:29:37.743Z",
+                                        "updatedAt": "2024-09-04T03:29:37.743Z"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to get admins",
+                                            "code": "admin-service.findAllAdmins",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "could not get admins",
+                                                "code": "admin-repository.findAllAdmins",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
+        "/admin/:id": {
+            "get": {
+                "summary": "Find admin by id",
+                "description": "Route to find and liast an admin by id.",
+                "tags": ["Admin"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "admin id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Admin data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/AdminInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "John Doe",
+                                    "email": "johndoe@email.com",
+                                    "createdAt": "2024-09-04T03:29:37.743Z",
+                                    "updatedAt": "2024-09-04T03:29:37.743Z"
+                                }                                
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to get admin",
+                                            "code": "admin-service.findOneAdmin",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "could not get admin",
+                                                "code": "admin-repository.findOneAdmin",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
+        "/admin/:adminId": {
+            "patch": {
+                "summary": "Update admin",
+                "description": "Route to update admin data",
+                "tags": ["Admin"],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {token}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "admin id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                            "$ref": "#/components/schemas/UpdateAdmin"
+                            },
+                            "examples": {
+                                "example1": {
+                                    "summary": "Updating email",
+                                    "value": {
+                                        "email": "new-email@email.com"
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "Updating password",
+                                    "value": {
+                                        "oldPassword": "@Mypassword123",
+                                        "password": "newP@ssword321",
+                                        "passwordConfirmation": "newP@ssword321"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Admin data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "John Doe",
+                                    "email": "new-email@email.com",
+                                    "createdAt": "2024-09-04T03:29:37.743Z",
+                                    "updatedAt": "2024-09-08T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "invalid password confirmation",
+                                        "value": {
+                                            "error": {
+                                                "message": "new passwords do not match",
+                                                "code": "admin-service.updateAdmin",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "invalid old password",
+                                        "value": {
+                                            "error": {
+                                                "message": "invalid old password",
+                                                "code": "admin-service.updateAdmin",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to update admin",
+                                            "code": "admin-service.updateAdmin",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "could not update admin data",
+                                                "code": "admin-repository.updateAdmin",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
+        "/admin/remove/:id": {
+            "delete": {
+                "summary": "Delete admin",
+                "description": "Route to delete an admin.",
+                "tags": ["Admin"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "admin id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Admin data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/AdminInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "John Doe",
+                                    "email": "johndoe@email.com",
+                                    "createdAt": "2024-09-04T03:29:37.743Z",
+                                    "updatedAt": "2024-09-04T03:29:37.743Z"
+                                }                                
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to delete admin",
+                                            "code": "admin-service.deleteAdmin",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "could not delete admin",
+                                                "code": "admin-repository.deleteAdmin",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
 
         "/signin": {
             "post": {
@@ -283,7 +752,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/json": {                    
+                        "multipart/form-data": {                    
                             "schema": {
                                 "$ref": "#/components/schemas/CreateInfluencer"
                             },
@@ -598,12 +1067,15 @@
                           "type": "string"
                         }
                     },
-                      {
+                    {
                         "name": "niche",
                         "in": "query",
                         "description": "influencer category",
                         "schema": {
-                          "type": "string"
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                            }
                         }
                     }
                 ],
@@ -693,6 +1165,169 @@
                     }
                 }
             }
+        },
+        "/influencer/:id": {
+            "patch": {
+                "summary": "Update influencer",
+                "description": "Route to update influencer data",
+                "tags": ["Influencer"],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {token}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "influencer id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                            "$ref": "#/components/schemas/UpdateInfluencer"
+                            },
+                            "examples": {
+                                "example1": {
+                                    "summary": "Updating influencer instagram data",
+                                    "value": {
+                                        "username": "ygona",
+                                        "reach": "245987",
+                                        "niches": ["Beleza & Maquiagem", "Lifestyle"]
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "Updating influencer photo",
+                                    "value": {
+                                        "oldPhoto": "https://example.photo.aws.com",
+                                        "photo": "multipart/form-data"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Influencer data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InfluencerInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "Ygona Moura",
+                                    "username": "ygona",
+                                    "email": "ygona@email.com",
+                                    "niches": ["Beleza & Maquiagem", "Lifestyle"],
+                                    "reach": "245987",
+                                    "photo": "https://new-example.photo.aws.com",
+                                    "address": {
+                                        "street": "Ipê",
+                                        "number": "45",
+                                        "zipCode": "12345678",
+                                        "city": "Belo Horizonte",
+                                        "state": "MG"
+                                    },
+                                    "createdAt": "2024-09-05T03:29:37.743Z",
+                                    "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "aws error",
+                                        "value": {
+                                            "error": {
+                                                "message": "aws message error deleting image",
+                                                "code": "aws-s3-bucket.deleteImage",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "aws error",
+                                        "value": {
+                                            "error": {
+                                                "message": "aws error uploading image",
+                                                "code": "aws-s3-bucket.uploadImage",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example3": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to update influencer data",
+                                                "code": "influencer-service.updateInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example4": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not update influencer details",
+                                                "code": "influencer-repository.updateInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
 
@@ -754,6 +1389,41 @@
                     }
                 }
             },
+            "AdminInterfaceArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/AdminInterface"
+                }
+            },
+            "UpdateAdmin": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 370,
+                        "description": "Admin full name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "maxLength": 250,
+                        "description": "Admin e-mail address"
+                    },
+                    "oldPassword": {
+                        "type": "string",
+                        "description": "Admin old password"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": "7",
+                        "pattern": "at least one uppercase letter, one lowercase letter and one number or symbol",
+                        "description": "Admin password"
+                    },
+                    "passwordConfirmation": {
+                        "type": "string",
+                        "description": "Password confirmation"
+                    }                
+                }
+            },
 
             "UserCredentials": {
                 "type": "object",
@@ -795,58 +1465,66 @@
                 }
             },
 
-            "CreateInfluencer": {
+            "CreateInfluencerBase": {
                 "type": "object",
                 "properties": {
-                "name": {
-                    "type": "string",
-                    "maxLength": 370,
-                    "description": "Influencer full name"
-                },
-                "username": {
-                    "type": "string",
-                    "description": "Influencer instagram username"
-                },
-                "email": {
-                    "type": "string",
-                    "maxLength": 250,
-                    "description": "Admin e-mail address"
-                },
-                "niches": {
-                    "type": "array",
-                    "description": "Influencer categories"                
-                },
-                "reach": {
-                    "type": "number",
-                    "description": "Influencer instagram followers"
-                },
-                "photo": {
-                    "type": "string",
-                    "description": "Influencer url photo from aws"
-                },
-                "zipCode": {
-                    "type": "string",
-                    "maxLength": 8,
-                    "description": "Influencer zipcode address"
-                },
-                "street": {
-                    "type": "string",
-                    "description": "Influencer street address"
-                },
-                "number": {
-                    "type": "string",
-                    "description": "Influencer home address number"
+                    "name": {
+                        "type": "string",
+                        "maxLength": 370,
+                        "description": "Influencer full name"
+                    },
+                    "username": {
+                        "type": "string",
+                        "description": "Influencer instagram username"
+                    },
+                    "email": {
+                        "type": "string",
+                        "maxLength": 250,
+                        "description": "Admin e-mail address"
+                    },
+                    "niches": {
+                        "type": "array",
+                        "description": "Influencer categories"                
+                    },
+                    "reach": {
+                        "type": "number",
+                        "description": "Influencer instagram followers"
+                    },
+                    "photo": {
+                        "type": "string",
+                        "description": "Influencer photo (multipart/form-data)",
+                        "format": "binary"
+                    },
+                    "zipCode": {
+                        "type": "string",
+                        "maxLength": 8,
+                        "description": "Influencer zipcode address"
+                    },
+                    "street": {
+                        "type": "string",
+                        "description": "Influencer street address"
+                    },
+                    "number": {
+                        "type": "string",
+                        "description": "Influencer home address number"
+                    }
                 }
-                },
-                "required": [
-                    "name",
-                    "username",
-                    "email",
-                    "niches",
-                    "reach",
-                    "zipCode",
-                    "street",
-                    "number"
+            },
+            "CreateInfluencer": {
+                "allOf": [
+                    {"$ref": "#/components/schemas/CreateInfluencerBase"},
+                    {
+                        "required": [
+                            "name",
+                            "username",
+                            "email",
+                            "niches",
+                            "reach",
+                            "zipCode",
+                            "street",
+                            "number"
+                        ]
+                    }
                 ]
             },
             "InfluencerInterface": {
@@ -918,7 +1596,7 @@
             },
             "InfluencerInterfaceArray": {
                 "type": "array",
-                "Properties": {
+                "items": {
                     "$ref": "#/components/schemas/InfluencerInterface"
                 }
             },
@@ -961,9 +1639,22 @@
             },
             "InfluencersArray": {
                 "type": "array",
-                "properties": {
+                "items": {
                     "$ref": "#/components/schemas/Influencer"
                 }
+            },
+            "UpdateInfluencer": {
+                "allOf": [
+                    {"$ref": "#/components/schemas/CreateInfluencerBase"},
+                    {
+                        "properties": {
+                          "oldPhoto": {
+                            "type": "string",
+                            "description": "old photo aws url"
+                          }
+                        }
+                    }
+                ]
             },
 
             "Error": {
