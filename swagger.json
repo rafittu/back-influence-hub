@@ -329,6 +329,170 @@
                 }
             }
         },
+        "/admin/:adminId": {
+            "patch": {
+                "summary": "Update admin",
+                "description": "Route to update admin data",
+                "tags": ["Admin"],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {token}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "admin id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                            "$ref": "#/components/schemas/UpdateAdmin"
+                            },
+                            "examples": {
+                                "example1": {
+                                    "summary": "Updating email",
+                                    "value": {
+                                        "email": "new-email@email.com"
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "Updating password",
+                                    "value": {
+                                        "oldPassword": "@Mypassword123",
+                                        "password": "newP@ssword321",
+                                        "passwordConfirmation": "newP@ssword321"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Admin data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "John Doe",
+                                    "email": "new-email@email.com",
+                                    "createdAt": "2024-09-04T03:29:37.743Z",
+                                    "updatedAt": "2024-09-08T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "invalid password confirmation",
+                                        "value": {
+                                            "error": {
+                                                "message": "new passwords do not match",
+                                                "code": "admin-service.updateAdmin",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "invalid old password",
+                                        "value": {
+                                            "error": {
+                                                "message": "invalid old password",
+                                                "code": "admin-service.updateAdmin",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to update admin",
+                                            "code": "admin-service.updateAdmin",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "could not update admin data",
+                                                "code": "admin-repository.updateAdmin",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
 
         "/signin": {
             "post": {
@@ -1060,7 +1224,7 @@
                     }
                 }
             }
-          }
+        }
     },
 
     "components": {
@@ -1125,6 +1289,35 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/AdminInterface"
+                }
+            },
+            "UpdateAdmin": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 370,
+                        "description": "Admin full name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "maxLength": 250,
+                        "description": "Admin e-mail address"
+                    },
+                    "oldPassword": {
+                        "type": "string",
+                        "description": "Admin old password"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": "7",
+                        "pattern": "at least one uppercase letter, one lowercase letter and one number or symbol",
+                        "description": "Admin password"
+                    },
+                    "passwordConfirmation": {
+                        "type": "string",
+                        "description": "Password confirmation"
+                    }                
                 }
             },
 
