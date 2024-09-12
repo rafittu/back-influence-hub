@@ -6,7 +6,7 @@ import { Admin } from '@prisma/client';
 import { IAdmin } from '../interfaces/admin.interface';
 import { SecurityService } from '../../../common/services/security.service';
 import { UpdateAdminDto } from '../dto/update-admin.dto';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../../../prisma.service';
 
 @Injectable()
 export class UpdateAdminService {
