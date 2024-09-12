@@ -1,7 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { CreateAdminDto } from '../../dto/create-admin.dto';
-import { IAdmin, IUpdateAdmin } from '../../interfaces/admin.interface';
+import { IAdmin } from '../../interfaces/admin.interface';
 import { Admin } from '@prisma/client';
+import { UpdateAdminDto } from '../../dto/update-admin.dto';
 
 export const MockCreateAdmin: CreateAdminDto = {
   name: faker.person.fullName(),
@@ -27,6 +28,9 @@ export const MockIAdmin: IAdmin = {
   updatedAt: MockAdmin.updated_at,
 };
 
-export const MockUpdateAdmin: IUpdateAdmin = {
+export const MockUpdateAdmin: UpdateAdminDto = {
   email: faker.internet.email(),
+  oldPassword: MockAdmin.password,
+  password: '@Newpassword123',
+  passwordConfirmation: '@Newpassword123',
 };
