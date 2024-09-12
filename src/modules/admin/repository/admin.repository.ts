@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma.service';
 import { IAdminRepository } from '../interfaces/repository.interface';
 import { Admin } from '@prisma/client';
-import { IAdmin, ICreateAdmin } from '../interfaces/admin.interface';
+import {
+  IAdmin,
+  ICreateAdmin,
+  IUpdateAdmin,
+} from '../interfaces/admin.interface';
 import { AppError } from '../../../common/errors/Error';
 
 @Injectable()
@@ -85,6 +89,13 @@ export class AdminRepository implements IAdminRepository<Admin> {
     try {
       const admin = await this.prisma.admin.findFirst({
         where: { id: Number(id) },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          created_at: true,
+          updated_at: true,
+        },
       });
 
       return this.transformTimestamps(admin);
@@ -93,6 +104,34 @@ export class AdminRepository implements IAdminRepository<Admin> {
         'admin-repository.findOneAdmin',
         500,
         'could not get admin',
+      );
+    }
+  }
+
+  async updateAdmin(id: string, data: IUpdateAdmin): Promise<IAdmin> {
+    try {
+      const updatedAdmin = await this.prisma.admin.update({
+        where: { id: Number(id) },
+        data: {
+          ...(data.name && { name: data.name }),
+          ...(data.email && { email: data.email }),
+          ...(data.password && { password: data.password }),
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          created_at: true,
+          updated_at: true,
+        },
+      });
+
+      return this.transformTimestamps(updatedAdmin);
+    } catch (error) {
+      throw new AppError(
+        'admin-repository.updateAdmin',
+        500,
+        'could not update admin data',
       );
     }
   }

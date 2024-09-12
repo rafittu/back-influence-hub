@@ -1,7 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../../../prisma.service';
 import { AdminRepository } from '../repository/admin.repository';
-import { MockAdmin, MockCreateAdmin, MockIAdmin } from './mocks/admin.mock';
+import {
+  MockAdmin,
+  MockCreateAdmin,
+  MockIAdmin,
+  MockIUpdateAdmin,
+} from './mocks/admin.mock';
 import { AppError } from '../../../common/errors/Error';
 
 describe('AdminRepository', () => {
@@ -140,6 +145,47 @@ describe('AdminRepository', () => {
         expect(error).toBeInstanceOf(AppError);
         expect(error.code).toBe(500);
         expect(error.message).toBe('could not get admin');
+      }
+    });
+  });
+
+  describe('update admin data', () => {
+    it('should update an admin successfully', async () => {
+      jest
+        .spyOn(prismaService.admin, 'update')
+        .mockResolvedValueOnce(MockAdmin);
+      jest.spyOn(adminRepository as unknown as never, 'transformTimestamps');
+
+      const result = await adminRepository.updateAdmin(
+        String(MockAdmin.id),
+        MockIUpdateAdmin,
+      );
+
+      expect(prismaService.admin.update).toHaveBeenCalledTimes(1);
+      expect(adminRepository['transformTimestamps']).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIAdmin);
+    });
+
+    it('should throw an error if could not get admin', async () => {
+      jest
+        .spyOn(prismaService.admin, 'update')
+        .mockRejectedValueOnce(
+          new AppError(
+            'admin-repository.updateAdmin',
+            500,
+            'could not update admin data',
+          ),
+        );
+
+      try {
+        await adminRepository.updateAdmin(
+          String(MockAdmin.id),
+          MockIUpdateAdmin,
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not update admin data');
       }
     });
   });
