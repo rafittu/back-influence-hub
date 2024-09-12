@@ -56,7 +56,7 @@ export class AdminController {
   }
 
   @Delete('/remove/:id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<IAdmin> {
     return await this.deleteAdmin.execute(id);
   }
 }
