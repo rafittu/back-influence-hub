@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { CreateAdminDto } from '../../dto/create-admin.dto';
-import { IAdmin } from '../../interfaces/admin.interface';
+import { IAdmin, IUpdateAdmin } from '../../interfaces/admin.interface';
 import { Admin } from '@prisma/client';
 
 export const MockCreateAdmin: CreateAdminDto = {
@@ -25,4 +25,8 @@ export const MockIAdmin: IAdmin = {
   email: MockAdmin.email,
   createdAt: MockAdmin.created_at,
   updatedAt: MockAdmin.updated_at,
+};
+
+export const MockUpdateAdmin: IUpdateAdmin = {
+  email: faker.internet.email(),
 };
