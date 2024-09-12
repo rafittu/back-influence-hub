@@ -2,16 +2,25 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CreateAdminService } from '../services/create-admin.service';
 import { SecurityService } from '../../../common/services/security.service';
 import { AdminRepository } from '../repository/admin.repository';
-import { MockAdmin, MockCreateAdmin, MockIAdmin } from './mocks/admin.mock';
+import {
+  MockAdmin,
+  MockCreateAdmin,
+  MockIAdmin,
+  MockUpdateAdmin,
+} from './mocks/admin.mock';
 import { AppError } from '../../../common/errors/Error';
 import { FindAllAdminsService } from '../services/all-admins.service';
 import { FindOneAdminService } from '../services/find-one-admin.service';
+import { UpdateAdminService } from '../services/update-admin.service';
+import { PrismaService } from '../../../prisma.service';
 
 describe('AdminServices', () => {
   let createAdmin: CreateAdminService;
   let findAllAdmins: FindAllAdminsService;
   let findOneAdmin: FindOneAdminService;
+  let updateAdmin: UpdateAdminService;
 
+  let prismaService: PrismaService;
   let securityService: SecurityService;
   let adminRepository: AdminRepository;
 
@@ -21,6 +30,8 @@ describe('AdminServices', () => {
         CreateAdminService,
         FindAllAdminsService,
         FindOneAdminService,
+        UpdateAdminService,
+        PrismaService,
         SecurityService,
         {
           provide: AdminRepository,
@@ -31,6 +42,7 @@ describe('AdminServices', () => {
             }),
             findAllAdmins: jest.fn().mockResolvedValue([MockIAdmin]),
             findOneAdmin: jest.fn().mockResolvedValue(MockIAdmin),
+            updateAdmin: jest.fn().mockResolvedValue(MockIAdmin),
           },
         },
       ],
@@ -39,7 +51,9 @@ describe('AdminServices', () => {
     createAdmin = module.get<CreateAdminService>(CreateAdminService);
     findAllAdmins = module.get<FindAllAdminsService>(FindAllAdminsService);
     findOneAdmin = module.get<FindOneAdminService>(FindOneAdminService);
+    updateAdmin = module.get<UpdateAdminService>(UpdateAdminService);
 
+    prismaService = module.get<PrismaService>(PrismaService);
     securityService = module.get<SecurityService>(SecurityService);
     adminRepository = module.get<AdminRepository>(AdminRepository);
   });
@@ -55,9 +69,10 @@ describe('AdminServices', () => {
     expect(createAdmin).toBeDefined();
     expect(findAllAdmins).toBeDefined();
     expect(findOneAdmin).toBeDefined();
+    expect(updateAdmin).toBeDefined();
   });
 
-  describe('create user', () => {
+  describe('create admin', () => {
     it('should create a new user successfully', async () => {
       jest
         .spyOn(securityService, 'hashPassword')
@@ -141,6 +156,84 @@ describe('AdminServices', () => {
 
       try {
         await findOneAdmin.execute(String(MockAdmin.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to get admin');
+      }
+    });
+  });
+
+  describe('update admin', () => {
+    it('should update admin successfully', async () => {
+      jest
+        .spyOn(prismaService.admin, 'findFirst')
+        .mockResolvedValueOnce(MockAdmin);
+
+      jest
+        .spyOn(securityService, 'comparePasswords')
+        .mockResolvedValueOnce(true);
+
+      jest
+        .spyOn(securityService, 'hashPassword')
+        .mockResolvedValueOnce({ hashedPassword: 'hashedPassword' });
+
+      const result = await updateAdmin.execute(
+        String(MockIAdmin.id),
+        MockUpdateAdmin,
+      );
+
+      expect(securityService.comparePasswords).toHaveBeenCalledTimes(1);
+      expect(securityService.hashPassword).toHaveBeenCalledTimes(1);
+      expect(adminRepository.updateAdmin).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIAdmin);
+    });
+
+    it(`should throw an error if 'oldPassword' doesnt match`, async () => {
+      jest
+        .spyOn(prismaService.admin, 'findFirst')
+        .mockResolvedValueOnce(MockAdmin);
+
+      jest
+        .spyOn(securityService, 'comparePasswords')
+        .mockResolvedValueOnce(false);
+
+      try {
+        await updateAdmin.execute(String(MockIAdmin.id), MockUpdateAdmin);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(422);
+        expect(error.message).toBe('invalid old password');
+      }
+    });
+
+    it(`should throw an error if 'passwordConfirmation' doesnt match`, async () => {
+      const invalidPasswordConfirmation = 'invalid_password_confirmation';
+      const newBodyRequest = {
+        ...MockUpdateAdmin,
+        passwordConfirmation: invalidPasswordConfirmation,
+      };
+
+      try {
+        await updateAdmin.execute(String(MockIAdmin.id), newBodyRequest);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(422);
+        expect(error.message).toBe('new passwords do not match');
+      }
+    });
+
+    it('should throw an error if user not created', async () => {
+      jest
+        .spyOn(adminRepository, 'updateAdmin')
+        .mockRejectedValueOnce(new Error());
+
+      const invalidBody = {
+        email: 'example@email.com',
+      };
+
+      try {
+        await updateAdmin.execute(String(MockIAdmin.id), invalidBody);
       } catch (error) {
         expect(error).toBeInstanceOf(AppError);
         expect(error.code).toBe(500);
