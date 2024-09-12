@@ -17,6 +17,7 @@ import { isPublic } from '../auth/infra/decorators/is-public.decorator';
 import { FindAllAdminsService } from './services/all-admins.service';
 import { FindOneAdminService } from './services/find-one-admin.service';
 import { UpdateAdminService } from './services/update-admin.service';
+import { DeleteAdminService } from './services/delete-admin.service';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 
 @UseFilters(new HttpExceptionFilter(new AppError()))
@@ -27,6 +28,7 @@ export class AdminController {
     private readonly findAllAdmins: FindAllAdminsService,
     private readonly findOneAdmin: FindOneAdminService,
     private readonly updateAdmin: UpdateAdminService,
+    private readonly deleteAdmin: DeleteAdminService,
   ) {}
 
   @isPublic()
@@ -53,8 +55,8 @@ export class AdminController {
     return await this.updateAdmin.execute(id, body);
   }
 
-  @Delete()
-  remove() {
-    return 'this.adminService.remove(+id)';
+  @Delete('/remove/:id')
+  async remove(@Param('id') id: string): Promise<IAdmin> {
+    return await this.deleteAdmin.execute(id);
   }
 }

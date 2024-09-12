@@ -7,6 +7,7 @@ import { CreateAdminService } from './services/create-admin.service';
 import { FindAllAdminsService } from './services/all-admins.service';
 import { FindOneAdminService } from './services/find-one-admin.service';
 import { UpdateAdminService } from './services/update-admin.service';
+import { DeleteAdminService } from './services/delete-admin.service';
 
 @Module({
   controllers: [AdminController],
@@ -18,6 +19,7 @@ import { UpdateAdminService } from './services/update-admin.service';
     FindAllAdminsService,
     FindOneAdminService,
     UpdateAdminService,
+    DeleteAdminService,
   ],
 })
 export class AdminModule {}

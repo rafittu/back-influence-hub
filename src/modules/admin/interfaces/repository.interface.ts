@@ -5,4 +5,5 @@ export interface IAdminRepository<Admin> {
   findAllAdmins(): Promise<IAdmin[]>;
   findOneAdmin(id: string): Promise<IAdmin>;
   updateAdmin(id: string, data: IUpdateAdmin): Promise<IAdmin>;
+  deleteAdmin(id: string): Promise<IAdmin>;
 }

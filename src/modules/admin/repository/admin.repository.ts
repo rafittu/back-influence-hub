@@ -135,4 +135,27 @@ export class AdminRepository implements IAdminRepository<Admin> {
       );
     }
   }
+
+  async deleteAdmin(id: string): Promise<IAdmin> {
+    try {
+      const admin = await this.prisma.admin.delete({
+        where: { id: Number(id) },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          created_at: true,
+          updated_at: true,
+        },
+      });
+
+      return this.transformTimestamps(admin);
+    } catch (error) {
+      throw new AppError(
+        'admin-repository.deleteAdmin',
+        500,
+        'could not delete admin',
+      );
+    }
+  }
 }
