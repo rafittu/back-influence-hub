@@ -45,7 +45,7 @@ export class BrandRepository implements IBrandRepository<Brand> {
     } catch (error) {
       if (error.code === 'P2002') {
         throw new AppError(
-          'influencer-repository.createBrand',
+          'brand-repository.createBrand',
           409,
           `${error.meta.target[0]} already taken`,
         );

@@ -1166,6 +1166,121 @@
                 }
             }
         },
+        "/influencer/:influencerId": {
+            "get": {
+                "summary": "Find influencer by id",
+                "description": "Route to find influencer by id.",
+                "tags": ["Influencer"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "influencer id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Influencer data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/InfluencerInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "Ygona Moura",
+                                    "username": "ygona",
+                                    "email": "ygona@email.com",
+                                    "niches": ["Beleza & Maquiagem", "Lifestyle"],
+                                    "reach": "245987",
+                                    "photo": "https://new-example.photo.aws.com",
+                                    "address": {
+                                        "street": "Ipê",
+                                        "number": "45",
+                                        "zipCode": "12345678",
+                                        "city": "Belo Horizonte",
+                                        "state": "MG"
+                                    },
+                                    "createdAt": "2024-09-05T03:29:37.743Z",
+                                    "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }                                
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to get influencer data",
+                                            "code": "influencer-service.findOneInfluencer",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "could not get influencer details",
+                                                "code": "influencer-repository.findOneInfluencer",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
         "/influencer/:id": {
             "patch": {
                 "summary": "Update influencer",
@@ -1317,6 +1432,487 @@
                                             "error": {
                                                 "message": "could not update influencer details",
                                                 "code": "influencer-repository.updateInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/brand/create": {
+            "post": {
+                "summary": "Create brand",
+                "description": "Route to create a new brand.",
+                "tags": ["Brand"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {                    
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateBrand"
+                            },
+                            "example": {
+                                "name": "Glow 4 You",
+                                "description": "Period, it's time to shine",
+                                "niches": ["Artes", "Beleza & Maquiagem"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Brand created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/BrandInterface"
+                                },
+                                "example": {
+                                "id": "1",
+                                "name": "Glow 4 You",
+                                "description": "Period, it's time to shine",
+                                "niches": ["Artes", "Beleza & Maquiagem"],
+                                "createdAt": "2024-09-05T03:29:37.743Z",
+                                "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "invalid field",
+                                        "value": {
+                                            "error": {
+                                                "message": "One or more fields are missing or invalid",
+                                                "code": "bad.request",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "field already in use by another brand",
+                                        "value": {
+                                            "error": {
+                                                "message": "['name'] already taken",
+                                                "code": "brand-repository.createBrand",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to create brand",
+                                            "code": "brand-service.createBrand",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "brand not created",
+                                                "code": "brand-repository.createBrand",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
+        "/brand/": {
+            "get": {
+                "summary": "Get all brands",
+                "description": "Route to find all brands",
+                "tags": ["Brand"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                    "name": "Authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "Bearer {accesToken}",
+                    "schema": {
+                        "type": "string"
+                    }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Brands",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BrandsArray"
+                                },
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "name": "Glow 4 you",
+                                        "description": "Period, it's time to shine",
+                                        "createdAt": "2024-09-05T03:29:37.743Z",
+                                        "updatedAt": "2024-09-05T03:29:37.743Z"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to get brands",
+                                                "code": "brand-service.findAllBrands",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not get brands",
+                                                "code": "brand-repository.findAllBrands",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    } 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/brand/:id": {
+            "get": {
+                "summary": "Find brand by id",
+                "description": "Route to find brand by id.",
+                "tags": ["Brand"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "brand id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Brand data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/BrandInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "Glow 4 You",
+                                    "description": "Period, it's time to shine",
+                                    "niches": ["Beleza & Maquiagem", "Lifestyle"],
+                                    "createdAt": "2024-09-05T03:29:37.743Z",
+                                    "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }                                
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to get brand",
+                                            "code": "brand-service.findOneBrand",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "could not get brand details",
+                                                "code": "brand-repository.findOneBrand",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
+        "/brand/:brandId": {
+            "patch": {
+                "summary": "Update brand",
+                "description": "Route to update brand data",
+                "tags": ["Brand"],
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {token}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "brand id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                            "$ref": "#/components/schemas/UpdateBrand"
+                            },
+                            "examples": {
+                                "example1": {
+                                    "summary": "Updating brand description",
+                                    "value": {
+                                        "description": "Slay!"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Brand data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BrandInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "Glow 4 You",
+                                    "description": "Slay!",
+                                    "niches": ["Beleza & Maquiagem", "Lifestyle"],
+                                    "createdAt": "2024-09-05T03:29:37.743Z",
+                                    "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to update brand data",
+                                                "code": "brand-service.updateBrand",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not update brand details",
+                                                "code": "brand-repository.updateBrand",
                                                 "status": true
                                             },
                                             "data": {}
@@ -1655,6 +2251,106 @@
                         }
                     }
                 ]
+            },
+
+            "CreateBrand": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Brand name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Brand details"
+                    },
+                    "niches": {
+                        "type": "array",
+                        "description": "Brand categories"                
+                    }
+                },
+                "required":  [
+                    "name",
+                    "description",
+                    "niches"
+                ]
+            },
+            "BrandInterface": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Brand ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Brand name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Brand details"
+                    },
+                    "niches": {
+                        "type": "array",
+                        "description": "Influencer categories"                
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "description": "Date and time of brand creation"
+                    },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "Date and time of last brand update"
+                    }
+                }
+            },
+            "Brand": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Brand ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Brand name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Brand details"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "description": "Date and time of brand creation"
+                    },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "Date and time of last brand update"
+                    }
+                }
+            },
+            "BrandsArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Brand"
+                }
+            },
+            "UpdateBrand": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Brand name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Brand details"
+                    },
+                    "niches": {
+                        "type": "array",
+                        "description": "Brand categories"                
+                    }
+                }
             },
 
             "Error": {
