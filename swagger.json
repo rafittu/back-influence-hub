@@ -1697,6 +1697,111 @@
                     }
                 }
             }
+        },
+        "/brand/:id": {
+            "get": {
+                "summary": "Find brand by id",
+                "description": "Route to find brand by id.",
+                "tags": ["Brand"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "brand id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Brand data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/BrandInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "Glow 4 You",
+                                    "description": "Period, it's time to shine",
+                                    "niches": ["Beleza & Maquiagem", "Lifestyle"],
+                                    "createdAt": "2024-09-05T03:29:37.743Z",
+                                    "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }                                
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to get brand",
+                                            "code": "brand-service.findOneBrand",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "could not get brand details",
+                                                "code": "brand-repository.findOneBrand",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
         }
     },
 
