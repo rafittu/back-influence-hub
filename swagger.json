@@ -1443,6 +1443,163 @@
                     }
                 }
             }
+        },
+
+        "/brand/create": {
+            "post": {
+                "summary": "Create brand",
+                "description": "Route to create a new brand.",
+                "tags": ["Brand"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {                    
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateBrand"
+                            },
+                            "example": {
+                                "name": "Glow 4 You",
+                                "description": "Period, it's time to shine",
+                                "niches": ["Artes", "Beleza & Maquiagem"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Brand created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/BrandInterface"
+                                },
+                                "example": {
+                                "id": "1",
+                                "name": "Glow 4 You",
+                                "description": "Period, it's time to shine",
+                                "niches": ["Artes", "Beleza & Maquiagem"],
+                                "createdAt": "2024-09-05T03:29:37.743Z",
+                                "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "invalid field",
+                                        "value": {
+                                            "error": {
+                                                "message": "One or more fields are missing or invalid",
+                                                "code": "bad.request",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "field already in use by another brand",
+                                        "value": {
+                                            "error": {
+                                                "message": "['name'] already taken",
+                                                "code": "brand-repository.createBrand",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to create brand",
+                                            "code": "brand-service.createBrand",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "brand not created",
+                                                "code": "brand-repository.createBrand",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
         }
     },
 
@@ -1770,6 +1927,58 @@
                         }
                     }
                 ]
+            },
+
+            "CreateBrand": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Brand name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Brand details"
+                    },
+                    "niches": {
+                        "type": "array",
+                        "description": "Brand categories"                
+                    }
+                },
+                "required":  [
+                    "name",
+                    "description",
+                    "niches"
+                ]
+            },
+            "BrandInterface": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Brand ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Brand name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Brand details"
+                    },
+                    "niches": {
+                        "type": "array",
+                        "description": "Influencer categories"                
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "description": "Date and time of brand creation"
+                    },
+                      "updatedAt": {
+                        "type": "string",
+                        "description": "Date and time of last brand update"
+                    }
+                }
             },
 
             "Error": {
