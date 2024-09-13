@@ -1166,6 +1166,121 @@
                 }
             }
         },
+        "/influencer/:influencerId": {
+            "get": {
+                "summary": "Find influencer by id",
+                "description": "Route to find influencer by id.",
+                "tags": ["Influencer"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "influencer id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Influencer data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                "$ref": "#/components/schemas/InfluencerInterface"
+                                },
+                                "example": {
+                                    "id": "1",
+                                    "name": "Ygona Moura",
+                                    "username": "ygona",
+                                    "email": "ygona@email.com",
+                                    "niches": ["Beleza & Maquiagem", "Lifestyle"],
+                                    "reach": "245987",
+                                    "photo": "https://new-example.photo.aws.com",
+                                    "address": {
+                                        "street": "Ipê",
+                                        "number": "45",
+                                        "zipCode": "12345678",
+                                        "city": "Belo Horizonte",
+                                        "state": "MG"
+                                    },
+                                    "createdAt": "2024-09-05T03:29:37.743Z",
+                                    "updatedAt": "2024-09-05T03:29:37.743Z"
+                                }                                
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Error"
+                            },
+            
+                            "examples": {
+                                "example1": {
+                                    "summary": "service error",
+                                    "value": {
+                                        "error": {
+                                            "message": "failed to get influencer data",
+                                            "code": "influencer-service.findOneInfluencer",
+                                            "status": true
+                                        },
+                                        "data": {}
+                                    }
+                                },
+                                "example2": {
+                                    "summary": "repository error",
+                                    "value": {
+                                            "error": {
+                                                "message": "could not get influencer details",
+                                                "code": "influencer-repository.findOneInfluencer",
+                                                "status": true
+                                                },
+                                                "data": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+            }
+        },
         "/influencer/:id": {
             "patch": {
                 "summary": "Update influencer",
