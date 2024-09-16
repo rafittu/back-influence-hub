@@ -1926,7 +1926,7 @@
             }
         },
 
-        "/associate-influencer": {
+        "/brand/associate-influencer": {
             "post": {
                 "summary": "Associate influencer with brand",
                 "description": "Route to associate influencers with brand.",
@@ -2051,6 +2051,127 @@
                                     }
                                 }
                             }
+                    }
+                }
+            }
+        },
+        "/brand/influencers/by-brand": {
+            "get": {
+                "summary": "Get influencers associated with a brand",
+                "description": "Route to find influencers associated with the brand",
+                "tags": ["Brand Influencers"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "brand",
+                        "in": "query",
+                        "description": "Brand name",
+                        "schema": {
+                          "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Influencers associated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BrandIfluencersArray"
+                                },
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "influencerId": 1,
+                                        "brandId": 1,
+                                        "createdAt": "2024-09-16T20:18:06.414Z",
+                                        "updatedAt": "2024-09-16T20:18:06.414Z",
+                                        "influencer": {
+                                            "id": 1,
+                                            "name": "Ygona Moura",
+                                            "username": "ygona.moura",
+                                            "photo": "https://example.photo.aws.com",
+                                            "reach": 125000
+                                        },
+                                        "brand": {
+                                            "id": 1,
+                                            "name": "Glow 4 You",
+                                            "description": "Period, it's time to shine"
+                                        },
+                                        "commonNiches": [
+                                            "Artes",
+                                            "Beleza & Maquiagem"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+            
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to get influencers",
+                                                "code": "brand-service.findInfluencersByBrand",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not get influencers",
+                                                "code": "brand-repository.findInfluencersByBrand",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    } 
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2552,6 +2673,12 @@
                         "type": "array",
                         "description": "Common niches between influencer and brand"                        
                     }
+                }
+            },
+            "BrandIfluencersArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/BrandIfluencer"
                 }
             },
 
