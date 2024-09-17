@@ -167,6 +167,18 @@ describe('AdminServices', () => {
       expect(result).toEqual(MockIAdmin);
     });
 
+    it(`should throw an AppError`, async () => {
+      jest
+        .spyOn(adminRepository, 'findOneAdmin')
+        .mockRejectedValueOnce(new AppError());
+
+      try {
+        await findOneAdmin.execute(String(MockAdmin.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+      }
+    });
+
     it(`should throw an error if couldn't get admin`, async () => {
       jest
         .spyOn(adminRepository, 'findOneAdmin')
@@ -266,6 +278,18 @@ describe('AdminServices', () => {
 
       expect(adminRepository.deleteAdmin).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIAdmin);
+    });
+
+    it(`should throw an AppError`, async () => {
+      jest
+        .spyOn(adminRepository, 'deleteAdmin')
+        .mockRejectedValueOnce(new AppError());
+
+      try {
+        await deleteAdmin.execute(String(MockAdmin.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+      }
     });
 
     it(`should throw an error if couldn't delete admin`, async () => {
