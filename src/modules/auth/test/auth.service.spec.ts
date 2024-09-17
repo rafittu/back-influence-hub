@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { SecurityService } from '../../../common/services/security.service';
 import { PrismaService } from '../../../prisma.service';
 import {
+  MockAccessToken,
   MockUserCredentials,
   MockUserData,
   MockUserPayload,
@@ -62,6 +63,17 @@ describe('AuthService', () => {
         expect(error.code).toBe(401);
         expect(error.message).toBe('email or password is invalid');
       }
+    });
+
+    it('should return a user access token', async () => {
+      jest
+        .spyOn(jwtService, 'sign')
+        .mockReturnValueOnce(MockAccessToken.accessToken);
+
+      const result = await signInService.execute(MockUserPayload);
+
+      expect(jwtService.sign).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockAccessToken);
     });
   });
 });
