@@ -124,5 +124,22 @@ describe('InfluencerServices', () => {
         expect(error.message).toBe('invalid zipcode format');
       }
     });
+
+    it('should throw an error if address fetching fails', async () => {
+      (
+        axios.get as jest.MockedFunction<typeof axios.get>
+      ).mockRejectedValueOnce(new Error());
+
+      try {
+        await createInfluencer.execute(
+          MockCreateInfluencer,
+          MockInfluencerPhotoFile,
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(400);
+        expect(error.message).toBe('error fetching address from ViaCEP');
+      }
+    });
   });
 });
