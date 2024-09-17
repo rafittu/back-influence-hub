@@ -36,6 +36,7 @@ export const MockUpdateAdmin: UpdateAdminDto = {
 };
 
 export const MockIUpdateAdmin: IUpdateAdmin = {
+  name: faker.person.fullName(),
   email: faker.internet.email(),
   password: '@Newpassword123',
 };
