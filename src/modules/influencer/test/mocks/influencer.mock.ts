@@ -12,7 +12,7 @@ export const MockCreateInfluencer: CreateInfluencerDto = {
   email: faker.internet.email(),
   reach: faker.number.int({ min: 1000, max: 1000000 }),
   niches: [faker.helpers.arrayElement(Object.values(Niche))],
-  zipCode: faker.location.zipCode(),
+  zipCode: '99999999',
   street: faker.location.street(),
   number: faker.location.buildingNumber(),
 };
