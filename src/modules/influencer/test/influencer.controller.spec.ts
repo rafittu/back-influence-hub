@@ -39,7 +39,7 @@ describe('InfluencerController', () => {
         {
           provide: FindOneInfluencerService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(null),
+            execute: jest.fn().mockResolvedValue(MockIInfluencerDetails),
           },
         },
         {
@@ -97,6 +97,15 @@ describe('InfluencerController', () => {
 
       expect(findAllInfluencers.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual([MockIInfluencer]);
+    });
+  });
+
+  describe('find one influencer', () => {
+    it('should find one influencer successfully', async () => {
+      const result = await controller.findOne(String(MockIInfluencer.id));
+
+      expect(findOneInfluencer.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIInfluencerDetails);
     });
   });
 });
