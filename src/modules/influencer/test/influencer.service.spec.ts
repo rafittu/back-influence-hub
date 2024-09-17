@@ -12,6 +12,7 @@ import {
   MockIInfluencerDetails,
   MockInfluencerPhotoFile,
 } from './mocks/influencer.mock';
+import { AppError } from '../../../common/errors/Error';
 
 jest.mock('axios');
 
@@ -107,6 +108,21 @@ describe('InfluencerServices', () => {
       expect(s3Bucket.uploadImage).toHaveBeenCalledTimes(1);
       expect(influencerRepository.createInfluencer).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIInfluencerDetails);
+    });
+
+    it('should throw an error if zip code is invalid', async () => {
+      const invalidZipCode = {
+        ...MockCreateInfluencer,
+        zipCode: 'invalid_zip',
+      };
+
+      try {
+        await createInfluencer.execute(invalidZipCode, MockInfluencerPhotoFile);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(400);
+        expect(error.message).toBe('invalid zipcode format');
+      }
     });
   });
 });
