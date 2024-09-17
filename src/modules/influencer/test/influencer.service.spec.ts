@@ -58,7 +58,23 @@ describe('InfluencerServices', () => {
               },
             ]),
             findInfluencerByFilter: jest.fn().mockResolvedValue(null),
-            findOneInfluencer: jest.fn().mockResolvedValue(null),
+            findOneInfluencer: jest.fn().mockResolvedValue({
+              ...MockIInfluencerDetails,
+              Niche: MockIInfluencerDetails.niches.map((niche) => ({
+                niche: { name: niche },
+              })),
+              InfluencerAddress: [
+                {
+                  zipCode: MockIInfluencerDetails.address.zipCode,
+                  state: MockIInfluencerDetails.address.state,
+                  city: MockIInfluencerDetails.address.city,
+                  street: MockIInfluencerDetails.address.street,
+                  number: MockIInfluencerDetails.address.number,
+                },
+              ],
+              created_at: MockIInfluencerDetails.createdAt,
+              updated_at: MockIInfluencerDetails.updatedAt,
+            }),
             updateInfluencer: jest.fn().mockResolvedValue(null),
           },
         },
@@ -212,6 +228,17 @@ describe('InfluencerServices', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to get influencers');
       }
+    });
+  });
+
+  describe('find influencer by id', () => {
+    it('should find an influencer by id successfully', async () => {
+      const result = await findOneInfluencer.execute(
+        String(MockIInfluencerDetails.id),
+      );
+
+      expect(influencerRepository.findOneInfluencer).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIInfluencerDetails);
     });
   });
 });
