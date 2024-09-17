@@ -141,5 +141,32 @@ describe('InfluencerServices', () => {
         expect(error.message).toBe('error fetching address from ViaCEP');
       }
     });
+
+    it('should throw an error if creating influencer fails', async () => {
+      (
+        axios.get as jest.MockedFunction<typeof axios.get>
+      ).mockResolvedValueOnce({
+        data: {
+          logradouro: MockIInfluencerDetails.address.street,
+          localidade: MockIInfluencerDetails.address.city,
+          uf: MockIInfluencerDetails.address.state,
+        },
+      });
+
+      jest
+        .spyOn(influencerRepository, 'createInfluencer')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await createInfluencer.execute(
+          MockCreateInfluencer,
+          MockInfluencerPhotoFile,
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to create influencer');
+      }
+    });
   });
 });
