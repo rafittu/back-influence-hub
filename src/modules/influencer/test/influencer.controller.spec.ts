@@ -5,6 +5,11 @@ import { FindAllInfluencersService } from '../services/find-all-influencers.serv
 import { FindOneInfluencerService } from '../services/find-one-influencer.service';
 import { UpdateInfluencerService } from '../services/update-influencer.service';
 import { InfluencersByFilterService } from '../services/find-influencers-by-filter.service';
+import {
+  MockCreateInfluencer,
+  MockIInfluencer,
+  MockInfluencerPhotoFile,
+} from './mocks/influencer.mock';
 
 describe('InfluencerController', () => {
   let controller: InfluencerController;
@@ -21,7 +26,7 @@ describe('InfluencerController', () => {
         {
           provide: CreateInfluencerService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(null),
+            execute: jest.fn().mockResolvedValue(MockIInfluencer),
           },
         },
         {
@@ -71,5 +76,17 @@ describe('InfluencerController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('create influencer', () => {
+    it('should create a new influencer successfully', async () => {
+      const result = await controller.create(
+        MockCreateInfluencer,
+        MockInfluencerPhotoFile,
+      );
+
+      expect(createInfluencer.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIInfluencer);
+    });
   });
 });
