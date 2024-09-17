@@ -132,6 +132,18 @@ describe('AdminServices', () => {
       expect(result).toEqual([MockIAdmin]);
     });
 
+    it(`should throw an AppError`, async () => {
+      jest
+        .spyOn(adminRepository, 'findAllAdmins')
+        .mockRejectedValueOnce(new AppError());
+
+      try {
+        await findAllAdmins.execute();
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+      }
+    });
+
     it(`should throw an error if couldn't get admins`, async () => {
       jest
         .spyOn(adminRepository, 'findAllAdmins')
