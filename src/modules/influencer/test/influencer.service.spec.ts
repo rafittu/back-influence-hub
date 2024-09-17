@@ -9,6 +9,7 @@ import { InfluencerRepository } from '../repository/influencer.repository';
 import axios from 'axios';
 import {
   MockCreateInfluencer,
+  MockIInfluencer,
   MockIInfluencerDetails,
   MockInfluencerPhotoFile,
 } from './mocks/influencer.mock';
@@ -49,7 +50,13 @@ describe('InfluencerServices', () => {
               created_at: MockIInfluencerDetails.createdAt,
               updated_at: MockIInfluencerDetails.updatedAt,
             }),
-            findAllInfluencers: jest.fn().mockResolvedValue(null),
+            findAllInfluencers: jest.fn().mockResolvedValue([
+              {
+                ...MockIInfluencer,
+                created_at: MockIInfluencer.createdAt,
+                updated_at: MockIInfluencer.updatedAt,
+              },
+            ]),
             findInfluencerByFilter: jest.fn().mockResolvedValue(null),
             findOneInfluencer: jest.fn().mockResolvedValue(null),
             updateInfluencer: jest.fn().mockResolvedValue(null),
@@ -182,6 +189,15 @@ describe('InfluencerServices', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to create influencer');
       }
+    });
+  });
+
+  describe('find all influencers', () => {
+    it('should find and list all influencers successfully', async () => {
+      const result = await findAllInfluencers.execute();
+
+      expect(influencerRepository.findAllInfluencers).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockIInfluencer]);
     });
   });
 });
