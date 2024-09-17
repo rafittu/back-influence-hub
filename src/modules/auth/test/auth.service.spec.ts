@@ -75,5 +75,21 @@ describe('AuthService', () => {
       expect(jwtService.sign).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockAccessToken);
     });
+
+    it('should throw an error generating access token', async () => {
+      const jwtServiceMock = {
+        sign: jest.fn(),
+      };
+
+      jest
+        .spyOn(jwtServiceMock, 'sign')
+        .mockRejectedValueOnce(new Error('Token generation error'));
+
+      try {
+        await signInService.execute(MockUserPayload);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+      }
+    });
   });
 });
