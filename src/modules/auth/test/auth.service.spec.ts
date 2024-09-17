@@ -3,13 +3,18 @@ import { SignInService } from '../services/signin.service';
 import { JwtService } from '@nestjs/jwt';
 import { SecurityService } from '../../../common/services/security.service';
 import { PrismaService } from '../../../prisma.service';
+import {
+  MockUserCredentials,
+  MockUserData,
+  MockUserPayload,
+} from './mocks/auth.mock';
 
 describe('AuthService', () => {
   let signInService: SignInService;
 
   let jwtService: JwtService;
   let securityService: SecurityService;
-  let prisma: PrismaService;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,13 +25,30 @@ describe('AuthService', () => {
 
     jwtService = module.get<JwtService>(JwtService);
     securityService = module.get<SecurityService>(SecurityService);
-    prisma = module.get<PrismaService>(PrismaService);
+    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {
     expect(signInService).toBeDefined();
     expect(jwtService).toBeDefined();
     expect(securityService).toBeDefined();
-    expect(prisma).toBeDefined();
+    expect(prismaService).toBeDefined();
+  });
+
+  describe('signin', () => {
+    it('should validate user credentials successfully', async () => {
+      jest
+        .spyOn(prismaService.admin, 'findFirst')
+        .mockResolvedValueOnce(MockUserData);
+
+      jest
+        .spyOn(securityService, 'comparePasswords')
+        .mockResolvedValue(true as never);
+
+      const result = await signInService.validateUser(MockUserCredentials);
+
+      expect(prismaService.admin.findFirst).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockUserPayload);
+    });
   });
 });
