@@ -45,7 +45,7 @@ describe('InfluencerController', () => {
         {
           provide: UpdateInfluencerService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(null),
+            execute: jest.fn().mockResolvedValue(MockIInfluencerDetails),
           },
         },
         {
@@ -116,6 +116,19 @@ describe('InfluencerController', () => {
 
       expect(influencersByFilter.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual([MockIInfluencerDetails]);
+    });
+  });
+
+  describe('update influencer', () => {
+    it('should update an influencer successfully', async () => {
+      const result = await controller.update(
+        String(MockIInfluencer.id),
+        null,
+        MockInfluencerPhotoFile,
+      );
+
+      expect(updateInfluencer.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIInfluencerDetails);
     });
   });
 });
