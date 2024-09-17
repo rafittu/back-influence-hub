@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../auth.controller';
 import { SignInService } from '../services/signin.service';
+import { MockAccessToken, MockAuthRequest } from './mocks/auth.mock';
 
 describe('AdminController', () => {
   let controller: AuthController;
@@ -14,8 +15,7 @@ describe('AdminController', () => {
         {
           provide: SignInService,
           useValue: {
-            validateUser: jest.fn().mockResolvedValue(null),
-            execute: jest.fn().mockResolvedValue(null),
+            execute: jest.fn().mockResolvedValue(MockAccessToken),
           },
         },
       ],
@@ -27,5 +27,14 @@ describe('AdminController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('admin signin', () => {
+    it('should return an admin accessToken', async () => {
+      const result = await controller.signin(MockAuthRequest);
+
+      expect(signIn.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockAccessToken);
+    });
   });
 });
