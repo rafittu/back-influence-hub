@@ -199,5 +199,19 @@ describe('InfluencerServices', () => {
       expect(influencerRepository.findAllInfluencers).toHaveBeenCalledTimes(1);
       expect(result).toEqual([MockIInfluencer]);
     });
+
+    it(`should throw an AppError`, async () => {
+      jest
+        .spyOn(influencerRepository, 'findAllInfluencers')
+        .mockRejectedValueOnce(new AppError());
+
+      try {
+        await findAllInfluencers.execute();
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to get influencers');
+      }
+    });
   });
 });
