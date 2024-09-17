@@ -51,7 +51,7 @@ describe('InfluencerController', () => {
         {
           provide: InfluencersByFilterService,
           useValue: {
-            execute: jest.fn().mockResolvedValue([null]),
+            execute: jest.fn().mockResolvedValue([MockIInfluencerDetails]),
           },
         },
       ],
@@ -106,6 +106,16 @@ describe('InfluencerController', () => {
 
       expect(findOneInfluencer.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIInfluencerDetails);
+    });
+  });
+
+  describe('find influencers by filter', () => {
+    it('should find influencers by filter successfully', async () => {
+      const filter = { city: MockIInfluencerDetails.address.city };
+      const result = await controller.findInfluencerByFilter(filter);
+
+      expect(influencersByFilter.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockIInfluencerDetails]);
     });
   });
 });
