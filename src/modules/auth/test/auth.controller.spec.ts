@@ -1,7 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../auth.controller';
 import { SignInService } from '../services/signin.service';
-import { MockAccessToken, MockAuthRequest } from './mocks/auth.mock';
+import {
+  MockAccessToken,
+  MockAuthRequest,
+  MockUserPayload,
+} from './mocks/auth.mock';
 
 describe('AdminController', () => {
   let controller: AuthController;
@@ -35,6 +39,14 @@ describe('AdminController', () => {
 
       expect(signIn.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockAccessToken);
+    });
+  });
+
+  describe('getMe', () => {
+    it('should return the current user from accessToken', () => {
+      const result = controller.getMe(MockUserPayload);
+
+      expect(result).toBe(MockUserPayload);
     });
   });
 });
