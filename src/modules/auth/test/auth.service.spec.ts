@@ -8,6 +8,7 @@ import {
   MockUserData,
   MockUserPayload,
 } from './mocks/auth.mock';
+import { AppError } from '../../../common/errors/Error';
 
 describe('AuthService', () => {
   let signInService: SignInService;
@@ -49,6 +50,18 @@ describe('AuthService', () => {
 
       expect(prismaService.admin.findFirst).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockUserPayload);
+    });
+
+    it('should throw an error if email or password is invalid', async () => {
+      jest.spyOn(prismaService.admin, 'findFirst').mockReturnValueOnce(null);
+
+      try {
+        await signInService.validateUser(MockUserCredentials);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(401);
+        expect(error.message).toBe('email or password is invalid');
+      }
     });
   });
 });
