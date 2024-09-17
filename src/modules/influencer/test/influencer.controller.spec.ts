@@ -8,6 +8,7 @@ import { InfluencersByFilterService } from '../services/find-influencers-by-filt
 import {
   MockCreateInfluencer,
   MockIInfluencer,
+  MockIInfluencerDetails,
   MockInfluencerPhotoFile,
 } from './mocks/influencer.mock';
 
@@ -26,13 +27,13 @@ describe('InfluencerController', () => {
         {
           provide: CreateInfluencerService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(MockIInfluencer),
+            execute: jest.fn().mockResolvedValue(MockIInfluencerDetails),
           },
         },
         {
           provide: FindAllInfluencersService,
           useValue: {
-            execute: jest.fn().mockResolvedValue([null]),
+            execute: jest.fn().mockResolvedValue([MockIInfluencer]),
           },
         },
         {
@@ -86,7 +87,16 @@ describe('InfluencerController', () => {
       );
 
       expect(createInfluencer.execute).toHaveBeenCalledTimes(1);
-      expect(result).toEqual(MockIInfluencer);
+      expect(result).toEqual(MockIInfluencerDetails);
+    });
+  });
+
+  describe('list all influencers', () => {
+    it('should list all influencers successfully', async () => {
+      const result = await controller.findAll();
+
+      expect(findAllInfluencers.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockIInfluencer]);
     });
   });
 });

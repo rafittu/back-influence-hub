@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { CreateInfluencerDto } from '../../dto/create-influencer.dto';
 import { Niche } from '../../enums/niche.enum';
-import { IInfluencerDetails } from '../../interfaces/influencer.interface';
+import {
+  IInfluencer,
+  IInfluencerDetails,
+} from '../../interfaces/influencer.interface';
 
 export const MockCreateInfluencer: CreateInfluencerDto = {
   name: faker.person.fullName(),
@@ -23,7 +26,7 @@ export const MockInfluencerPhotoFile = {
   size: 1024,
 } as Express.Multer.File;
 
-export const MockIInfluencer: IInfluencerDetails = {
+export const MockIInfluencerDetails: IInfluencerDetails = {
   id: faker.number.int(),
   name: MockCreateInfluencer.name,
   username: MockCreateInfluencer.username,
@@ -40,4 +43,15 @@ export const MockIInfluencer: IInfluencerDetails = {
   },
   createdAt: faker.date.past(),
   updatedAt: faker.date.recent(),
+};
+
+export const MockIInfluencer: IInfluencer = {
+  id: MockIInfluencerDetails.id,
+  name: MockIInfluencerDetails.name,
+  username: MockIInfluencerDetails.username,
+  email: MockIInfluencerDetails.email,
+  reach: MockIInfluencerDetails.reach,
+  photo: MockIInfluencerDetails.photo,
+  createdAt: MockIInfluencerDetails.createdAt,
+  updatedAt: MockIInfluencerDetails.updatedAt,
 };
