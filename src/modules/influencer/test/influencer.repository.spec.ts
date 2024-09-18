@@ -6,6 +6,7 @@ import {
   MockInfluencer,
   MockInfluencerNiche,
 } from './mocks/influencer.mock';
+import { AppError } from '../../../common/errors/Error';
 
 describe('AdminRepository', () => {
   let influencerRepository: InfluencerRepository;
@@ -46,6 +47,27 @@ describe('AdminRepository', () => {
 
       expect(prismaService.influencer.create).toHaveBeenCalledTimes(1);
       expect(prismaService.influencerNiche.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if email is already in use', async () => {
+      jest
+        .spyOn(prismaService, '$transaction')
+        .mockImplementation(async (callback) => {
+          await callback(prismaService);
+        });
+
+      jest.spyOn(prismaService.influencer, 'create').mockRejectedValueOnce({
+        code: 'P2002',
+        meta: { target: ['email'] },
+      });
+
+      try {
+        await influencerRepository.createInfluencer(MockICreateInfluencer);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(409);
+        expect(error.message).toBe('email already taken');
+      }
     });
   });
 });
