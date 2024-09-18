@@ -141,5 +141,25 @@ describe('BrandRepository', () => {
       expect(prismaService.brand.findFirst).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockBrand);
     });
+
+    it('should throw an error if could not get brand', async () => {
+      jest
+        .spyOn(prismaService.brand, 'findFirst')
+        .mockRejectedValueOnce(
+          new AppError(
+            'brand-repository.findOneBrand',
+            500,
+            'could not get brand details',
+          ),
+        );
+
+      try {
+        await brandRepository.findOneBrand(String(MockIBrand.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not get brand details');
+      }
+    });
   });
 });
