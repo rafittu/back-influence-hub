@@ -6,6 +6,8 @@ import {
   MockBrandNiche,
   MockCreateBrandDto,
   MockIBrand,
+  MockIBrandInfluencer,
+  MockPrismaBrandInfluencer,
   MockUpdateBrandDto,
 } from './mocks/brand.mock';
 import { AppError } from '../../../common/errors/Error';
@@ -200,6 +202,22 @@ describe('BrandRepository', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('could not update brand details');
       }
+    });
+  });
+
+  describe('associate influencer', () => {
+    it('should successfully associate a brand with an influencer', async () => {
+      jest
+        .spyOn(prismaService.influencerBrand, 'create')
+        .mockResolvedValueOnce(MockPrismaBrandInfluencer);
+
+      const result = await brandRepository.associateInfluencer(
+        String(MockIBrand.id),
+        String(MockIBrandInfluencer.influencerId),
+      );
+
+      expect(prismaService.influencerBrand.create).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockPrismaBrandInfluencer);
     });
   });
 });
