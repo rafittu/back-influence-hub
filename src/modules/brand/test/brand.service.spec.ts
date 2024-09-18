@@ -132,5 +132,19 @@ describe('AdminServices', () => {
       );
       expect(result).toEqual([MockIBrand]);
     });
+
+    it('should throw an error if could not list brands', async () => {
+      jest
+        .spyOn(brandRepository, 'findAllBrands')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await findAllBrands.execute();
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to get brands');
+      }
+    });
   });
 });
