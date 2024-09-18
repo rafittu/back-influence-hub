@@ -10,6 +10,7 @@ import {
   MockCreateBrandDto,
   MockIBrand,
   MockIBrandDetails,
+  MockUpdateBrandDto,
 } from './mocks/brand.mock';
 
 describe('InfluencerController', () => {
@@ -47,7 +48,7 @@ describe('InfluencerController', () => {
         {
           provide: UpdateBrandService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(null),
+            execute: jest.fn().mockResolvedValue(MockIBrandDetails),
           },
         },
         {
@@ -106,6 +107,18 @@ describe('InfluencerController', () => {
       const result = await controller.findOne(String(MockIBrand.id));
 
       expect(findOneBrand.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIBrandDetails);
+    });
+  });
+
+  describe('update brand', () => {
+    it('should update a brand successfully', async () => {
+      const result = await controller.update(
+        String(MockIBrand.id),
+        MockUpdateBrandDto,
+      );
+
+      expect(updateBrand.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIBrandDetails);
     });
   });
