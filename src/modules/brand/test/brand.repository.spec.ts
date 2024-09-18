@@ -219,5 +219,28 @@ describe('BrandRepository', () => {
       expect(prismaService.influencerBrand.create).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockPrismaBrandInfluencer);
     });
+
+    it('should throw an error if could not link brand with influencer', async () => {
+      jest
+        .spyOn(prismaService.influencerBrand, 'create')
+        .mockRejectedValueOnce(
+          new AppError(
+            'brand-repository.associateInfluencer',
+            500,
+            'could not link brand with influencer',
+          ),
+        );
+
+      try {
+        await brandRepository.associateInfluencer(
+          String(MockIBrand.id),
+          String(MockIBrandInfluencer.influencerId),
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not link brand with influencer');
+      }
+    });
   });
 });
