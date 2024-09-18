@@ -6,6 +6,7 @@ import { FindOneBrandService } from '../services/find-one-brand.service';
 import { UpdateBrandService } from '../services/update-brand.service';
 import { LinkInfluencerService } from '../services/link-influencer.service';
 import { FindInfluencersByBrandService } from '../services/influencers-by-brand.service';
+import { MockCreateBrandDto, MockIBrand } from './mocks/brand.mock';
 
 describe('InfluencerController', () => {
   let controller: BrandController;
@@ -24,7 +25,7 @@ describe('InfluencerController', () => {
         {
           provide: CreateBrandService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(null),
+            execute: jest.fn().mockResolvedValue(MockIBrand),
           },
         },
         {
@@ -76,5 +77,14 @@ describe('InfluencerController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('create brand', () => {
+    it('should create a new brand successfully', async () => {
+      const result = await controller.create(MockCreateBrandDto);
+
+      expect(createBrand.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIBrand);
+    });
   });
 });
