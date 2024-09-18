@@ -184,6 +184,42 @@ describe('AdminRepository', () => {
       expect(result).toEqual([MockInfluencer]);
     });
 
+    it('should find influencers with only reachMin', async () => {
+      const filter = {
+        ...MockInfluencerFilter,
+        reachMax: undefined,
+        niche: undefined,
+        city: undefined,
+      };
+
+      jest
+        .spyOn(prismaService.influencer, 'findMany')
+        .mockResolvedValueOnce([MockInfluencer]);
+
+      const result = await influencerRepository.findInfluencerByFilter(filter);
+
+      expect(prismaService.influencer.findMany).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockInfluencer]);
+    });
+
+    it('should find influencers with only reachMax', async () => {
+      const filter = {
+        ...MockInfluencerFilter,
+        reachMin: undefined,
+        niche: undefined,
+        city: undefined,
+      };
+
+      jest
+        .spyOn(prismaService.influencer, 'findMany')
+        .mockResolvedValueOnce([MockInfluencer]);
+
+      const result = await influencerRepository.findInfluencerByFilter(filter);
+
+      expect(prismaService.influencer.findMany).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockInfluencer]);
+    });
+
     it('should throw an error if could not get influencers', async () => {
       jest
         .spyOn(prismaService.influencer, 'findMany')
