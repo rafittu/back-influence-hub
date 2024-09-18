@@ -2,10 +2,12 @@ import { faker } from '@faker-js/faker';
 import { CreateInfluencerDto } from '../../dto/create-influencer.dto';
 import { Niche } from '../../enums/niche.enum';
 import {
+  ICreateInfluencer,
   IInfluencer,
   IInfluencerDetails,
   IInfluencerFilters,
 } from '../../interfaces/influencer.interface';
+import { Influencer, InfluencerNiche } from '@prisma/client';
 
 export const MockCreateInfluencer: CreateInfluencerDto = {
   name: faker.person.fullName(),
@@ -62,6 +64,38 @@ export const MockInfluencerFilter: IInfluencerFilters = {
   reachMax: String(MockIInfluencerDetails.reach + 7),
   niche: MockIInfluencerDetails.niches,
   city: MockIInfluencerDetails.address.city,
+};
+
+export const MockICreateInfluencer: ICreateInfluencer = {
+  name: MockIInfluencerDetails.name,
+  username: MockIInfluencerDetails.username,
+  email: MockIInfluencerDetails.email,
+  reach: MockIInfluencerDetails.reach,
+  photo: MockIInfluencerDetails.photo,
+  niches: MockCreateInfluencer.niches,
+  zipCode: MockCreateInfluencer.zipCode,
+  state: MockIInfluencerDetails.address.state,
+  city: MockIInfluencerDetails.address.city,
+  street: MockCreateInfluencer.street,
+  number: MockCreateInfluencer.number,
+};
+
+export const MockInfluencer: Influencer = {
+  id: MockIInfluencerDetails.id,
+  name: MockIInfluencerDetails.name,
+  username: MockIInfluencerDetails.username,
+  email: MockIInfluencerDetails.email,
+  reach: MockIInfluencerDetails.reach,
+  photo: MockIInfluencerDetails.photo,
+  created_at: MockIInfluencerDetails.createdAt,
+  updated_at: MockIInfluencerDetails.updatedAt,
+};
+
+export const MockInfluencerNiche: InfluencerNiche = {
+  influencerId: MockIInfluencerDetails.id,
+  nicheId: faker.number.int(),
+  created_at: new Date(),
+  updated_at: new Date(),
 };
 
 export const MockPrismaInfluencer = {
