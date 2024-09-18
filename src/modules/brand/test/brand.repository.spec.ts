@@ -5,6 +5,7 @@ import {
   MockBrand,
   MockBrandNiche,
   MockCreateBrandDto,
+  MockIBrand,
 } from './mocks/brand.mock';
 import { AppError } from '../../../common/errors/Error';
 
@@ -126,6 +127,19 @@ describe('BrandRepository', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('could not get brands');
       }
+    });
+  });
+
+  describe('find brand by id', () => {
+    it('should find and list a brand successfully', async () => {
+      jest
+        .spyOn(prismaService.brand, 'findFirst')
+        .mockResolvedValueOnce(MockBrand);
+
+      const result = await brandRepository.findOneBrand(String(MockIBrand.id));
+
+      expect(prismaService.brand.findFirst).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockBrand);
     });
   });
 });
