@@ -5,8 +5,10 @@ import {
   MockICreateInfluencer,
   MockIInfluencerDetails,
   MockInfluencer,
+  MockInfluencerAddress,
   MockInfluencerFilter,
   MockInfluencerNiche,
+  MockUpdateInfluencer,
 } from './mocks/influencer.mock';
 import { AppError } from '../../../common/errors/Error';
 
@@ -200,6 +202,29 @@ describe('AdminRepository', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('could not get influencers');
       }
+    });
+  });
+
+  describe('update influencer', () => {
+    it('should update an influencer successfully', async () => {
+      jest
+        .spyOn(prismaService.influencerAddress, 'findFirst')
+        .mockResolvedValueOnce(MockInfluencerAddress);
+
+      jest
+        .spyOn(prismaService.influencer, 'update')
+        .mockResolvedValueOnce(MockInfluencer);
+
+      const result = await influencerRepository.updateInfluencer(
+        String(MockIInfluencerDetails.id),
+        MockUpdateInfluencer,
+      );
+
+      expect(prismaService.influencerAddress.findFirst).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(prismaService.influencer.update).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockInfluencer);
     });
   });
 });

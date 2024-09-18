@@ -6,8 +6,9 @@ import {
   IInfluencer,
   IInfluencerDetails,
   IInfluencerFilters,
+  IUpdateInfluencer,
 } from '../../interfaces/influencer.interface';
-import { Influencer, InfluencerNiche } from '@prisma/client';
+import { Influencer, InfluencerAddress, InfluencerNiche } from '@prisma/client';
 
 export const MockCreateInfluencer: CreateInfluencerDto = {
   name: faker.person.fullName(),
@@ -112,6 +113,32 @@ export const MockPrismaInfluencer = {
       number: MockIInfluencerDetails.address.number,
     },
   ],
+  created_at: MockIInfluencerDetails.createdAt,
+  updated_at: MockIInfluencerDetails.updatedAt,
+};
+
+export const MockUpdateInfluencer: IUpdateInfluencer = {
+  name: faker.person.fullName(),
+  username: faker.internet.userName(),
+  email: faker.internet.email(),
+  reach: faker.number.int({ min: 1000, max: 1000000 }),
+  photo: faker.image.avatar(),
+  zipCode: '88888888',
+  street: faker.location.street(),
+  number: faker.location.buildingNumber(),
+  city: faker.location.city(),
+  state: faker.location.state(),
+  niches: [faker.helpers.arrayElement(Object.values(Niche))],
+};
+
+export const MockInfluencerAddress: InfluencerAddress = {
+  id: faker.number.int(),
+  influencer_id: MockIInfluencer.id,
+  street: MockIInfluencerDetails.address.street,
+  number: MockIInfluencerDetails.address.number,
+  city: MockIInfluencerDetails.address.city,
+  state: MockIInfluencerDetails.address.state,
+  zipCode: MockIInfluencerDetails.address.zipCode,
   created_at: MockIInfluencerDetails.createdAt,
   updated_at: MockIInfluencerDetails.updatedAt,
 };
