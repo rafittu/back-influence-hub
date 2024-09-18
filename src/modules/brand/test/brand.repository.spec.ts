@@ -6,6 +6,7 @@ import {
   MockBrandNiche,
   MockCreateBrandDto,
   MockIBrand,
+  MockUpdateBrandDto,
 } from './mocks/brand.mock';
 import { AppError } from '../../../common/errors/Error';
 
@@ -160,6 +161,22 @@ describe('BrandRepository', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('could not get brand details');
       }
+    });
+  });
+
+  describe('update brand', () => {
+    it('should update brand successfully', async () => {
+      jest
+        .spyOn(prismaService.brand, 'update')
+        .mockResolvedValueOnce(MockBrand);
+
+      const result = await brandRepository.updateBrand(
+        String(MockIBrand.id),
+        MockUpdateBrandDto,
+      );
+
+      expect(prismaService.brand.update).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockBrand);
     });
   });
 });
