@@ -10,6 +10,7 @@ import {
   MockCreateBrandDto,
   MockIBrand,
   MockIBrandDetails,
+  MockUpdateBrandDto,
 } from './mocks/brand.mock';
 import { AppError } from '../../../common/errors/Error';
 
@@ -55,7 +56,14 @@ describe('AdminServices', () => {
               created_at: MockIBrandDetails.createdAt,
               updated_at: MockIBrandDetails.updatedAt,
             }),
-            updateBrand: jest.fn().mockResolvedValue(null),
+            updateBrand: jest.fn().mockResolvedValue({
+              ...MockIBrandDetails,
+              BrandNiche: MockIBrandDetails.niches.map((niche) => ({
+                niche: { name: niche },
+              })),
+              created_at: MockIBrandDetails.createdAt,
+              updated_at: MockIBrandDetails.updatedAt,
+            }),
             associateInfluencer: jest.fn().mockResolvedValue(null),
             findInfluencersByBrand: jest.fn().mockResolvedValue(null),
           },
@@ -182,6 +190,21 @@ describe('AdminServices', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to get brand');
       }
+    });
+  });
+
+  describe('update brand', () => {
+    it('should update a brand successfully', async () => {
+      jest.spyOn(updateBrand as unknown as never, 'transformInfluencerData');
+
+      const result = await updateBrand.execute(
+        String(MockIBrand.id),
+        MockUpdateBrandDto,
+      );
+
+      expect(brandRepository.updateBrand).toHaveBeenCalledTimes(1);
+      expect(updateBrand['transformInfluencerData']).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIBrandDetails);
     });
   });
 });
