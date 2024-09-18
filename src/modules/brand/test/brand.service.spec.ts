@@ -36,7 +36,13 @@ describe('AdminServices', () => {
               created_at: MockIBrand.createdAt,
               updated_at: MockIBrand.updatedAt,
             }),
-            findAllBrands: jest.fn().mockResolvedValue(null),
+            findAllBrands: jest.fn().mockResolvedValue([
+              {
+                ...MockIBrand,
+                created_at: MockIBrand.createdAt,
+                updated_at: MockIBrand.updatedAt,
+              },
+            ]),
             findOneBrand: jest.fn().mockResolvedValue(null),
             updateBrand: jest.fn().mockResolvedValue(null),
             associateInfluencer: jest.fn().mockResolvedValue(null),
@@ -109,6 +115,22 @@ describe('AdminServices', () => {
       } catch (error) {
         expect(error).toBeInstanceOf(AppError);
       }
+    });
+  });
+
+  describe('find all brands', () => {
+    it('should find and list all brands successfully', async () => {
+      jest.spyOn(findAllBrands as unknown as never, 'transformTimestamps');
+      jest.spyOn(findAllBrands as unknown as never, 'transformArrayTimestamps');
+
+      const result = await findAllBrands.execute();
+
+      expect(brandRepository.findAllBrands).toHaveBeenCalledTimes(1);
+      expect(findAllBrands['transformTimestamps']).toHaveBeenCalledTimes(1);
+      expect(findAllBrands['transformArrayTimestamps']).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(result).toEqual([MockIBrand]);
     });
   });
 });
