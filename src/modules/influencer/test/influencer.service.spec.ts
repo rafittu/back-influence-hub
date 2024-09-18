@@ -359,6 +359,24 @@ describe('InfluencerServices', () => {
       expect(result).toEqual(MockIInfluencerDetails);
     });
 
+    it('should throw an error if zip code is invalid', async () => {
+      try {
+        await updateInfluencer.execute(
+          String(MockIInfluencerDetails.id),
+          {
+            ...MockCreateInfluencer,
+            zipCode: 'invalid_zip',
+            oldPhoto: 'bucket-image-url',
+          },
+          MockInfluencerPhotoFile,
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(400);
+        expect(error.message).toBe('invalid zipcode format');
+      }
+    });
+
     it('should throw an error if address fetching fails', async () => {
       const zipCode = '12345678';
       jest.spyOn(axios, 'get').mockResolvedValue({
