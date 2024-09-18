@@ -358,5 +358,20 @@ describe('InfluencerServices', () => {
       expect(influencerRepository.updateInfluencer).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIInfluencerDetails);
     });
+
+    it('should throw an error if address fetching fails', async () => {
+      const zipCode = '12345678';
+      jest.spyOn(axios, 'get').mockResolvedValue({
+        data: { erro: true },
+      });
+
+      try {
+        await updateInfluencer['getAddress'](zipCode);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.message).toBe('error fetching address from ViaCEP');
+        expect(error.code).toBe(400);
+      }
+    });
   });
 });
