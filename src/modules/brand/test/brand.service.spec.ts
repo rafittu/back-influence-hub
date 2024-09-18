@@ -6,7 +6,11 @@ import { UpdateBrandService } from '../services/update-brand.service';
 import { LinkInfluencerService } from '../services/link-influencer.service';
 import { FindInfluencersByBrandService } from '../services/influencers-by-brand.service';
 import { BrandRepository } from '../repository/brand.repository';
-import { MockCreateBrandDto, MockIBrand } from './mocks/brand.mock';
+import {
+  MockCreateBrandDto,
+  MockIBrand,
+  MockIBrandDetails,
+} from './mocks/brand.mock';
 import { AppError } from '../../../common/errors/Error';
 
 describe('AdminServices', () => {
@@ -43,7 +47,14 @@ describe('AdminServices', () => {
                 updated_at: MockIBrand.updatedAt,
               },
             ]),
-            findOneBrand: jest.fn().mockResolvedValue(null),
+            findOneBrand: jest.fn().mockResolvedValue({
+              ...MockIBrandDetails,
+              BrandNiche: MockIBrandDetails.niches.map((niche) => ({
+                niche: { name: niche },
+              })),
+              created_at: MockIBrandDetails.createdAt,
+              updated_at: MockIBrandDetails.updatedAt,
+            }),
             updateBrand: jest.fn().mockResolvedValue(null),
             associateInfluencer: jest.fn().mockResolvedValue(null),
             findInfluencersByBrand: jest.fn().mockResolvedValue(null),
@@ -145,6 +156,18 @@ describe('AdminServices', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to get brands');
       }
+    });
+  });
+
+  describe('find brand by id', () => {
+    it('should find a brand by id successfully', async () => {
+      jest.spyOn(findOneBrand as unknown as never, 'transformInfluencerData');
+
+      const result = await findOneBrand.execute(String(MockIBrand.id));
+
+      expect(brandRepository.findOneBrand).toHaveBeenCalledTimes(1);
+      expect(findOneBrand['transformInfluencerData']).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIBrandDetails);
     });
   });
 });
