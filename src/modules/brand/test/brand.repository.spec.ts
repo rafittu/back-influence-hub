@@ -178,5 +178,28 @@ describe('BrandRepository', () => {
       expect(prismaService.brand.update).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockBrand);
     });
+
+    it('should throw an error if could not update brand details', async () => {
+      jest
+        .spyOn(prismaService.brand, 'update')
+        .mockRejectedValueOnce(
+          new AppError(
+            'brand-repository.updateBrand',
+            500,
+            'could not update brand details',
+          ),
+        );
+
+      try {
+        await brandRepository.updateBrand(
+          String(MockIBrand.id),
+          MockUpdateBrandDto,
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not update brand details');
+      }
+    });
   });
 });
