@@ -281,5 +281,19 @@ describe('AdminServices', () => {
       ).toHaveBeenCalledTimes(1);
       expect(result).toEqual([MockIBrandInfluencer]);
     });
+
+    it('should throw an error if could not find influencers by brand', async () => {
+      jest
+        .spyOn(brandRepository, 'findInfluencersByBrand')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await influencersByBrand.execute(MockIBrand.name);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to get influencers');
+      }
+    });
   });
 });
