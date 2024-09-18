@@ -31,7 +31,7 @@ describe('InfluencerController', () => {
         {
           provide: FindAllBrandsService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(null),
+            execute: jest.fn().mockResolvedValue([MockIBrand]),
           },
         },
         {
@@ -85,6 +85,15 @@ describe('InfluencerController', () => {
 
       expect(createBrand.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIBrand);
+    });
+  });
+
+  describe('find and list all brands', () => {
+    it('should find and list all brands successfully', async () => {
+      const result = await controller.findAll();
+
+      expect(findAllBrands.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockIBrand]);
     });
   });
 });
