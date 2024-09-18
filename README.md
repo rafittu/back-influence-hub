@@ -4,7 +4,7 @@
 
 <br>
 
-O projeto InfluenceHub consiste em uma API desenvolvida para simplificar a gestão de influenciadores e marcas. Com recursos que permitem criar, visualizar, atualizar e relacionar influenciadores e marcas de acordo com nichos, a plataforma visa aumentar a produtividade e a buscar o influenciador digital adequado para promover sua marca.
+O projeto InfluenceHub consiste em uma API desenvolvida para simplificar a gestão de influenciadores e marcas. Com recursos que permitem criar, visualizar, atualizar e relacionar influenciadores e marcas de acordo com categorias, a plataforma visa aumentar a produtividade e a buscar o influenciador digital adequado para promover sua marca.
 
 Para uma experiência completa, siga o passo-a-passo abaixo para iniciar o servidor e, depois, inicie a [interface front-end](https://github.com/rafittu/front-influence-hub) para interagir com a API!
 
@@ -40,7 +40,7 @@ Este projeto utiliza as seguintes tecnologias:
 ### Gerenciamento de Influenciadores:
 - Cadastro, listagem, visualização e edição de influenciadores.
 - Preenchimento automático de endereço usando a API do [ViaCEP](https://viacep.com.br/).
-- Filtros avançados para busca de influenciadores por nicho, alcance, cidade.
+- Filtros avançados para busca de influenciadores por categorias, alcance, cidade.
 
 ### Gerenciamento de Marcas:
 - Cadastro, listagem, visualização e edição de marcas.
@@ -48,7 +48,7 @@ Este projeto utiliza as seguintes tecnologias:
 ### Relacionamento Influenciador-Marca:
 - Associação de influenciadores a marcas.
 - Listagem de influenciadores de determinada marca.
-- Identificação de nichos em comum entre influenciadores e marcas.
+- Identificação de categorias em comum entre influenciadores e marcas.
 
 <br>
 
@@ -57,10 +57,9 @@ Este projeto utiliza as seguintes tecnologias:
     - desassociar influenciadores e marcas da plataforma;
   
 - Endpoint para autenticação dos representantes de marcas;
-    - representantes devem ser capazes de acessar o portfólio de influenciadores, além de atualizar informações cadastrais.
+    - representantes devem ser capazes de acessar o portfólio de influenciadores.
+
 - Refatoração do código;
-- Ampliação dos testes unitários;
-- Ampliação da documentação Swagger;
 
 <br>
 
@@ -87,15 +86,6 @@ $ cd back-influence-hub
 
 ```bash
 $ docker-compose up --build
-```
-
-
-### Testes
-
-Para executar os testes unitários, utilize o seguinte comando:
-
-```bash
-$ npm run test
 ```
 
 <br>
@@ -201,7 +191,7 @@ $ npm run test
 
 ### Associações:
 
-- **`POST /brand/associate-influencer`:** Associa um influenciador a uma marca e retorna os nichos em comum. O `id` do influenciador e da marca devem ser passados como `@Query()` na requisição respectivamente como `influencerId` e `brandId`;
+- **`POST /brand/associate-influencer`:** Associa um influenciador a uma marca e retorna as categorias em comum. O `id` do influenciador e da marca devem ser passados como `@Query()` na requisição respectivamente como `influencerId` e `brandId`;
   ```
   {
     "id": 10,
@@ -228,6 +218,26 @@ $ npm run test
   ```
 
 - **`GET /brand/influencers/by-brand`:** Lista todas os influenciadores de determinada marca. O nome da marca deve ser passado na `@Query()` da requisição como `brand`;
+
+<br>
+
+## Testes
+
+<br>
+
+A API possui uma cobertura de testes unitários abrangente, com 100% de cobertura em cada parte essencial do código, garantindo a qualidade e o correto funcionamento do sistema.
+
+Para executar os testes unitários, utilize o seguinte comando:
+
+```bash
+$ npm run test
+```
+
+Você também pode gerar um relatório de cobertura dos testes para verificar quais partes do código foram testadas. Para gerar esse relatório, utilize o seguinte comando:
+
+```bash
+$ npm run test:cov
+```
 
 <br>
 
