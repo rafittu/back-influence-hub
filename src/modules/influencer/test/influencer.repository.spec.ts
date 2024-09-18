@@ -69,5 +69,31 @@ describe('AdminRepository', () => {
         expect(error.message).toBe('email already taken');
       }
     });
+
+    it('should throw an error if influencer is not created', async () => {
+      jest
+        .spyOn(prismaService, '$transaction')
+        .mockImplementation(async (callback) => {
+          await callback(prismaService);
+        });
+
+      jest
+        .spyOn(prismaService.influencer, 'create')
+        .mockRejectedValueOnce(
+          new AppError(
+            'influencer-repository.createInfluencer',
+            500,
+            'influencer not created',
+          ),
+        );
+
+      try {
+        await influencerRepository.createInfluencer(MockICreateInfluencer);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('influencer not created');
+      }
+    });
   });
 });
