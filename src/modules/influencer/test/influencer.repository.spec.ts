@@ -226,5 +226,32 @@ describe('AdminRepository', () => {
       expect(prismaService.influencer.update).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockInfluencer);
     });
+
+    it('should throw an error if could not update influencer', async () => {
+      jest
+        .spyOn(prismaService.influencerAddress, 'findFirst')
+        .mockResolvedValueOnce(MockInfluencerAddress);
+
+      jest
+        .spyOn(prismaService.influencer, 'update')
+        .mockRejectedValueOnce(
+          new AppError(
+            'influencer-repository.updateInfluencer',
+            500,
+            'could not update influencer details',
+          ),
+        );
+
+      try {
+        await influencerRepository.updateInfluencer(
+          String(MockIInfluencerDetails.id),
+          MockUpdateInfluencer,
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not update influencer details');
+      }
+    });
   });
 });
