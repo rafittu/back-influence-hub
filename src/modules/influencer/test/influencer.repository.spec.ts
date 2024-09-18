@@ -5,6 +5,7 @@ import {
   MockICreateInfluencer,
   MockIInfluencerDetails,
   MockInfluencer,
+  MockInfluencerFilter,
   MockInfluencerNiche,
 } from './mocks/influencer.mock';
 import { AppError } from '../../../common/errors/Error';
@@ -165,6 +166,20 @@ describe('AdminRepository', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('could not get influencer details');
       }
+    });
+  });
+
+  describe('find influencers by filter', () => {
+    it('should find and list influencers by filter successfully', async () => {
+      jest
+        .spyOn(prismaService.influencer, 'findMany')
+        .mockResolvedValueOnce([MockInfluencer]);
+
+      const result =
+        await influencerRepository.findInfluencerByFilter(MockInfluencerFilter);
+
+      expect(prismaService.influencer.findMany).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockInfluencer]);
     });
   });
 });
