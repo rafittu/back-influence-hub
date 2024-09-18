@@ -7,6 +7,7 @@ import { LinkInfluencerService } from '../services/link-influencer.service';
 import { FindInfluencersByBrandService } from '../services/influencers-by-brand.service';
 import { BrandRepository } from '../repository/brand.repository';
 import { MockCreateBrandDto, MockIBrand } from './mocks/brand.mock';
+import { AppError } from '../../../common/errors/Error';
 
 describe('AdminServices', () => {
   let createBrand: CreateBrandService;
@@ -82,6 +83,32 @@ describe('AdminServices', () => {
       expect(brandRepository.createBrand).toHaveBeenCalledTimes(1);
       expect(createBrand['transformTimestamps']).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIBrand);
+    });
+
+    it('should throw an error if brand not created', async () => {
+      jest
+        .spyOn(brandRepository, 'createBrand')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await createBrand.execute(MockCreateBrandDto);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to create brand');
+      }
+    });
+
+    it('should throw an AppError', async () => {
+      jest
+        .spyOn(brandRepository, 'createBrand')
+        .mockRejectedValueOnce(new AppError());
+
+      try {
+        await createBrand.execute(MockCreateBrandDto);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+      }
     });
   });
 });
