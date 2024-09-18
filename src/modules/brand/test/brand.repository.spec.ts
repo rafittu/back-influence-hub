@@ -68,5 +68,31 @@ describe('BrandRepository', () => {
         expect(error.message).toBe('email already taken');
       }
     });
+
+    it('should throw an error if user is not created', async () => {
+      jest
+        .spyOn(prismaService, '$transaction')
+        .mockImplementation(async (callback) => {
+          await callback(prismaService);
+        });
+
+      jest
+        .spyOn(prismaService.brand, 'create')
+        .mockRejectedValueOnce(
+          new AppError(
+            'brand-repository.createBrand',
+            500,
+            'brand not created',
+          ),
+        );
+
+      try {
+        await brandRepository.createBrand(MockCreateBrandDto);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('brand not created');
+      }
+    });
   });
 });
