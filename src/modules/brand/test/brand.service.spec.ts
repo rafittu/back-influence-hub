@@ -169,5 +169,19 @@ describe('AdminServices', () => {
       expect(findOneBrand['transformInfluencerData']).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIBrandDetails);
     });
+
+    it('should throw an error if could not find brand', async () => {
+      jest
+        .spyOn(brandRepository, 'findOneBrand')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await findOneBrand.execute(String(MockIBrand.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to get brand');
+      }
+    });
   });
 });
