@@ -391,5 +391,37 @@ describe('InfluencerServices', () => {
         expect(error.code).toBe(400);
       }
     });
+
+    it('should throw an error if updating influencer fails', async () => {
+      (
+        axios.get as jest.MockedFunction<typeof axios.get>
+      ).mockResolvedValueOnce({
+        data: {
+          logradouro: MockIInfluencerDetails.address.street,
+          localidade: MockIInfluencerDetails.address.city,
+          uf: MockIInfluencerDetails.address.state,
+        },
+      });
+
+      jest
+        .spyOn(influencerRepository, 'updateInfluencer')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await updateInfluencer.execute(
+          String(MockIInfluencerDetails.id),
+          {
+            ...MockCreateInfluencer,
+            zipCode: MockCreateInfluencer.zipCode,
+            oldPhoto: 'bucket-image-url',
+          },
+          MockInfluencerPhotoFile,
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to update influencer data');
+      }
+    });
   });
 });
