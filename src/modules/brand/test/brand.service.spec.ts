@@ -10,9 +10,12 @@ import {
   MockCreateBrandDto,
   MockIBrand,
   MockIBrandDetails,
+  MockIBrandInfluencer,
+  MockPrismaBrandInfluencer,
   MockUpdateBrandDto,
 } from './mocks/brand.mock';
 import { AppError } from '../../../common/errors/Error';
+import { MockIInfluencer } from '../../../modules/influencer/test/mocks/influencer.mock';
 
 describe('AdminServices', () => {
   let createBrand: CreateBrandService;
@@ -64,7 +67,9 @@ describe('AdminServices', () => {
               created_at: MockIBrandDetails.createdAt,
               updated_at: MockIBrandDetails.updatedAt,
             }),
-            associateInfluencer: jest.fn().mockResolvedValue(null),
+            associateInfluencer: jest
+              .fn()
+              .mockResolvedValue(MockPrismaBrandInfluencer),
             findInfluencersByBrand: jest.fn().mockResolvedValue(null),
           },
         },
@@ -219,6 +224,26 @@ describe('AdminServices', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to update brand data');
       }
+    });
+  });
+
+  describe('associate brand with influencer', () => {
+    it('should associate a influencer with a brand successfully', async () => {
+      jest.spyOn(
+        linkBrandInfluencer as unknown as never,
+        'formatAssociationResult',
+      );
+
+      const result = await linkBrandInfluencer.execute(
+        String(MockIBrand.id),
+        String(MockIInfluencer.id),
+      );
+
+      expect(brandRepository.associateInfluencer).toHaveBeenCalledTimes(1);
+      expect(
+        linkBrandInfluencer['formatAssociationResult'],
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIBrandInfluencer);
     });
   });
 });

@@ -53,3 +53,29 @@ export const MockIBrandInfluencer: IBrandInfluencer = {
   },
   commonNiches: MockIBrandDetails.niches,
 };
+
+export const MockPrismaBrandInfluencer = {
+  id: MockIBrandInfluencer.id,
+  influencer_id: MockIBrandInfluencer.influencerId,
+  brand_id: MockIBrandInfluencer.brandId,
+  created_at: MockIBrandInfluencer.createdAt,
+  updated_at: MockIBrandInfluencer.updatedAt,
+  influencer: {
+    id: MockIBrandInfluencer.influencer.id,
+    name: MockIBrandInfluencer.influencer.name,
+    username: MockIBrandInfluencer.influencer.username,
+    photo: MockIBrandInfluencer.influencer.photo,
+    reach: MockIBrandInfluencer.influencer.reach,
+    Niche: MockIBrandDetails.niches.map((niche) => ({
+      niche: { name: niche },
+    })),
+  },
+  brand: {
+    id: MockIBrandInfluencer.brand.id,
+    name: MockIBrandInfluencer.brand.name,
+    description: MockIBrandInfluencer.brand.description,
+    BrandNiche: MockIBrandDetails.niches.map((niche) => ({
+      niche: { name: niche },
+    })),
+  },
+};
