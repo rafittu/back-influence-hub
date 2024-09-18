@@ -243,4 +243,19 @@ describe('BrandRepository', () => {
       }
     });
   });
+
+  describe('find influencers by brand', () => {
+    it('should successfully find influencers for a given brand', async () => {
+      jest
+        .spyOn(prismaService.influencerBrand, 'findMany')
+        .mockResolvedValueOnce([MockPrismaBrandInfluencer]);
+
+      const result = await brandRepository.findInfluencersByBrand(
+        MockIBrand.name,
+      );
+
+      expect(prismaService.influencerBrand.findMany).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockPrismaBrandInfluencer]);
+    });
+  });
 });
