@@ -6,6 +6,7 @@ import { UpdateBrandService } from '../services/update-brand.service';
 import { LinkInfluencerService } from '../services/link-influencer.service';
 import { FindInfluencersByBrandService } from '../services/influencers-by-brand.service';
 import { BrandRepository } from '../repository/brand.repository';
+import { MockCreateBrandDto, MockIBrand } from './mocks/brand.mock';
 
 describe('AdminServices', () => {
   let createBrand: CreateBrandService;
@@ -29,7 +30,11 @@ describe('AdminServices', () => {
         {
           provide: BrandRepository,
           useValue: {
-            createBrand: jest.fn().mockResolvedValue(null),
+            createBrand: jest.fn().mockResolvedValue({
+              ...MockIBrand,
+              created_at: MockIBrand.createdAt,
+              updated_at: MockIBrand.updatedAt,
+            }),
             findAllBrands: jest.fn().mockResolvedValue(null),
             findOneBrand: jest.fn().mockResolvedValue(null),
             updateBrand: jest.fn().mockResolvedValue(null),
@@ -66,5 +71,17 @@ describe('AdminServices', () => {
     expect(updateBrand).toBeDefined();
     expect(linkBrandInfluencer).toBeDefined();
     expect(influencersByBrand).toBeDefined();
+  });
+
+  describe('create brand', () => {
+    it('should create a new brand successfully', async () => {
+      jest.spyOn(createBrand as unknown as never, 'transformTimestamps');
+
+      const result = await createBrand.execute(MockCreateBrandDto);
+
+      expect(brandRepository.createBrand).toHaveBeenCalledTimes(1);
+      expect(createBrand['transformTimestamps']).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIBrand);
+    });
   });
 });
