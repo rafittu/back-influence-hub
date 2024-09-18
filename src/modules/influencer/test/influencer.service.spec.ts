@@ -13,6 +13,7 @@ import {
   MockIInfluencerDetails,
   MockInfluencerFilter,
   MockInfluencerPhotoFile,
+  MockPrismaInfluencer,
 } from './mocks/influencer.mock';
 import { AppError } from '../../../common/errors/Error';
 
@@ -58,59 +59,13 @@ describe('InfluencerServices', () => {
                 updated_at: MockIInfluencer.updatedAt,
               },
             ]),
-            findInfluencerByFilter: jest.fn().mockResolvedValue([
-              {
-                ...MockIInfluencerDetails,
-                Niche: MockIInfluencerDetails.niches.map((niche) => ({
-                  niche: { name: niche },
-                })),
-                InfluencerAddress: [
-                  {
-                    zipCode: MockIInfluencerDetails.address.zipCode,
-                    state: MockIInfluencerDetails.address.state,
-                    city: MockIInfluencerDetails.address.city,
-                    street: MockIInfluencerDetails.address.street,
-                    number: MockIInfluencerDetails.address.number,
-                  },
-                ],
-                created_at: MockIInfluencerDetails.createdAt,
-                updated_at: MockIInfluencerDetails.updatedAt,
-              },
-            ]),
-            findOneInfluencer: jest.fn().mockResolvedValue({
-              ...MockIInfluencerDetails,
-              Niche: MockIInfluencerDetails.niches.map((niche) => ({
-                niche: { name: niche },
-              })),
-              InfluencerAddress: [
-                {
-                  zipCode: MockIInfluencerDetails.address.zipCode,
-                  state: MockIInfluencerDetails.address.state,
-                  city: MockIInfluencerDetails.address.city,
-                  street: MockIInfluencerDetails.address.street,
-                  number: MockIInfluencerDetails.address.number,
-                },
-              ],
-              created_at: MockIInfluencerDetails.createdAt,
-              updated_at: MockIInfluencerDetails.updatedAt,
-            }),
-            updateInfluencer: jest.fn().mockResolvedValue({
-              ...MockIInfluencerDetails,
-              Niche: MockIInfluencerDetails.niches.map((niche) => ({
-                niche: { name: niche },
-              })),
-              InfluencerAddress: [
-                {
-                  zipCode: MockIInfluencerDetails.address.zipCode,
-                  state: MockIInfluencerDetails.address.state,
-                  city: MockIInfluencerDetails.address.city,
-                  street: MockIInfluencerDetails.address.street,
-                  number: MockIInfluencerDetails.address.number,
-                },
-              ],
-              created_at: MockIInfluencerDetails.createdAt,
-              updated_at: MockIInfluencerDetails.updatedAt,
-            }),
+            findInfluencerByFilter: jest
+              .fn()
+              .mockResolvedValue([MockPrismaInfluencer]),
+            findOneInfluencer: jest
+              .fn()
+              .mockResolvedValue(MockPrismaInfluencer),
+            updateInfluencer: jest.fn().mockResolvedValue(MockPrismaInfluencer),
           },
         },
       ],
