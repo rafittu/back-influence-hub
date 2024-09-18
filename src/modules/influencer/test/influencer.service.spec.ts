@@ -94,7 +94,23 @@ describe('InfluencerServices', () => {
               created_at: MockIInfluencerDetails.createdAt,
               updated_at: MockIInfluencerDetails.updatedAt,
             }),
-            updateInfluencer: jest.fn().mockResolvedValue(null),
+            updateInfluencer: jest.fn().mockResolvedValue({
+              ...MockIInfluencerDetails,
+              Niche: MockIInfluencerDetails.niches.map((niche) => ({
+                niche: { name: niche },
+              })),
+              InfluencerAddress: [
+                {
+                  zipCode: MockIInfluencerDetails.address.zipCode,
+                  state: MockIInfluencerDetails.address.state,
+                  city: MockIInfluencerDetails.address.city,
+                  street: MockIInfluencerDetails.address.street,
+                  number: MockIInfluencerDetails.address.number,
+                },
+              ],
+              created_at: MockIInfluencerDetails.createdAt,
+              updated_at: MockIInfluencerDetails.updatedAt,
+            }),
           },
         },
       ],
@@ -313,6 +329,34 @@ describe('InfluencerServices', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to get influencers');
       }
+    });
+  });
+
+  describe('update influencer', () => {
+    it('should update an influencer successfully', async () => {
+      (
+        axios.get as jest.MockedFunction<typeof axios.get>
+      ).mockResolvedValueOnce({
+        data: {
+          logradouro: MockIInfluencerDetails.address.street,
+          localidade: MockIInfluencerDetails.address.city,
+          uf: MockIInfluencerDetails.address.state,
+        },
+      });
+
+      const result = await updateInfluencer.execute(
+        String(MockIInfluencerDetails.id),
+        {
+          ...MockCreateInfluencer,
+          zipCode: MockCreateInfluencer.zipCode,
+          oldPhoto: 'bucket-image-url',
+        },
+        MockInfluencerPhotoFile,
+      );
+
+      expect(s3Bucket.uploadImage).toHaveBeenCalledTimes(1);
+      expect(influencerRepository.updateInfluencer).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIInfluencerDetails);
     });
   });
 });
