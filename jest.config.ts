@@ -16,6 +16,7 @@ module.exports = {
     '/prisma.service.ts',
     '/modules/auth/infra',
     '.*\\.config\\.ts$',
+    '.*\\.dto\\.ts$',
     '.*\\.decorator\\.ts$',
     '.*\\.module\\.ts$',
   ],
