@@ -63,3 +63,21 @@ export const MockInfluencerFilter: IInfluencerFilters = {
   niche: MockIInfluencerDetails.niches,
   city: MockIInfluencerDetails.address.city,
 };
+
+export const MockPrismaInfluencer = {
+  ...MockIInfluencerDetails,
+  Niche: MockIInfluencerDetails.niches.map((niche) => ({
+    niche: { name: niche },
+  })),
+  InfluencerAddress: [
+    {
+      zipCode: MockIInfluencerDetails.address.zipCode,
+      state: MockIInfluencerDetails.address.state,
+      city: MockIInfluencerDetails.address.city,
+      street: MockIInfluencerDetails.address.street,
+      number: MockIInfluencerDetails.address.number,
+    },
+  ],
+  created_at: MockIInfluencerDetails.createdAt,
+  updated_at: MockIInfluencerDetails.updatedAt,
+};
