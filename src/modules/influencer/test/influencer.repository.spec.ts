@@ -181,5 +181,25 @@ describe('AdminRepository', () => {
       expect(prismaService.influencer.findMany).toHaveBeenCalledTimes(1);
       expect(result).toEqual([MockInfluencer]);
     });
+
+    it('should throw an error if could not get influencers', async () => {
+      jest
+        .spyOn(prismaService.influencer, 'findMany')
+        .mockRejectedValueOnce(
+          new AppError(
+            'influencer-repository.findInfluencersByFilter',
+            500,
+            'could not get influencers',
+          ),
+        );
+
+      try {
+        await influencerRepository.findInfluencerByFilter(MockInfluencerFilter);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not get influencers');
+      }
+    });
   });
 });
