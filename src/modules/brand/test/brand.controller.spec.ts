@@ -6,7 +6,11 @@ import { FindOneBrandService } from '../services/find-one-brand.service';
 import { UpdateBrandService } from '../services/update-brand.service';
 import { LinkInfluencerService } from '../services/link-influencer.service';
 import { FindInfluencersByBrandService } from '../services/influencers-by-brand.service';
-import { MockCreateBrandDto, MockIBrand } from './mocks/brand.mock';
+import {
+  MockCreateBrandDto,
+  MockIBrand,
+  MockIBrandDetails,
+} from './mocks/brand.mock';
 
 describe('InfluencerController', () => {
   let controller: BrandController;
@@ -37,7 +41,7 @@ describe('InfluencerController', () => {
         {
           provide: FindOneBrandService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(null),
+            execute: jest.fn().mockResolvedValue(MockIBrandDetails),
           },
         },
         {
@@ -94,6 +98,15 @@ describe('InfluencerController', () => {
 
       expect(findAllBrands.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual([MockIBrand]);
+    });
+  });
+
+  describe('find brand by id', () => {
+    it('should find a brand by id successfully', async () => {
+      const result = await controller.findOne(String(MockIBrand.id));
+
+      expect(findOneBrand.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIBrandDetails);
     });
   });
 });
