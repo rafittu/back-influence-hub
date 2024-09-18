@@ -7,6 +7,7 @@ import {
   IBrandInfluencer,
 } from '../../interfaces/brand.interface';
 import { UpdateBrandDto } from '../../dto/update-brand.dto';
+import { Brand, BrandNiche } from '@prisma/client';
 
 export const MockCreateBrandDto: CreateBrandDto = {
   name: faker.company.name(),
@@ -78,4 +79,19 @@ export const MockPrismaBrandInfluencer = {
       niche: { name: niche },
     })),
   },
+};
+
+export const MockBrand: Brand = {
+  id: faker.number.int(),
+  name: MockCreateBrandDto.name,
+  description: MockCreateBrandDto.description,
+  created_at: new Date(),
+  updated_at: new Date(),
+};
+
+export const MockBrandNiche: BrandNiche = {
+  brandId: MockIBrand.id,
+  nicheId: faker.number.int(),
+  created_at: new Date(),
+  updated_at: new Date(),
 };
