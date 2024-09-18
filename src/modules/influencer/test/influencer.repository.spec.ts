@@ -96,4 +96,17 @@ describe('AdminRepository', () => {
       }
     });
   });
+
+  describe('find all influencers', () => {
+    it('should find and list all influencers successfully', async () => {
+      jest
+        .spyOn(prismaService.influencer, 'findMany')
+        .mockResolvedValueOnce([MockInfluencer]);
+
+      const result = await influencerRepository.findAllInfluencers();
+
+      expect(prismaService.influencer.findMany).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockInfluencer]);
+    });
+  });
 });
