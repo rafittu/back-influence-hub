@@ -6,6 +6,7 @@ import {
   MockBrandNiche,
   MockCreateBrandDto,
 } from './mocks/brand.mock';
+import { AppError } from '../../../common/errors/Error';
 
 describe('BrandRepository', () => {
   let brandRepository: BrandRepository;
@@ -45,6 +46,27 @@ describe('BrandRepository', () => {
 
       expect(prismaService.brand.create).toHaveBeenCalledTimes(1);
       expect(prismaService.brandNiche.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if email is already in use', async () => {
+      jest
+        .spyOn(prismaService, '$transaction')
+        .mockImplementation(async (callback) => {
+          await callback(prismaService);
+        });
+
+      jest.spyOn(prismaService.brand, 'create').mockRejectedValueOnce({
+        code: 'P2002',
+        meta: { target: ['email'] },
+      });
+
+      try {
+        await brandRepository.createBrand(MockCreateBrandDto);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(409);
+        expect(error.message).toBe('email already taken');
+      }
     });
   });
 });
