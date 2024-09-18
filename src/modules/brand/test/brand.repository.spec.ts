@@ -95,4 +95,36 @@ describe('BrandRepository', () => {
       }
     });
   });
+
+  describe('find all brands', () => {
+    it('should find and list all brands successfully', async () => {
+      jest
+        .spyOn(prismaService.brand, 'findMany')
+        .mockResolvedValueOnce([MockBrand]);
+
+      const result = await brandRepository.findAllBrands();
+
+      expect(prismaService.brand.findMany).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockBrand]);
+    });
+
+    //   jest
+    //     .spyOn(prismaService.influencer, 'findMany')
+    //     .mockRejectedValueOnce(
+    //       new AppError(
+    //         'influencer-repository.findAllInfluencers',
+    //         500,
+    //         'could not get influencers',
+    //       ),
+    //     );
+
+    //   try {
+    //     await influencerRepository.findAllInfluencers();
+    //   } catch (error) {
+    //     expect(error).toBeInstanceOf(AppError);
+    //     expect(error.code).toBe(500);
+    //     expect(error.message).toBe('could not get influencers');
+    //   }
+    // });
+  });
 });
