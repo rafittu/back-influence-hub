@@ -206,5 +206,19 @@ describe('AdminServices', () => {
       expect(updateBrand['transformInfluencerData']).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIBrandDetails);
     });
+
+    it('should throw an error if could not update brand', async () => {
+      jest
+        .spyOn(brandRepository, 'updateBrand')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await updateBrand.execute(String(MockIBrand.id), MockUpdateBrandDto);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to update brand data');
+      }
+    });
   });
 });
