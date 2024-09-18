@@ -70,7 +70,9 @@ describe('AdminServices', () => {
             associateInfluencer: jest
               .fn()
               .mockResolvedValue(MockPrismaBrandInfluencer),
-            findInfluencersByBrand: jest.fn().mockResolvedValue(null),
+            findInfluencersByBrand: jest
+              .fn()
+              .mockResolvedValue([MockPrismaBrandInfluencer]),
           },
         },
       ],
@@ -261,6 +263,23 @@ describe('AdminServices', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to link influencer with brand');
       }
+    });
+  });
+
+  describe('find all influencers associated with a brand', () => {
+    it('should find all influencers associated with a brand successfully', async () => {
+      jest.spyOn(
+        influencersByBrand as unknown as never,
+        'transformBrandInfluencerData',
+      );
+
+      const result = await influencersByBrand.execute(MockIBrand.name);
+
+      expect(brandRepository.findInfluencersByBrand).toHaveBeenCalledTimes(1);
+      expect(
+        influencersByBrand['transformBrandInfluencerData'],
+      ).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([MockIBrandInfluencer]);
     });
   });
 });
