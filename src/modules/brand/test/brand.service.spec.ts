@@ -17,7 +17,7 @@ import {
 import { AppError } from '../../../common/errors/Error';
 import { MockIInfluencer } from '../../../modules/influencer/test/mocks/influencer.mock';
 
-describe('AdminServices', () => {
+describe('BrandServices', () => {
   let createBrand: CreateBrandService;
   let findAllBrands: FindAllBrandsService;
   let findOneBrand: FindOneBrandService;

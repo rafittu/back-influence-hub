@@ -15,7 +15,7 @@ import {
 } from './mocks/brand.mock';
 import { MockIInfluencer } from '../../../modules/influencer/test/mocks/influencer.mock';
 
-describe('InfluencerController', () => {
+describe('BrandController', () => {
   let controller: BrandController;
 
   let createBrand: CreateBrandService;
