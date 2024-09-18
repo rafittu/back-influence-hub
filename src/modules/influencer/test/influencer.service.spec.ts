@@ -284,5 +284,19 @@ describe('InfluencerServices', () => {
       );
       expect(result).toEqual([MockIInfluencerDetails]);
     });
+
+    it(`should throw an AppError`, async () => {
+      jest
+        .spyOn(influencerRepository, 'findInfluencerByFilter')
+        .mockRejectedValueOnce(new AppError());
+
+      try {
+        await findInfluencerByFilter.execute(MockInfluencerFilter);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to get influencers');
+      }
+    });
   });
 });
