@@ -109,6 +109,10 @@ export class UpdateInfluencerService {
 
       return this.transformInfluencerData(updatedInfluencer);
     } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+
       throw new AppError(
         'influencer-service.updateInfluencer',
         500,
