@@ -1,6 +1,6 @@
 module.exports = {
   moduleNameMapper: {
-    axios: 'axios/dist/node/axios.cjs',
+    axios: 'axios',
   },
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: 'src',
