@@ -4,6 +4,7 @@ import { Niche } from '../../enums/niche.enum';
 import {
   IInfluencer,
   IInfluencerDetails,
+  IInfluencerFilters,
 } from '../../interfaces/influencer.interface';
 
 export const MockCreateInfluencer: CreateInfluencerDto = {
@@ -54,4 +55,11 @@ export const MockIInfluencer: IInfluencer = {
   photo: MockIInfluencerDetails.photo,
   createdAt: MockIInfluencerDetails.createdAt,
   updatedAt: MockIInfluencerDetails.updatedAt,
+};
+
+export const MockInfluencerFilter: IInfluencerFilters = {
+  reachMin: String(MockIInfluencerDetails.reach - 7),
+  reachMax: String(MockIInfluencerDetails.reach + 7),
+  niche: MockIInfluencerDetails.niches,
+  city: MockIInfluencerDetails.address.city,
 };

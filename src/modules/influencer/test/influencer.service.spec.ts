@@ -11,6 +11,7 @@ import {
   MockCreateInfluencer,
   MockIInfluencer,
   MockIInfluencerDetails,
+  MockInfluencerFilter,
   MockInfluencerPhotoFile,
 } from './mocks/influencer.mock';
 import { AppError } from '../../../common/errors/Error';
@@ -57,7 +58,25 @@ describe('InfluencerServices', () => {
                 updated_at: MockIInfluencer.updatedAt,
               },
             ]),
-            findInfluencerByFilter: jest.fn().mockResolvedValue(null),
+            findInfluencerByFilter: jest.fn().mockResolvedValue([
+              {
+                ...MockIInfluencerDetails,
+                Niche: MockIInfluencerDetails.niches.map((niche) => ({
+                  niche: { name: niche },
+                })),
+                InfluencerAddress: [
+                  {
+                    zipCode: MockIInfluencerDetails.address.zipCode,
+                    state: MockIInfluencerDetails.address.state,
+                    city: MockIInfluencerDetails.address.city,
+                    street: MockIInfluencerDetails.address.street,
+                    number: MockIInfluencerDetails.address.number,
+                  },
+                ],
+                created_at: MockIInfluencerDetails.createdAt,
+                updated_at: MockIInfluencerDetails.updatedAt,
+              },
+            ]),
             findOneInfluencer: jest.fn().mockResolvedValue({
               ...MockIInfluencerDetails,
               Niche: MockIInfluencerDetails.niches.map((niche) => ({
@@ -253,6 +272,17 @@ describe('InfluencerServices', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to get influencer data');
       }
+    });
+  });
+
+  describe('find influencers by filter', () => {
+    it('should find influencers by filter successfully', async () => {
+      const result = await findInfluencerByFilter.execute(MockInfluencerFilter);
+
+      expect(influencerRepository.findInfluencerByFilter).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(result).toEqual([MockIInfluencerDetails]);
     });
   });
 });
