@@ -108,23 +108,24 @@ describe('BrandRepository', () => {
       expect(result).toEqual([MockBrand]);
     });
 
-    //   jest
-    //     .spyOn(prismaService.influencer, 'findMany')
-    //     .mockRejectedValueOnce(
-    //       new AppError(
-    //         'influencer-repository.findAllInfluencers',
-    //         500,
-    //         'could not get influencers',
-    //       ),
-    //     );
+    it('should throw an error if could not get brands', async () => {
+      jest
+        .spyOn(prismaService.brand, 'findMany')
+        .mockRejectedValueOnce(
+          new AppError(
+            'brand-repository.findAllBrands',
+            500,
+            'could not get brands',
+          ),
+        );
 
-    //   try {
-    //     await influencerRepository.findAllInfluencers();
-    //   } catch (error) {
-    //     expect(error).toBeInstanceOf(AppError);
-    //     expect(error.code).toBe(500);
-    //     expect(error.message).toBe('could not get influencers');
-    //   }
-    // });
+      try {
+        await brandRepository.findAllBrands();
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not get brands');
+      }
+    });
   });
 });
