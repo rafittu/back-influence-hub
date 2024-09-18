@@ -12,7 +12,7 @@ import {
 } from './mocks/influencer.mock';
 import { AppError } from '../../../common/errors/Error';
 
-describe('AdminRepository', () => {
+describe('InfluencerRepository', () => {
   let influencerRepository: InfluencerRepository;
   let prismaService: PrismaService;
 

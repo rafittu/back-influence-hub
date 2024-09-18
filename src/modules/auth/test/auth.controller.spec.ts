@@ -7,7 +7,7 @@ import {
   MockUserPayload,
 } from './mocks/auth.mock';
 
-describe('AdminController', () => {
+describe('AuthController', () => {
   let controller: AuthController;
 
   let signIn: SignInService;
