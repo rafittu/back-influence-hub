@@ -10,8 +10,10 @@ import {
   MockCreateBrandDto,
   MockIBrand,
   MockIBrandDetails,
+  MockIBrandInfluencer,
   MockUpdateBrandDto,
 } from './mocks/brand.mock';
+import { MockIInfluencer } from '../../../modules/influencer/test/mocks/influencer.mock';
 
 describe('InfluencerController', () => {
   let controller: BrandController;
@@ -54,7 +56,7 @@ describe('InfluencerController', () => {
         {
           provide: LinkInfluencerService,
           useValue: {
-            execute: jest.fn().mockResolvedValue(null),
+            execute: jest.fn().mockResolvedValue(MockIBrandInfluencer),
           },
         },
         {
@@ -120,6 +122,18 @@ describe('InfluencerController', () => {
 
       expect(updateBrand.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIBrandDetails);
+    });
+  });
+
+  describe('associate brand with influencer', () => {
+    it('should associate a brand with an influencer successfully', async () => {
+      const result = await controller.associateInfluencer(
+        String(MockIBrand.id),
+        String(MockIInfluencer.id),
+      );
+
+      expect(linkBrandInfluencer.execute).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockIBrandInfluencer);
     });
   });
 });
