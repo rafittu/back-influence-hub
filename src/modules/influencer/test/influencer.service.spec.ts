@@ -285,6 +285,22 @@ describe('InfluencerServices', () => {
       expect(result).toEqual([MockIInfluencerDetails]);
     });
 
+    it('should split niche string into an array and filter successfully', async () => {
+      const nicheString = MockCreateInfluencer.niches.join(', ');
+      const MockInfluencerFilterWithStringNiche = {
+        niche: nicheString,
+      };
+
+      const result = await findInfluencerByFilter.execute(
+        MockInfluencerFilterWithStringNiche as unknown,
+      );
+
+      expect(influencerRepository.findInfluencerByFilter).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(result).toEqual([MockIInfluencerDetails]);
+    });
+
     it(`should throw an AppError`, async () => {
       jest
         .spyOn(influencerRepository, 'findInfluencerByFilter')
