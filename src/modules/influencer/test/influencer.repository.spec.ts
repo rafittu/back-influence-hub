@@ -3,6 +3,7 @@ import { InfluencerRepository } from '../repository/influencer.repository';
 import { PrismaService } from '../../../prisma.service';
 import {
   MockICreateInfluencer,
+  MockIInfluencerDetails,
   MockInfluencer,
   MockInfluencerNiche,
 } from './mocks/influencer.mock';
@@ -127,6 +128,21 @@ describe('AdminRepository', () => {
         expect(error.code).toBe(500);
         expect(error.message).toBe('could not get influencers');
       }
+    });
+  });
+
+  describe('find influencer by id', () => {
+    it('should find and list an influencer successfully', async () => {
+      jest
+        .spyOn(prismaService.influencer, 'findFirst')
+        .mockResolvedValueOnce(MockInfluencer);
+
+      const result = await influencerRepository.findOneInfluencer(
+        String(MockIInfluencerDetails.id),
+      );
+
+      expect(prismaService.influencer.findFirst).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(MockInfluencer);
     });
   });
 });
