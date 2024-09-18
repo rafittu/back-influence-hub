@@ -245,5 +245,22 @@ describe('AdminServices', () => {
       ).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIBrandInfluencer);
     });
+
+    it('should throw an error if could not associate influencer with brand', async () => {
+      jest
+        .spyOn(brandRepository, 'associateInfluencer')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await linkBrandInfluencer.execute(
+          String(MockIBrand.id),
+          String(MockIInfluencer.id),
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to link influencer with brand');
+      }
+    });
   });
 });
