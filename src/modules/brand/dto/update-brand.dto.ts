@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateBrandDto } from './create-brand.dto';
 import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
-import { Niche } from 'src/modules/influencer/enums/niche.enum';
+import { Niche } from '../../../modules/influencer/enums/niche.enum';
 
 export class UpdateBrandDto extends PartialType(CreateBrandDto) {
   @IsOptional()

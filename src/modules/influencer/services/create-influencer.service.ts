@@ -6,7 +6,7 @@ import { IInfluencerRepository } from '../interfaces/repository.interface';
 import { Influencer } from '@prisma/client';
 import { CreateInfluencerDto } from '../dto/create-influencer.dto';
 import { IInfluencerDetails } from '../interfaces/influencer.interface';
-import { S3BucketService } from 'src/common/aws/s3Bucket';
+import { S3BucketService } from '../../../common/aws/s3Bucket';
 
 @Injectable()
 export class CreateInfluencerService {

@@ -6,7 +6,7 @@ import { IInfluencerRepository } from '../interfaces/repository.interface';
 import { Influencer } from '@prisma/client';
 import { IInfluencerDetails } from '../interfaces/influencer.interface';
 import { UpdateInfluencerDto } from '../dto/update-influencer.dto';
-import { S3BucketService } from 'src/common/aws/s3Bucket';
+import { S3BucketService } from '../../../common/aws/s3Bucket';
 
 @Injectable()
 export class UpdateInfluencerService {
@@ -109,6 +109,10 @@ export class UpdateInfluencerService {
 
       return this.transformInfluencerData(updatedInfluencer);
     } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+
       throw new AppError(
         'influencer-service.updateInfluencer',
         500,

@@ -9,8 +9,8 @@ import {
   Param,
   Query,
 } from '@nestjs/common';
-import { AppError } from 'src/common/errors/Error';
-import { HttpExceptionFilter } from 'src/common/filter/http-exception.filter';
+import { AppError } from '../../common/errors/Error';
+import { HttpExceptionFilter } from '../../common/filter/http-exception.filter';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { CreateBrandService } from './services/create-brand.service';
 import { FindAllBrandsService } from './services/find-all-brands.service';
