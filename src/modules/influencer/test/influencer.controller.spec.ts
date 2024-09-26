@@ -11,6 +11,7 @@ import {
   MockIInfluencerDetails,
   MockInfluencerPhotoFile,
 } from './mocks/influencer.mock';
+import { DeleteInfluencerService } from '../services/delete-influencer.service';
 
 describe('InfluencerController', () => {
   let controller: InfluencerController;
@@ -19,6 +20,7 @@ describe('InfluencerController', () => {
   let findOneInfluencer: FindOneInfluencerService;
   let updateInfluencer: UpdateInfluencerService;
   let influencersByFilter: InfluencersByFilterService;
+  let deleteInfluencer: DeleteInfluencerService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -54,6 +56,12 @@ describe('InfluencerController', () => {
             execute: jest.fn().mockResolvedValue([MockIInfluencerDetails]),
           },
         },
+        {
+          provide: DeleteInfluencerService,
+          useValue: {
+            execute: jest.fn().mockResolvedValue(null),
+          },
+        },
       ],
     }).compile();
 
@@ -72,6 +80,9 @@ describe('InfluencerController', () => {
     );
     influencersByFilter = module.get<InfluencersByFilterService>(
       InfluencersByFilterService,
+    );
+    deleteInfluencer = module.get<DeleteInfluencerService>(
+      DeleteInfluencerService,
     );
   });
 
@@ -129,6 +140,14 @@ describe('InfluencerController', () => {
 
       expect(updateInfluencer.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual(MockIInfluencerDetails);
+    });
+  });
+
+  describe('delete influencer', () => {
+    it('should delete influencer successfully', async () => {
+      await controller.remove(String(MockIInfluencer.id));
+
+      expect(deleteInfluencer.execute).toHaveBeenCalledTimes(1);
     });
   });
 });
