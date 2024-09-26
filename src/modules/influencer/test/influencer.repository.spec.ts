@@ -290,4 +290,36 @@ describe('InfluencerRepository', () => {
       }
     });
   });
+
+  describe('delete influencer', () => {
+    it('should successfully delete influencer', async () => {
+      jest
+        .spyOn(prismaService.influencer, 'delete')
+        .mockResolvedValueOnce(null);
+
+      await influencerRepository.deleteInfluencer(String(MockInfluencer.id));
+
+      expect(prismaService.influencer.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if could not delete influencer', async () => {
+      jest
+        .spyOn(prismaService.influencer, 'delete')
+        .mockRejectedValueOnce(
+          new AppError(
+            'influencer-repository.deleteInfluencer',
+            500,
+            'could not delete influencer',
+          ),
+        );
+
+      try {
+        await influencerRepository.deleteInfluencer(String(MockInfluencer.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not delete influencer');
+      }
+    });
+  });
 });
