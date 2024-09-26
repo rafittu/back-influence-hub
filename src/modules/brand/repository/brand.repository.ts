@@ -181,7 +181,14 @@ export class BrandRepository implements IBrandRepository<Brand> {
 
     try {
       await this.prisma.brand.delete({
-        where: { id: brandIdInt },
+        where: {
+          id: brandIdInt,
+          InfluencerBrand: {
+            every: {
+              brand_id: brandIdInt,
+            },
+          },
+        },
       });
     } catch (error) {
       throw new AppError(
