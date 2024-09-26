@@ -76,7 +76,7 @@ describe('BrandServices', () => {
             findInfluencersByBrand: jest
               .fn()
               .mockResolvedValue([MockPrismaBrandInfluencer]),
-            diassociateInfluencer: jest.fn(),
+            disassociateInfluencer: jest.fn().mockResolvedValue(null),
           },
         },
       ],
