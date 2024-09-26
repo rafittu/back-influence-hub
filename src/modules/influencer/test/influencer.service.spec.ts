@@ -16,6 +16,7 @@ import {
   MockPrismaInfluencer,
 } from './mocks/influencer.mock';
 import { AppError } from '../../../common/errors/Error';
+import { DeleteInfluencerService } from '../services/delete-influencer.service';
 
 jest.mock('axios');
 
@@ -25,6 +26,7 @@ describe('InfluencerServices', () => {
   let findOneInfluencer: FindOneInfluencerService;
   let findInfluencerByFilter: InfluencersByFilterService;
   let updateInfluencer: UpdateInfluencerService;
+  let deleteInfluencer: DeleteInfluencerService;
 
   let s3Bucket: S3BucketService;
   let influencerRepository: InfluencerRepository;
@@ -37,6 +39,7 @@ describe('InfluencerServices', () => {
         FindOneInfluencerService,
         InfluencersByFilterService,
         UpdateInfluencerService,
+        DeleteInfluencerService,
         {
           provide: S3BucketService,
           useValue: {
@@ -66,6 +69,7 @@ describe('InfluencerServices', () => {
               .fn()
               .mockResolvedValue(MockPrismaInfluencer),
             updateInfluencer: jest.fn().mockResolvedValue(MockPrismaInfluencer),
+            deleteInfluencer: jest.fn().mockResolvedValue(null),
           },
         },
       ],
@@ -86,6 +90,9 @@ describe('InfluencerServices', () => {
     updateInfluencer = module.get<UpdateInfluencerService>(
       UpdateInfluencerService,
     );
+    deleteInfluencer = module.get<DeleteInfluencerService>(
+      DeleteInfluencerService,
+    );
 
     s3Bucket = module.get<S3BucketService>(S3BucketService);
     influencerRepository =
@@ -98,6 +105,7 @@ describe('InfluencerServices', () => {
     expect(findOneInfluencer).toBeDefined();
     expect(findInfluencerByFilter).toBeDefined();
     expect(updateInfluencer).toBeDefined();
+    expect(deleteInfluencer).toBeDefined();
     expect(s3Bucket).toBeDefined();
   });
 
@@ -376,6 +384,28 @@ describe('InfluencerServices', () => {
         expect(error).toBeInstanceOf(AppError);
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to update influencer data');
+      }
+    });
+  });
+
+  describe('delete influencer', () => {
+    it('should delete influencer successfully', async () => {
+      await deleteInfluencer.execute(String(MockIInfluencer.id));
+
+      expect(influencerRepository.deleteInfluencer).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if could not delete influencer', async () => {
+      jest
+        .spyOn(influencerRepository, 'deleteInfluencer')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await deleteInfluencer.execute(String(MockIInfluencer.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to delete influencer');
       }
     });
   });

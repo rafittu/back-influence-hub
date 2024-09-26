@@ -8,6 +8,7 @@ import { FindOneInfluencerService } from './services/find-one-influencer.service
 import { UpdateInfluencerService } from './services/update-influencer.service';
 import { InfluencersByFilterService } from './services/find-influencers-by-filter.service';
 import { S3BucketService } from 'src/common/aws/s3Bucket';
+import { DeleteInfluencerService } from './services/delete-influencer.service';
 
 @Module({
   controllers: [InfluencerController],
@@ -20,6 +21,7 @@ import { S3BucketService } from 'src/common/aws/s3Bucket';
     FindOneInfluencerService,
     UpdateInfluencerService,
     InfluencersByFilterService,
+    DeleteInfluencerService,
   ],
 })
 export class InfluencerModule {}

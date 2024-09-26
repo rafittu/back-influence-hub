@@ -18,6 +18,7 @@ import { FindAllInfluencersService } from './services/find-all-influencers.servi
 import { FindOneInfluencerService } from './services/find-one-influencer.service';
 import { UpdateInfluencerService } from './services/update-influencer.service';
 import { InfluencersByFilterService } from './services/find-influencers-by-filter.service';
+import { DeleteInfluencerService } from './services/delete-influencer.service';
 import { CreateInfluencerDto } from './dto/create-influencer.dto';
 import {
   IInfluencer,
@@ -37,6 +38,7 @@ export class InfluencerController {
     private readonly findOneInfluencer: FindOneInfluencerService,
     private readonly updateInfluencer: UpdateInfluencerService,
     private readonly influencersByFilter: InfluencersByFilterService,
+    private readonly deleteInfluencer: DeleteInfluencerService,
   ) {}
 
   @Post('/create')
@@ -75,8 +77,8 @@ export class InfluencerController {
     return await this.updateInfluencer.execute(id, body, file);
   }
 
-  @Delete(':id')
-  remove() {
-    return 'this.influencerService.remove(+id)';
+  @Delete('/delete/:id')
+  async remove(@Query('influencerId') influencerId: string) {
+    return await this.deleteInfluencer.execute(influencerId);
   }
 }

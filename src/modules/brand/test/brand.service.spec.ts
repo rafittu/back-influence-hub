@@ -16,6 +16,8 @@ import {
 } from './mocks/brand.mock';
 import { AppError } from '../../../common/errors/Error';
 import { MockIInfluencer } from '../../../modules/influencer/test/mocks/influencer.mock';
+import { UnlinkInfluencerService } from '../services/unlink-influencer.service';
+import { DeleteBrandService } from '../services/delete-brand.service';
 
 describe('BrandServices', () => {
   let createBrand: CreateBrandService;
@@ -24,6 +26,8 @@ describe('BrandServices', () => {
   let updateBrand: UpdateBrandService;
   let linkBrandInfluencer: LinkInfluencerService;
   let influencersByBrand: FindInfluencersByBrandService;
+  let unlinkBrandInfluencer: UnlinkInfluencerService;
+  let deleteBrand: DeleteBrandService;
 
   let brandRepository: BrandRepository;
 
@@ -36,6 +40,8 @@ describe('BrandServices', () => {
         UpdateBrandService,
         LinkInfluencerService,
         FindInfluencersByBrandService,
+        UnlinkInfluencerService,
+        DeleteBrandService,
         {
           provide: BrandRepository,
           useValue: {
@@ -73,6 +79,8 @@ describe('BrandServices', () => {
             findInfluencersByBrand: jest
               .fn()
               .mockResolvedValue([MockPrismaBrandInfluencer]),
+            disassociateInfluencer: jest.fn().mockResolvedValue(null),
+            deleteBrand: jest.fn().mockResolvedValue(null),
           },
         },
       ],
@@ -88,6 +96,10 @@ describe('BrandServices', () => {
     influencersByBrand = module.get<FindInfluencersByBrandService>(
       FindInfluencersByBrandService,
     );
+    unlinkBrandInfluencer = module.get<UnlinkInfluencerService>(
+      UnlinkInfluencerService,
+    );
+    deleteBrand = module.get<DeleteBrandService>(DeleteBrandService);
 
     brandRepository = module.get<BrandRepository>(BrandRepository);
   });
@@ -104,6 +116,8 @@ describe('BrandServices', () => {
     expect(updateBrand).toBeDefined();
     expect(linkBrandInfluencer).toBeDefined();
     expect(influencersByBrand).toBeDefined();
+    expect(unlinkBrandInfluencer).toBeDefined();
+    expect(deleteBrand).toBeDefined();
   });
 
   describe('create brand', () => {
@@ -293,6 +307,56 @@ describe('BrandServices', () => {
         expect(error).toBeInstanceOf(AppError);
         expect(error.code).toBe(500);
         expect(error.message).toBe('failed to get influencers');
+      }
+    });
+  });
+
+  describe('disassociate brand from influencer', () => {
+    it('should disassociate an influencer from brand successfully', async () => {
+      await unlinkBrandInfluencer.execute(
+        String(MockIBrand.id),
+        String(MockIInfluencer.id),
+      );
+
+      expect(brandRepository.disassociateInfluencer).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if could not unlink influencer from brand', async () => {
+      jest
+        .spyOn(brandRepository, 'disassociateInfluencer')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await unlinkBrandInfluencer.execute(
+          String(MockIBrand.id),
+          String(MockIInfluencer.id),
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to unlink influencer from brand');
+      }
+    });
+  });
+
+  describe('delete brand', () => {
+    it('should delete brand successfully', async () => {
+      await deleteBrand.execute(String(MockIBrand.id));
+
+      expect(brandRepository.deleteBrand).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if could not delete brand', async () => {
+      jest
+        .spyOn(brandRepository, 'deleteBrand')
+        .mockRejectedValueOnce(new Error());
+
+      try {
+        await deleteBrand.execute(String(MockIBrand.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('failed to delete brand');
       }
     });
   });

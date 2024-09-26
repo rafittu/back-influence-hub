@@ -225,7 +225,7 @@
                 }
             }
         },
-        "/admin/:id": {
+        "/admin/{id}": {
             "get": {
                 "summary": "Find admin by id",
                 "description": "Route to find and liast an admin by id.",
@@ -329,7 +329,7 @@
                 }
             }
         },
-        "/admin/:adminId": {
+        "/admin/{adminId}": {
             "patch": {
                 "summary": "Update admin",
                 "description": "Route to update admin data",
@@ -493,7 +493,7 @@
                 }
             }
         },
-        "/admin/remove/:id": {
+        "/admin/remove/{id}": {
             "delete": {
                 "summary": "Delete admin",
                 "description": "Route to delete an admin.",
@@ -1166,7 +1166,7 @@
                 }
             }
         },
-        "/influencer/:influencerId": {
+        "/influencer/{influencerId}": {
             "get": {
                 "summary": "Find influencer by id",
                 "description": "Route to find influencer by id.",
@@ -1281,7 +1281,7 @@
                 }
             }
         },
-        "/influencer/:id": {
+        "/influencer/{id}": {
             "patch": {
                 "summary": "Update influencer",
                 "description": "Route to update influencer data",
@@ -1432,6 +1432,96 @@
                                             "error": {
                                                 "message": "could not update influencer details",
                                                 "code": "influencer-repository.updateInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "influencer/delete/{id}": {
+            "delete": {
+                "summary": "Delete influencer",
+                "description": "Route to delete influencer.",
+                "tags": ["Influencer"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "influencerId",
+                        "in": "path",
+                        "description": "influencer id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Influencer deleted successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to delete influencer",
+                                                "code": "influencer-service.deleteInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not delete influencer",
+                                                "code": "influencer-repository.deleteInfluencer",
                                                 "status": true
                                             },
                                             "data": {}
@@ -1698,7 +1788,7 @@
                 }
             }
         },
-        "/brand/:id": {
+        "/brand/{id}": {
             "get": {
                 "summary": "Find brand by id",
                 "description": "Route to find brand by id.",
@@ -1803,7 +1893,7 @@
                 }
             }
         },
-        "/brand/:brandId": {
+        "/brand/{brandId}": {
             "patch": {
                 "summary": "Update brand",
                 "description": "Route to update brand data",
@@ -1913,6 +2003,96 @@
                                             "error": {
                                                 "message": "could not update brand details",
                                                 "code": "brand-repository.updateBrand",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "brand/delete/{id}": {
+            "delete": {
+                "summary": "Delete brand",
+                "description": "Route to delete brand.",
+                "tags": ["Brand"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "brandId",
+                        "in": "path",
+                        "description": "brand id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Brand deleted successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to delete brand",
+                                                "code": "brand-service.deleteBrand",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not delete brand",
+                                                "code": "brand-repository.deleteBrand",
                                                 "status": true
                                             },
                                             "data": {}
@@ -2169,6 +2349,105 @@
                                             "data": {}
                                         }
                                     } 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/brand/disassociate-influencer": {
+            "delete": {
+                "summary": "Disassociate influencer from brand",
+                "description": "Route to disassociate influencers from brand.",
+                "tags": ["Brand Influencers"],
+                "security": [
+                    {
+                    "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "Bearer {accesToken}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "brandId",
+                        "in": "path",
+                        "description": "brand id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "influencerId",
+                        "in": "path",
+                        "description": "brand id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Influencer associated from brand successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "error": {
+                                        "message": "Unauthorized",
+                                        "code": "auth-guard.jwtAuth",
+                                        "status": true
+                                    },
+                                    "data": {}
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                
+                                "examples": {
+                                    "example1": {
+                                        "summary": "service error",
+                                        "value": {
+                                            "error": {
+                                                "message": "failed to unlink influencer from brand",
+                                                "code": "brand-service.unlinkInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    },
+                                    "example2": {
+                                        "summary": "repository error",
+                                        "value": {
+                                            "error": {
+                                                "message": "could not unlink influencer from brand",
+                                                "code": "brand-repository.disassociateInfluencer",
+                                                "status": true
+                                            },
+                                            "data": {}
+                                        }
+                                    }
                                 }
                             }
                         }

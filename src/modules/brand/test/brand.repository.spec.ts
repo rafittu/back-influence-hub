@@ -278,4 +278,72 @@ describe('BrandRepository', () => {
       }
     });
   });
+
+  describe('disassociate influencer', () => {
+    it('should successfully disassociate influencer from brand successfully', async () => {
+      jest
+        .spyOn(prismaService.influencerBrand, 'delete')
+        .mockResolvedValueOnce(null);
+
+      await brandRepository.disassociateInfluencer(
+        String(MockIBrand.id),
+        String(MockIBrandInfluencer.influencerId),
+      );
+
+      expect(prismaService.influencerBrand.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if could not unlink brand from influencer', async () => {
+      jest
+        .spyOn(prismaService.influencerBrand, 'delete')
+        .mockRejectedValueOnce(
+          new AppError(
+            'brand-repository.disassociateInfluencer',
+            500,
+            'could not unlink influencer from brand',
+          ),
+        );
+
+      try {
+        await brandRepository.disassociateInfluencer(
+          String(MockIBrand.id),
+          String(MockIBrandInfluencer.influencerId),
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not unlink influencer from brand');
+      }
+    });
+  });
+
+  describe('delete brand', () => {
+    it('should successfully delete brand', async () => {
+      jest.spyOn(prismaService.brand, 'delete').mockResolvedValueOnce(null);
+
+      await brandRepository.deleteBrand(String(MockIBrand.id));
+
+      expect(prismaService.brand.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if could not delete brand', async () => {
+      jest
+        .spyOn(prismaService.brand, 'delete')
+        .mockRejectedValueOnce(
+          new AppError(
+            'brand-repository.deleteBrand',
+            500,
+            'could not delete brand',
+          ),
+        );
+
+      try {
+        await brandRepository.deleteBrand(String(MockIBrand.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not delete brand');
+      }
+    });
+  });
 });

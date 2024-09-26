@@ -176,6 +176,29 @@ export class BrandRepository implements IBrandRepository<Brand> {
     }
   }
 
+  async deleteBrand(brandId: string): Promise<void> {
+    const brandIdInt = Number(Object.values(brandId));
+
+    try {
+      await this.prisma.brand.delete({
+        where: {
+          id: brandIdInt,
+          InfluencerBrand: {
+            every: {
+              brand_id: brandIdInt,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.deleteBrand',
+        500,
+        'could not delete brand',
+      );
+    }
+  }
+
   async associateInfluencer(
     brandId: string,
     influencerId: string,
@@ -219,6 +242,31 @@ export class BrandRepository implements IBrandRepository<Brand> {
         'brand-repository.associateInfluencer',
         500,
         'could not link brand with influencer',
+      );
+    }
+  }
+
+  async disassociateInfluencer(
+    brandId: string,
+    influencerId: string,
+  ): Promise<void> {
+    const brandIdInt = Number(Object.values(brandId));
+    const influencerIdInt = Number(Object.values(influencerId));
+
+    try {
+      await this.prisma.influencerBrand.delete({
+        where: {
+          influencer_id_brand_id: {
+            influencer_id: influencerIdInt,
+            brand_id: brandIdInt,
+          },
+        },
+      });
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.disassociateInfluencer',
+        500,
+        'could not unlink influencer from brand',
       );
     }
   }
