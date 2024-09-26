@@ -82,7 +82,7 @@ export class BrandController {
     return 'this.brandService.remove(+id)';
   }
 
-  @Post('/associate-influencer')
+  @Delete('/disassociate-influencer')
   async disassociateInfluencer(
     @Query('influencerId') influencerId: string,
     @Query('brandId') brandId: string,
