@@ -12,4 +12,5 @@ export interface IBrandRepository<Brand> {
     influencerId: string,
   ): Promise<InfluencerBrand>;
   findInfluencersByBrand(brandname: string): Promise<InfluencerBrand[]>;
+  disassociateInfluencer(brandId: string, influencerId: string): Promise<void>;
 }

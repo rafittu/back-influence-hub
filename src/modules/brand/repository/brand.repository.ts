@@ -222,4 +222,29 @@ export class BrandRepository implements IBrandRepository<Brand> {
       );
     }
   }
+
+  async disassociateInfluencer(
+    brandId: string,
+    influencerId: string,
+  ): Promise<void> {
+    const brandIdInt = Number(Object.values(brandId));
+    const influencerIdInt = Number(Object.values(influencerId));
+
+    try {
+      await this.prisma.influencerBrand.delete({
+        where: {
+          influencer_id_brand_id: {
+            influencer_id: influencerIdInt,
+            brand_id: brandIdInt,
+          },
+        },
+      });
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.disassociateInfluencer',
+        500,
+        'could not unlink influencer from brand',
+      );
+    }
+  }
 }

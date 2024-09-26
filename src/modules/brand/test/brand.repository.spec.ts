@@ -278,4 +278,42 @@ describe('BrandRepository', () => {
       }
     });
   });
+
+  describe('disassociate influencer', () => {
+    it('should successfully disassociate influencer from brand successfully', async () => {
+      jest
+        .spyOn(prismaService.influencerBrand, 'delete')
+        .mockResolvedValueOnce(null);
+
+      await brandRepository.disassociateInfluencer(
+        String(MockIBrand.id),
+        String(MockIBrandInfluencer.influencerId),
+      );
+
+      expect(prismaService.influencerBrand.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if could not unlink brand from influencer', async () => {
+      jest
+        .spyOn(prismaService.influencerBrand, 'delete')
+        .mockRejectedValueOnce(
+          new AppError(
+            'brand-repository.disassociateInfluencer',
+            500,
+            'could not unlink influencer from brand',
+          ),
+        );
+
+      try {
+        await brandRepository.disassociateInfluencer(
+          String(MockIBrand.id),
+          String(MockIBrandInfluencer.influencerId),
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not unlink influencer from brand');
+      }
+    });
+  });
 });
