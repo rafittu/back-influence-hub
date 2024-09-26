@@ -15,6 +15,7 @@ import {
 } from './mocks/brand.mock';
 import { MockIInfluencer } from '../../../modules/influencer/test/mocks/influencer.mock';
 import { UnlinkInfluencerService } from '../services/unlink-influencer.service';
+import { DeleteBrandService } from '../services/delete-brand.service';
 
 describe('BrandController', () => {
   let controller: BrandController;
@@ -26,6 +27,7 @@ describe('BrandController', () => {
   let linkBrandInfluencer: LinkInfluencerService;
   let influencersByBrand: FindInfluencersByBrandService;
   let unlinkBrandInfluencer: UnlinkInfluencerService;
+  let deleteBrand: DeleteBrandService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -73,6 +75,12 @@ describe('BrandController', () => {
             execute: jest.fn(),
           },
         },
+        {
+          provide: DeleteBrandService,
+          useValue: {
+            execute: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -91,6 +99,7 @@ describe('BrandController', () => {
     unlinkBrandInfluencer = module.get<UnlinkInfluencerService>(
       UnlinkInfluencerService,
     );
+    deleteBrand = module.get<DeleteBrandService>(DeleteBrandService);
   });
 
   it('should be defined', () => {
@@ -165,6 +174,14 @@ describe('BrandController', () => {
       );
 
       expect(unlinkBrandInfluencer.execute).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('delete brand', () => {
+    it('should delete brand successfully', async () => {
+      await controller.remove(String(MockIBrand.id));
+
+      expect(deleteBrand.execute).toHaveBeenCalledTimes(1);
     });
   });
 });
