@@ -176,6 +176,22 @@ export class BrandRepository implements IBrandRepository<Brand> {
     }
   }
 
+  async deleteBrand(brandId: string): Promise<void> {
+    const brandIdInt = Number(Object.values(brandId));
+
+    try {
+      await this.prisma.brand.delete({
+        where: { id: brandIdInt },
+      });
+    } catch (error) {
+      throw new AppError(
+        'brand-repository.deleteBrand',
+        500,
+        'could not delete brand',
+      );
+    }
+  }
+
   async associateInfluencer(
     brandId: string,
     influencerId: string,
