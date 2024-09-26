@@ -52,17 +52,6 @@ Este projeto utiliza as seguintes tecnologias:
 
 <br>
 
-### 🚧 Futuras implementações:
-- Ampliação de endpoints para gerenciar administradores, influenciadores e marcas;
-    - desassociar influenciadores e marcas da plataforma;
-  
-- Endpoint para autenticação dos representantes de marcas;
-    - representantes devem ser capazes de acessar o portfólio de influenciadores.
-
-- Refatoração do código;
-
-<br>
-
 ## Configuração do Projeto
 
 ### Requisitos para rodar a aplicação
@@ -154,8 +143,9 @@ $ docker-compose up --build
      - reachMax
      - niche
      - city
-- **`GET /influencer/:id`:** Detalhes de um influencer;
-- **`PATCH /influencer/:id`:** Editar um influenciador;
+- **`GET /influencer/{id}`:** Detalhes de um influencer;
+- **`PATCH /influencer/{id}`:** Editar um influenciador;
+- **`DELETE /influencer/delete/{id}`:** Exclusão de influenciador;
 
 <br>
 
@@ -186,6 +176,7 @@ $ docker-compose up --build
     }
   ```
 - **`PATCH /brand/:id`:** Editar dados de uma marca;
+- **`DELETE /brand/delete/{id}`:** Exclusão de marca;
 
 <br>
 
@@ -218,6 +209,7 @@ $ docker-compose up --build
   ```
 
 - **`GET /brand/influencers/by-brand`:** Lista todas os influenciadores de determinada marca. O nome da marca deve ser passado na `@Query()` da requisição como `brand`;
+- **`DELETE /brand/disassociate-influencer/`:** Desassocia marca de influenciadores. O id da marca e do influenciador a ser desassociado devem ser passados na `@Query()` da requisição;
 
 <br>
 
