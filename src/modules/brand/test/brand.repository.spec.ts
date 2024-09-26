@@ -316,4 +316,34 @@ describe('BrandRepository', () => {
       }
     });
   });
+
+  describe('delete brand', () => {
+    it('should successfully delete brand', async () => {
+      jest.spyOn(prismaService.brand, 'delete').mockResolvedValueOnce(null);
+
+      await brandRepository.deleteBrand(String(MockIBrand.id));
+
+      expect(prismaService.brand.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error if could not delete brand', async () => {
+      jest
+        .spyOn(prismaService.brand, 'delete')
+        .mockRejectedValueOnce(
+          new AppError(
+            'brand-repository.deleteBrand',
+            500,
+            'could not delete brand',
+          ),
+        );
+
+      try {
+        await brandRepository.deleteBrand(String(MockIBrand.id));
+      } catch (error) {
+        expect(error).toBeInstanceOf(AppError);
+        expect(error.code).toBe(500);
+        expect(error.message).toBe('could not delete brand');
+      }
+    });
+  });
 });

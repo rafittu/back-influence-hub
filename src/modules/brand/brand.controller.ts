@@ -19,6 +19,7 @@ import { FindOneBrandService } from './services/find-one-brand.service';
 import { UpdateBrandService } from './services/update-brand.service';
 import { LinkInfluencerService } from './services/link-influencer.service';
 import { UnlinkInfluencerService } from './services/unlink-influencer.service';
+import { DeleteBrandService } from './services/delete-brand.service';
 import {
   IBrand,
   IBrandDetails,
@@ -37,6 +38,7 @@ export class BrandController {
     private readonly linkInfluencer: LinkInfluencerService,
     private readonly influencersByBrand: FindInfluencersByBrandService,
     private readonly unlinkInfluencer: UnlinkInfluencerService,
+    private readonly deleteBrand: DeleteBrandService,
   ) {}
 
   @Post('/create')
@@ -77,9 +79,9 @@ export class BrandController {
     return await this.updateBrand.execute(id, body);
   }
 
-  @Delete(':id')
-  remove() {
-    return 'this.brandService.remove(+id)';
+  @Delete('/delete/:id')
+  async remove(@Query('brandId') brandId: string): Promise<void> {
+    return await this.deleteBrand.execute(brandId);
   }
 
   @Delete('/disassociate-influencer')
