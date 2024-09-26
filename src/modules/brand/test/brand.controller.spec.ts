@@ -14,6 +14,7 @@ import {
   MockUpdateBrandDto,
 } from './mocks/brand.mock';
 import { MockIInfluencer } from '../../../modules/influencer/test/mocks/influencer.mock';
+import { UnlinkInfluencerService } from '../services/unlink-influencer.service';
 
 describe('BrandController', () => {
   let controller: BrandController;
@@ -24,6 +25,7 @@ describe('BrandController', () => {
   let updateBrand: UpdateBrandService;
   let linkBrandInfluencer: LinkInfluencerService;
   let influencersByBrand: FindInfluencersByBrandService;
+  let unlinkBrandInfluencer: UnlinkInfluencerService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -65,6 +67,12 @@ describe('BrandController', () => {
             execute: jest.fn().mockResolvedValue([MockIBrandInfluencer]),
           },
         },
+        {
+          provide: UnlinkInfluencerService,
+          useValue: {
+            execute: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -79,6 +87,9 @@ describe('BrandController', () => {
     );
     influencersByBrand = module.get<FindInfluencersByBrandService>(
       FindInfluencersByBrandService,
+    );
+    unlinkBrandInfluencer = module.get<UnlinkInfluencerService>(
+      UnlinkInfluencerService,
     );
   });
 
@@ -143,6 +154,17 @@ describe('BrandController', () => {
 
       expect(influencersByBrand.execute).toHaveBeenCalledTimes(1);
       expect(result).toEqual([MockIBrandInfluencer]);
+    });
+  });
+
+  describe('disassociate brand from influencer', () => {
+    it('should disassociate a brand from an influencer successfully', async () => {
+      await controller.disassociateInfluencer(
+        String(MockIBrand.id),
+        String(MockIInfluencer.id),
+      );
+
+      expect(unlinkBrandInfluencer.execute).toHaveBeenCalledTimes(1);
     });
   });
 });
