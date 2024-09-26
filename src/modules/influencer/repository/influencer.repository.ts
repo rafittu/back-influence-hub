@@ -237,4 +237,27 @@ export class InfluencerRepository implements IInfluencerRepository<Influencer> {
       );
     }
   }
+
+  async deleteInfluencer(id: string): Promise<void> {
+    const influencerIdInt = Number(Object.values(id));
+
+    try {
+      await this.prisma.influencer.delete({
+        where: {
+          id: influencerIdInt,
+          InfluencerBrand: {
+            every: {
+              influencer_id: influencerIdInt,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      throw new AppError(
+        'influencer-repository.deleteInfluencer',
+        500,
+        'could not delete influencer',
+      );
+    }
+  }
 }

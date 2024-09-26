@@ -10,4 +10,5 @@ export interface IInfluencerRepository<Influencer> {
   findOneInfluencer(id: string): Promise<Influencer>;
   updateInfluencer(id: string, data: IUpdateInfluencer): Promise<Influencer>;
   findInfluencerByFilter(filters: IInfluencerFilters): Promise<Influencer[]>;
+  deleteInfluencer(id: string): Promise<void>;
 }
